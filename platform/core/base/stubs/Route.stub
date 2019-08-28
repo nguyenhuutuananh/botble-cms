@@ -1,0 +1,46 @@
+<?php
+
+Route::group(['namespace' => 'Botble\{Plugin}\Http\Controllers', 'middleware' => 'web'], function () {
+
+    Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
+        Route::group(['prefix' => '{-names}'], function () {
+
+            Route::get('/', [
+                'as'   => '{name}.list',
+                'uses' => '{Name}Controller@getList',
+            ]);
+
+            Route::get('/create', [
+                'as'   => '{name}.create',
+                'uses' => '{Name}Controller@getCreate',
+            ]);
+
+            Route::post('/create', [
+                'as'   => '{name}.create',
+                'uses' => '{Name}Controller@postCreate',
+            ]);
+
+            Route::get('/edit/{id}', [
+                'as'   => '{name}.edit',
+                'uses' => '{Name}Controller@getEdit',
+            ]);
+
+            Route::post('/edit/{id}', [
+                'as'   => '{name}.edit',
+                'uses' => '{Name}Controller@postEdit',
+            ]);
+
+            Route::get('/delete/{id}', [
+                'as'   => '{name}.delete',
+                'uses' => '{Name}Controller@getDelete',
+            ]);
+
+            Route::post('/delete-many', [
+                'as'         => '{name}.delete.many',
+                'uses'       => '{Name}Controller@postDeleteMany',
+                'permission' => '{name}.delete',
+            ]);
+        });
+    });
+    
+});
