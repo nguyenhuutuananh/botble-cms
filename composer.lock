@@ -264,8 +264,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/api",
-                "reference": "602f3ed45b672fa6626fd6079f8e9519fa47cd30",
-                "shasum": null
+                "reference": "602f3ed45b672fa6626fd6079f8e9519fa47cd30"
             },
             "require": {
                 "barryvdh/laravel-cors": "^0.11.3",
@@ -357,8 +356,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/menu",
-                "reference": "1d70ee1f1cf539c0b725fba5490db6a2577cb504",
-                "shasum": null
+                "reference": "1d70ee1f1cf539c0b725fba5490db6a2577cb504"
             },
             "type": "package",
             "extra": {
@@ -387,8 +385,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/optimize",
-                "reference": "f903949e0fb5973d71c0a230b48901cc300a756f",
-                "shasum": null
+                "reference": "f903949e0fb5973d71c0a230b48901cc300a756f"
             },
             "type": "package",
             "extra": {
@@ -417,8 +414,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/page",
-                "reference": "ed03272b2b269ede5cee997c98c1a88c6367f835",
-                "shasum": null
+                "reference": "ed03272b2b269ede5cee997c98c1a88c6367f835"
             },
             "type": "package",
             "extra": {
@@ -447,8 +443,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/core",
-                "reference": "0d9430ae007e9e52f10812e68b67e5580ccfdbc5",
-                "shasum": null
+                "reference": "0d9430ae007e9e52f10812e68b67e5580ccfdbc5"
             },
             "require": {
                 "barryvdh/laravel-dompdf": "^0.8.2",
@@ -546,8 +541,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/revision",
-                "reference": "d95ff23e797e983b0327bd1076bd0e3749e25f3d",
-                "shasum": null
+                "reference": "d95ff23e797e983b0327bd1076bd0e3749e25f3d"
             },
             "type": "package",
             "extra": {
@@ -576,8 +570,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/seo-helper",
-                "reference": "dcf32fead1dee8791d991e30cdacff5b93810946",
-                "shasum": null
+                "reference": "dcf32fead1dee8791d991e30cdacff5b93810946"
             },
             "type": "package",
             "extra": {
@@ -609,8 +602,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/shortcode",
-                "reference": "354fb720bef18fba643479a931e1f24f7757368c",
-                "shasum": null
+                "reference": "354fb720bef18fba643479a931e1f24f7757368c"
             },
             "type": "package",
             "extra": {
@@ -639,8 +631,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/slug",
-                "reference": "1d6e85cbab706e89d93b269163ffdff531b9c39d",
-                "shasum": null
+                "reference": "1d6e85cbab706e89d93b269163ffdff531b9c39d"
             },
             "type": "package",
             "extra": {
@@ -669,8 +660,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/theme",
-                "reference": "fc6110ebb46c7744e201b99bad4ced38d6d4b6f7",
-                "shasum": null
+                "reference": "fc6110ebb46c7744e201b99bad4ced38d6d4b6f7"
             },
             "type": "package",
             "extra": {
@@ -699,8 +689,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/widget",
-                "reference": "89b0ba9574bbe5d2bb12c73260e48c138c343a63",
-                "shasum": null
+                "reference": "89b0ba9574bbe5d2bb12c73260e48c138c343a63"
             },
             "type": "package",
             "extra": {
@@ -2000,7 +1989,7 @@
             "time": "2017-12-08T14:31:13+00:00"
         },
         {
-            "name": "jeremeamia/SuperClosure",
+            "name": "jeremeamia/superclosure",
             "version": "2.4.0",
             "source": {
                 "type": "git",
@@ -3252,30 +3241,29 @@
         },
         {
             "name": "markbaker/matrix",
-            "version": "1.1.4",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MarkBaker/PHPMatrix.git",
-                "reference": "6ea97472b5baf12119b4f31f802835b820dd6d64"
+                "reference": "5348c5a67e3b75cd209d70103f916a93b1f1ed21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MarkBaker/PHPMatrix/zipball/6ea97472b5baf12119b4f31f802835b820dd6d64",
-                "reference": "6ea97472b5baf12119b4f31f802835b820dd6d64",
+                "url": "https://api.github.com/repos/MarkBaker/PHPMatrix/zipball/5348c5a67e3b75cd209d70103f916a93b1f1ed21",
+                "reference": "5348c5a67e3b75cd209d70103f916a93b1f1ed21",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.6.0|^7.0.0"
             },
             "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
-                "phpcompatibility/php-compatibility": "^8.0",
-                "phpdocumentor/phpdocumentor": "2.*",
-                "phploc/phploc": "2.*",
-                "phpmd/phpmd": "2.*",
-                "phpunit/phpunit": "^4.8.35|^5.4.0",
-                "sebastian/phpcpd": "2.*",
-                "squizlabs/php_codesniffer": "^3.3.0"
+                "dealerdirect/phpcodesniffer-composer-installer": "dev-master",
+                "phpcompatibility/php-compatibility": "dev-master",
+                "phploc/phploc": "^4",
+                "phpmd/phpmd": "dev-master",
+                "phpunit/phpunit": "^5.7",
+                "sebastian/phpcpd": "^3.0",
+                "squizlabs/php_codesniffer": "^3.0@dev"
             },
             "type": "library",
             "autoload": {
@@ -3318,7 +3306,7 @@
                 "matrix",
                 "vector"
             ],
-            "time": "2018-11-04T22:12:12+00:00"
+            "time": "2019-10-06T11:29:25+00:00"
         },
         {
             "name": "mnapoli/front-yaml",
@@ -3923,7 +3911,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "🔍 Nette Finder: find files and directories with an intuitive API.",
+            "description": "? Nette Finder: find files and directories with an intuitive API.",
             "homepage": "https://nette.org",
             "keywords": [
                 "filesystem",
@@ -4288,16 +4276,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.6.0",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "bf00f0cc5f55c354018f9a9ef15e6e3e1a229051"
+                "reference": "f734783d826bd84c3d54fcf7b71c37ab9bac4b04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/bf00f0cc5f55c354018f9a9ef15e6e3e1a229051",
-                "reference": "bf00f0cc5f55c354018f9a9ef15e6e3e1a229051",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/f734783d826bd84c3d54fcf7b71c37ab9bac4b04",
+                "reference": "f734783d826bd84c3d54fcf7b71c37ab9bac4b04",
                 "shasum": ""
             },
             "require": {
@@ -4315,20 +4303,19 @@
                 "ext-zip": "*",
                 "ext-zlib": "*",
                 "markbaker/complex": "^1.4",
-                "markbaker/matrix": "^1.1",
-                "php": "^5.6|^7.0",
+                "markbaker/matrix": "^1.2",
+                "php": "^7.1",
                 "psr/simple-cache": "^1.0"
             },
             "require-dev": {
-                "doctrine/instantiator": "^1.0.0",
-                "dompdf/dompdf": "^0.8.0",
-                "friendsofphp/php-cs-fixer": "@stable",
+                "dompdf/dompdf": "^0.8.3",
+                "friendsofphp/php-cs-fixer": "^2.16",
                 "jpgraph/jpgraph": "^4.0",
-                "mpdf/mpdf": "^7.0.0",
-                "phpcompatibility/php-compatibility": "^8.0",
-                "phpunit/phpunit": "^5.7",
-                "squizlabs/php_codesniffer": "^3.3",
-                "tecnickcom/tcpdf": "^6.2"
+                "mpdf/mpdf": "^8.0",
+                "phpcompatibility/php-compatibility": "^9.3",
+                "phpunit/phpunit": "^7.5",
+                "squizlabs/php_codesniffer": "^3.5",
+                "tecnickcom/tcpdf": "^6.3"
             },
             "suggest": {
                 "dompdf/dompdf": "Option for rendering PDF with PDF Writer",
@@ -4344,15 +4331,9 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.1-or-later"
+                "MIT"
             ],
             "authors": [
-                {
-                    "name": "Erik Tilt"
-                },
-                {
-                    "name": "Adrien Crivelli"
-                },
                 {
                     "name": "Maarten Balliauw",
                     "homepage": "https://blog.maartenballiauw.be"
@@ -4364,6 +4345,12 @@
                 {
                     "name": "Franck Lefevre",
                     "homepage": "https://rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                },
+                {
+                    "name": "Adrien Crivelli"
                 }
             ],
             "description": "PHPSpreadsheet - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
@@ -4378,7 +4365,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2019-01-02T04:42:54+00:00"
+            "time": "2019-11-18T11:33:05+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -4856,28 +4843,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/proengsoft/laravel-jsvalidation.git",
-                "reference": "b2dfa9ec5f15b26b9dbdc69c1c6215a0ac4b83a8"
+                "reference": "96960ab9ad200de6a619965d2c94a770a520c088"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/proengsoft/laravel-jsvalidation/zipball/b2dfa9ec5f15b26b9dbdc69c1c6215a0ac4b83a8",
-                "reference": "b2dfa9ec5f15b26b9dbdc69c1c6215a0ac4b83a8",
+                "url": "https://api.github.com/repos/proengsoft/laravel-jsvalidation/zipball/96960ab9ad200de6a619965d2c94a770a520c088",
+                "reference": "96960ab9ad200de6a619965d2c94a770a520c088",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/contracts": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/http": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/translation": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/validation": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
-                "illuminate/view": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*",
+                "illuminate/config": "^5.4|^6.0",
+                "illuminate/contracts": "^5.4|^6.0",
+                "illuminate/http": "^5.4|^6.0",
+                "illuminate/support": "^5.4|^6.0",
+                "illuminate/translation": "^5.4|^6.0",
+                "illuminate/validation": "^5.4|^6.0",
+                "illuminate/view": "^5.4|^6.0",
                 "php": ">=5.6.4"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.10",
                 "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "~5.7|^7.0"
+                "phpunit/phpunit": "~5.7|^7.0|^8.0"
             },
             "type": "library",
             "extra": {
@@ -4922,7 +4909,7 @@
                 "validation",
                 "validator"
             ],
-            "time": "2019-03-12T10:02:04+00:00"
+            "time": "2019-09-05T23:39:20+00:00"
         },
         {
             "name": "psr/cache",
@@ -6090,7 +6077,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
