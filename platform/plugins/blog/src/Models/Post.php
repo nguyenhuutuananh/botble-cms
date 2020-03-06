@@ -7,9 +7,9 @@ use Botble\Base\Traits\EnumCastable;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Revision\RevisionableTrait;
 use Botble\Slug\Traits\SlugTrait;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class Post extends Eloquent
+class Post extends BaseModel
 {
     use RevisionableTrait;
     use SlugTrait;
@@ -86,7 +86,6 @@ class Post extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
      */
     public function user()
     {
@@ -95,7 +94,6 @@ class Post extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     * @author Sang Nguyen
      */
     public function tags()
     {
@@ -104,21 +102,20 @@ class Post extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     * @author Sang Nguyen
      */
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'post_categories');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
     public function author()
     {
         return $this->morphTo();
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     protected static function boot()
     {
         parent::boot();

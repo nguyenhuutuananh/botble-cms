@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  
+
   {!! SeoHelper::render() !!}
-  
+
   <!-- Datetime picker -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 
   {!! Assets::renderHeader(['core']) !!}
 
-  {!! Html::style('/vendor/core/css/themes/darkblue.css') !!}
+  {!! Html::style('/vendor/core/css/themes/default.css') !!}
 
   <!-- Styles -->
   <link href="{{ asset('vendor/core/plugins/member/css/app.css') }}" rel="stylesheet">
@@ -35,7 +35,7 @@
 </head>
 <body>
   <div id="app">
-    @include('plugins.member::components.header')
+    @include('plugins/member::components.header')
     <main class="pv3 pv4-ns">
       @yield('content')
     </main>

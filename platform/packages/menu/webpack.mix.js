@@ -12,8 +12,8 @@ let mix = require('laravel-mix');
  */
 
 const resourcePath = 'platform/packages/menu';
-const publicPath = 'public/vendor/core';
+const publicPath = 'public/vendor/core/packages/menu';
 
 mix
-    .js(resourcePath + '/resources/assets/js/app_modules/menu.js', publicPath + '/js/app_modules')
-    .copy(publicPath + '/js/app_modules/menu.js', resourcePath + '/public/js/app_modules');
+    .js(resourcePath + '/resources/assets/js/menu.js', publicPath + '/js')
+    .copy(publicPath + '/js/menu.js', resourcePath + '/public/js');

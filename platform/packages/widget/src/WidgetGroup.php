@@ -66,7 +66,6 @@ class WidgetGroup
     /**
      * @param $args
      * @param ApplicationWrapperContract $app
-     * @author Sang Nguyen
      */
     public function __construct(array $args, ApplicationWrapperContract $app)
     {
@@ -81,7 +80,6 @@ class WidgetGroup
      * Display all widgets from this group in correct order.
      *
      * @return string
-     * @author Sang Nguyen
      */
     public function display()
     {
@@ -107,11 +105,10 @@ class WidgetGroup
      *
      * @param $widget
      * @return mixed
-     * @author Sang Nguyen
      */
     protected function displayWidget($widget, $position)
     {
-        $factory = $this->app->make($widget['type'] === 'sync' ? 'botble.widget' : 'botble.async-widget');
+        $factory = $this->app->make('botble.widget');
 
         $widget['arguments']['sidebar_id'] = $this->id;
         $widget['arguments']['position'] = $position;
@@ -125,7 +122,6 @@ class WidgetGroup
      * @param int $position
      *
      * @return $this
-     * @author Sang Nguyen
      */
     public function position($position)
     {
@@ -136,7 +132,6 @@ class WidgetGroup
 
     /**
      * Add a widget to the group.
-     * @author Sang Nguyen
      */
     public function addWidget()
     {
@@ -148,7 +143,6 @@ class WidgetGroup
      *
      * @param string $type
      * @param array $arguments
-     * @author Sang Nguyen
      */
     protected function addWidgetWithType($type, array $arguments = [])
     {
@@ -169,7 +163,6 @@ class WidgetGroup
     /**
      * Reset the position property back to the default.
      * So it does not affect the next widget.
-     * @author Sang Nguyen
      */
     protected function resetPosition()
     {
@@ -177,19 +170,9 @@ class WidgetGroup
     }
 
     /**
-     * Add an async widget to the group.
-     * @author Sang Nguyen
-     */
-    public function addAsyncWidget()
-    {
-        $this->addWidgetWithType('async', func_get_args());
-    }
-
-    /**
      * Getter for position.
      *
      * @return integer
-     * @author Sang Nguyen
      */
     public function getPosition()
     {
@@ -202,7 +185,6 @@ class WidgetGroup
      * @param string $separator
      *
      * @return $this
-     * @author Sang Nguyen
      */
     public function setSeparator($separator)
     {
@@ -215,7 +197,6 @@ class WidgetGroup
      * Check if there are any widgets in the group.
      *
      * @return bool
-     * @author Sang Nguyen
      */
     public function any()
     {
@@ -226,7 +207,6 @@ class WidgetGroup
      * Check if there are no widgets in the group.
      *
      * @return bool
-     * @author Sang Nguyen
      */
     public function isEmpty()
     {
@@ -237,7 +217,6 @@ class WidgetGroup
      * Count the number of widgets in this group.
      *
      * @return int
-     * @author Sang Nguyen
      */
     public function count()
     {
@@ -251,7 +230,6 @@ class WidgetGroup
 
     /**
      * @return mixed|string
-     * @author Sang Nguyen
      */
     public function getId()
     {
@@ -260,7 +238,6 @@ class WidgetGroup
 
     /**
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getName()
     {
@@ -277,7 +254,6 @@ class WidgetGroup
 
     /**
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getDescription()
     {
@@ -291,7 +267,6 @@ class WidgetGroup
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getWidgets()
     {

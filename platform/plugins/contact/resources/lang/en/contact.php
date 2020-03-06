@@ -26,7 +26,7 @@ return [
     'email.required'                => 'Email is required',
     'email.email'                   => 'The email address is not valid',
     'content.required'              => 'Content is required',
-    'g-recaptcha-response.required' => 'Please confirm you are not a robot before send message.',
+    'g-recaptcha-response.required' => 'Please confirm you are not a robot before sending the message.',
     'g-recaptcha-response.captcha'  => 'You are not confirm robot yet.',
     'contact_sent_from'             => 'This contact information sent from',
     'sender'                        => 'Sender',

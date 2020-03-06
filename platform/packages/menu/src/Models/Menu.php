@@ -4,9 +4,9 @@ namespace Botble\Menu\Models;
 
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Traits\EnumCastable;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class Menu extends Eloquent
+class Menu extends BaseModel
 {
 
     use EnumCastable;
@@ -36,7 +36,6 @@ class Menu extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     * @author Sang Nguyen
      */
     public function menuNodes()
     {
@@ -45,16 +44,12 @@ class Menu extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     * @author Sang Nguyen
      */
     public function locations()
     {
         return $this->hasMany(MenuLocation::class, 'menu_id');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     protected static function boot()
     {
         parent::boot();

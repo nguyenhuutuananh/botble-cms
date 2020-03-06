@@ -14,9 +14,6 @@ class HookServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         add_filter(DASHBOARD_FILTER_ADMIN_LIST, [$this, 'addUserStatsWidget'], 12, 2);
@@ -26,24 +23,21 @@ class HookServiceProvider extends ServiceProvider
      * @param array $widgets
      * @param Collection $widgetSettings
      * @return array
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function addUserStatsWidget($widgets, $widgetSettings)
     {
         $users = $this->app->make(UserInterface::class)->count();
 
-        $widget = new DashboardWidgetInstance();
-
-        $widget->type = 'stats';
-        $widget->permission = 'users.list';
-        $widget->key = 'widget_total_users';
-        $widget->title = trans('core/acl::users.users');
-        $widget->icon = 'fas fa-users';
-        $widget->color = '#3598dc';
-        $widget->statsTotal = $users;
-        $widget->route = route('users.list');
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setType('stats')
+            ->setPermission('users.index')
+            ->setTitle(trans('core/acl::users.users'))
+            ->setKey('widget_total_users')
+            ->setIcon('fas fa-users')
+            ->setColor('#3598dc')
+            ->setStatsTotal($users)
+            ->setRoute(route('users.index'))
+            ->init($widgets, $widgetSettings);
     }
 }

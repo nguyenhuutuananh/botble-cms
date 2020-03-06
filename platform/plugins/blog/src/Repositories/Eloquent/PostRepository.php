@@ -25,7 +25,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     {
         $data = $this->model
             ->where([
-                'posts.status'      => BaseStatusEnum::PUBLISH,
+                'posts.status'      => BaseStatusEnum::PUBLISHED,
                 'posts.is_featured' => 1,
             ])
             ->limit($limit)
@@ -40,7 +40,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     public function getListPostNonInList(array $selected = [], $limit = 7)
     {
         $data = $this->model
-            ->where('posts.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('posts.status', '=', BaseStatusEnum::PUBLISHED)
             ->whereNotIn('posts.id', $selected)
             ->limit($limit)
             ->orderBy('posts.created_at', 'desc');
@@ -54,7 +54,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     public function getRelated($id, $limit = 3)
     {
         $data = $this->model
-            ->where('posts.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('posts.status', '=', BaseStatusEnum::PUBLISHED)
             ->where('posts.id', '!=', $id)
             ->limit($limit)
             ->orderBy('posts.created_at', 'desc');
@@ -72,7 +72,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
         }
 
         $data = $this->model
-            ->where('posts.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('posts.status', '=', BaseStatusEnum::PUBLISHED)
             ->join('post_categories', 'post_categories.post_id', '=', 'posts.id')
             ->join('categories', 'post_categories.category_id', '=', 'categories.id')
             ->whereIn('post_categories.category_id', $category_id)
@@ -94,7 +94,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     {
         $data = $this->model
             ->where([
-                'posts.status'    => BaseStatusEnum::PUBLISH,
+                'posts.status'    => BaseStatusEnum::PUBLISHED,
                 'posts.author_id' => $author_id,
             ])
             ->select('posts.*')
@@ -109,7 +109,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     public function getDataSiteMap()
     {
         $data = $this->model
-            ->where('posts.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('posts.status', '=', BaseStatusEnum::PUBLISHED)
             ->select('posts.*')
             ->orderBy('posts.created_at', 'desc');
 
@@ -122,7 +122,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
     public function getByTag($tag, $paginate = 12)
     {
         $data = $this->model
-            ->where('posts.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('posts.status', '=', BaseStatusEnum::PUBLISHED)
             ->whereHas('tags', function ($query) use ($tag) {
                 /**
                  * @var Builder $query
@@ -140,7 +140,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
      */
     public function getRecentPosts($limit = 5, $category_id = 0)
     {
-        $posts = $this->model->where(['posts.status' => BaseStatusEnum::PUBLISH]);
+        $posts = $this->model->where(['posts.status' => BaseStatusEnum::PUBLISHED]);
 
         if ($category_id != 0) {
             $posts = $posts->join('post_categories', 'post_categories.post_id', '=', 'posts.id')
@@ -159,7 +159,7 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
      */
     public function getSearch($query, $limit = 10, $paginate = 10)
     {
-        $posts = $this->model->where('status', BaseStatusEnum::PUBLISH);
+        $posts = $this->model->where('status', BaseStatusEnum::PUBLISHED);
         foreach (explode(' ', $query) as $term) {
             $posts = $posts->where('name', 'LIKE', '%' . $term . '%');
         }
@@ -183,10 +183,11 @@ class PostRepository extends RepositoriesAbstract implements PostInterface
      */
     public function getAllPosts($perPage = 12, $active = true)
     {
-        $data = $this->model->select('posts.*');
+        $data = $this->model->select('posts.*')
+            ->orderBy('posts.created_at', 'desc');
 
         if ($active) {
-            $data = $data->where(['posts.status' => BaseStatusEnum::PUBLISH]);
+            $data = $data->where(['posts.status' => BaseStatusEnum::PUBLISHED]);
         }
 
         return $this->applyBeforeExecuteQuery($data, $this->screen)->paginate($perPage);

@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     {!! Form::open(['route' => ['settings.email.edit']]) !!}
     <div class="max-width-1200">
@@ -74,6 +74,13 @@
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select-chevron"></use>
                             </svg>
                         </div>
+                    </div>
+
+                    <div class="form-group setting-mail-sendmail @if (setting('email_driver', config('mail.driver')) !== 'sendmail') hidden @endif">
+                        <label class="text-title-field" for="email_password">{{ __('Sendmail Path')  }}</label>
+                        <input type="text" class="next-input" name="email_sendmail_path" id="email_sendmail_path"
+                               value="{{ setting('email_sendmail_path', config('mail.sendmail')) }}" placeholder="{{ __('Sendmail Path') }}">
+                        <span class="help-ts">Default: <code>{{ config('mail.sendmail') }}</code></span>
                     </div>
 
                     <div class="form-group">
@@ -153,5 +160,5 @@
     </div>
     {!! Form::close() !!}
 
-    {!! Form::modalAction('send-test-email-modal', trans('core/setting::setting.test_email_modal_title'), 'info', view('core.setting::test-email')->render(), 'send-test-email-btn', trans('core/setting::setting.send')) !!}
+    {!! Form::modalAction('send-test-email-modal', trans('core/setting::setting.test_email_modal_title'), 'info', view('core/setting::test-email')->render(), 'send-test-email-btn', trans('core/setting::setting.send')) !!}
 @stop

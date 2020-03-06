@@ -35,158 +35,87 @@ Route::group(['namespace' => 'Botble\ACL\Http\Controllers', 'middleware' => 'web
     });
 
     Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
-        Route::group(['prefix' => 'system/users'], function () {
-            Route::get('', [
-                'as'   => 'users.list',
-                'uses' => 'UserController@getList',
-            ]);
 
-            Route::get('delete/{id}', [
-                'as'   => 'users.delete',
-                'uses' => 'UserController@getDelete',
-            ]);
+        Route::group(['prefix' => 'system'], function () {
+            Route::resource('users', 'UserController')->except(['edit', 'update']);
 
-            Route::get('create', [
-                'as'   => 'users.create',
-                'uses' => 'UserController@getCreate',
-            ]);
+            Route::group(['prefix' => 'users'], function () {
 
-            Route::post('create', [
-                'as'   => 'users.create',
-                'uses' => 'UserController@postCreate',
-            ]);
+                Route::delete('items/destroy', [
+                    'as'         => 'users.deletes',
+                    'uses'       => 'UserController@deletes',
+                    'permission' => 'users.destroy',
+                ]);
 
-            Route::post('delete-many', [
-                'as'         => 'users.delete.many',
-                'uses'       => 'UserController@postDeleteMany',
-                'permission' => 'users.delete',
-            ]);
+                Route::post('update-profile/{id}', [
+                    'as'         => 'users.update-profile',
+                    'uses'       => 'UserController@postUpdateProfile',
+                    'permission' => false,
+                    'middleware' => 'preventDemo',
+                ]);
 
-            Route::post('update-profile/{id}', [
-                'as'         => 'users.update-profile',
-                'uses'       => 'UserController@postUpdateProfile',
-                'permission' => false,
-                'middleware' => 'preventDemo',
-            ]);
+                Route::post('modify-profile-image', [
+                    'as'         => 'users.profile.image',
+                    'uses'       => 'UserController@postAvatar',
+                    'permission' => false,
+                ]);
 
-            Route::post('modify-profile-image', [
-                'as'         => 'users.profile.image',
-                'uses'       => 'UserController@postModifyProfileImage',
-                'permission' => false,
-            ]);
+                Route::post('change-password/{id}', [
+                    'as'         => 'users.change-password',
+                    'uses'       => 'UserController@postChangePassword',
+                    'permission' => false,
+                    'middleware' => 'preventDemo',
+                ]);
 
-            Route::post('change-password/{id}', [
-                'as'         => 'users.change-password',
-                'uses'       => 'UserController@postChangePassword',
-                'permission' => false,
-                'middleware' => 'preventDemo',
-            ]);
+                Route::get('profile/{id}', [
+                    'as'         => 'user.profile.view',
+                    'uses'       => 'UserController@getUserProfile',
+                    'permission' => false,
+                ]);
 
-            Route::get('profile/{id}', [
-                'as'         => 'user.profile.view',
-                'uses'       => 'UserController@getUserProfile',
-                'permission' => false,
-            ]);
+                Route::get('make-super/{id}', [
+                    'as'         => 'users.make-super',
+                    'uses'       => 'UserController@makeSuper',
+                    'permission' => ACL_ROLE_SUPER_USER,
+                ]);
 
-            Route::get('impersonate/{id}', [
-                'as'         => 'users.impersonate',
-                'uses'       => 'UserController@getImpersonate',
-                'permission' => 'superuser',
-            ]);
+                Route::get('remove-super/{id}', [
+                    'as'         => 'users.remove-super',
+                    'uses'       => 'UserController@removeSuper',
+                    'permission' => ACL_ROLE_SUPER_USER,
+                    'middleware' => 'preventDemo',
+                ]);
+            });
 
-            Route::get('leave-impersonation', [
-                'as'         => 'users.leave_impersonation',
-                'uses'       => 'UserController@leaveImpersonation',
-                'permission' => false,
-            ]);
+            Route::resource('roles', 'RoleController');
+
+            Route::group(['prefix' => 'roles'], function () {
+                Route::delete('items/destroy', [
+                    'as'         => 'roles.deletes',
+                    'uses'       => 'RoleController@deletes',
+                    'permission' => 'roles.destroy',
+                ]);
+
+                Route::get('duplicate/{id}', [
+                    'as'         => 'roles.duplicate',
+                    'uses'       => 'RoleController@getDuplicate',
+                    'permission' => 'roles.create',
+                ]);
+
+                Route::get('json', [
+                    'as'         => 'roles.list.json',
+                    'uses'       => 'RoleController@getJson',
+                    'permission' => 'roles.index',
+                ]);
+
+                Route::post('assign', [
+                    'as'         => 'roles.assign',
+                    'uses'       => 'RoleController@postAssignMember',
+                    'permission' => 'roles.edit',
+                ]);
+            });
         });
 
-        Route::group(['prefix' => 'system/super-users', 'permission' => 'superuser'], function () {
-            Route::get('', [
-                'as'   => 'users-supers.list',
-                'uses' => 'SuperUserController@getList',
-            ]);
-
-            Route::get('delete/{id}', [
-                'as'         => 'users-supers.delete',
-                'uses'       => 'SuperUserController@getDelete',
-                'middleware' => 'preventDemo',
-            ]);
-
-            Route::post('delete-many', [
-                'as'         => 'users-supers.delete.many',
-                'uses'       => 'SuperUserController@postDeleteMany',
-                'middleware' => 'preventDemo',
-            ]);
-
-            Route::get('create', [
-                'as'   => 'users-supers.create',
-                'uses' => 'SuperUserController@getCreate',
-            ]);
-
-            Route::post('create', [
-                'as'   => 'users-supers.create',
-                'uses' => 'SuperUserController@postCreate',
-            ]);
-        });
-    });
-
-    Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
-        Route::group(['prefix' => 'system/roles'], function () {
-            Route::get('', [
-                'as'   => 'roles.list',
-                'uses' => 'RoleController@getList',
-            ]);
-
-            Route::get('delete/{id}', [
-                'as'   => 'roles.delete',
-                'uses' => 'RoleController@getDelete',
-            ]);
-
-            Route::post('delete/many', [
-                'as'         => 'roles.delete.many',
-                'uses'       => 'RoleController@postDeleteMany',
-                'permission' => 'roles.delete',
-            ]);
-
-            Route::get('edit/{id}', [
-                'as'   => 'roles.edit',
-                'uses' => 'RoleController@getEdit',
-            ]);
-
-            Route::post('edit/{id}', [
-                'as'   => 'roles.edit',
-                'uses' => 'RoleController@postEdit',
-            ]);
-
-            Route::get('create', [
-                'as'   => 'roles.create',
-                'uses' => 'RoleController@getCreate',
-            ]);
-
-            Route::post('create', [
-                'as'   => 'roles.create',
-                'uses' => 'RoleController@postCreate',
-            ]);
-
-            Route::get('duplicate/{id}', [
-                'as'         => 'roles.duplicate',
-                'uses'       => 'RoleController@getDuplicate',
-                'permission' => 'roles.create',
-            ]);
-
-            Route::get('json', [
-                'as'         => 'roles.list.json',
-                'uses'       => 'RoleController@getJson',
-                'permission' => 'roles.list',
-            ]);
-
-            Route::post('assign', [
-                'as'         => 'roles.assign',
-                'uses'       => 'RoleController@postAssignMember',
-                'permission' => 'roles.edit',
-            ]);
-        });
     });
 
     Route::get('admin-language/{alias}', [UserController::class, 'getLanguage'])->name('admin.language');

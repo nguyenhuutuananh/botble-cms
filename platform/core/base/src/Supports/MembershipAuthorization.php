@@ -5,16 +5,16 @@ namespace Botble\Base\Supports;
 use Botble\Setting\Supports\SettingStore;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Ixudra\Curl\CurlService;
 
 class MembershipAuthorization
 {
     /**
-     * @var CurlService
+     * @var Client
      */
-    protected $curl;
+    protected $client;
 
     /**
      * @var SettingStore
@@ -27,16 +27,23 @@ class MembershipAuthorization
     protected $request;
 
     /**
+     * @var string
+     */
+    protected $url;
+
+    /**
      * MembershipAuthorization constructor.
-     * @param CurlService $curl
+     * @param Client $client
      * @param SettingStore $settingStore
      * @param Request $request
      */
-    public function __construct(CurlService $curl, SettingStore $settingStore, Request $request)
+    public function __construct(Client $client, SettingStore $settingStore, Request $request)
     {
-        $this->curl = $curl;
+        $this->client = $client;
         $this->settingStore = $settingStore;
         $this->request = $request;
+
+        $this->url = rtrim(url('/'), '/');
     }
 
     /**
@@ -45,6 +52,10 @@ class MembershipAuthorization
     public function authorize()
     {
         try {
+
+            if (!filter_var($this->url, FILTER_VALIDATE_URL)) {
+                return false;
+            }
 
             if ($this->isInvalidDomain()) {
                 return false;
@@ -71,9 +82,11 @@ class MembershipAuthorization
      */
     protected function processAuthorize()
     {
-        $this->curl->to('https://botble.com/membership/authorize')
-            ->withData(['website' => rtrim(url('/'), '/')])
-            ->post();
+        $this->client->post('https://botble.com/membership/authorize', [
+            'form_params' => [
+                'website' => $this->url,
+            ],
+        ]);
 
         $this->settingStore
             ->set('membership_authorization_at', now()->toDateTimeString())
@@ -87,25 +100,18 @@ class MembershipAuthorization
      */
     protected function isInvalidDomain()
     {
-        $blacklistIp = [
-            '127.0.0.1',
-            '::1',
-        ];
-
-        if (in_array($this->request->ip(), $blacklistIp)) {
+        if (filter_var($this->url, FILTER_VALIDATE_IP)) {
             return true;
         }
 
         $blacklistDomains = [
             'localhost',
-            '8000',
             '.local',
             '.test',
-            '192.168',
         ];
 
         foreach ($blacklistDomains as $blacklistDomain) {
-            if (Str::contains(url('/'), $blacklistDomain)) {
+            if (Str::contains($this->url, $blacklistDomain)) {
                 return true;
             }
         }

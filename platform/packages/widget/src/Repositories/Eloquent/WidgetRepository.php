@@ -19,6 +19,7 @@ class WidgetRepository extends RepositoriesAbstract implements WidgetInterface
     {
         $data = $this->model->where('theme', '=', $theme)->get();
         $this->resetModel();
+
         return $data;
     }
 }

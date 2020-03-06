@@ -104,6 +104,14 @@ class Botble {
         toastr[messageType](message, messageHeader);
     }
 
+    static showError(message) {
+        this.showNotice('error', message);
+    }
+
+    static showSuccess(message) {
+        this.showNotice('success', message);
+    }
+
     static handleError(data) {
         if (typeof (data.errors) !== 'undefined' && !_.isArray(data.errors)) {
             Botble.handleValidationError(data.errors);
@@ -114,16 +122,16 @@ class Botble {
                         Botble.handleValidationError(data.responseJSON.errors);
                     }
                 } else if (typeof (data.responseJSON.message) !== 'undefined') {
-                    Botble.showNotice('error', data.responseJSON.message);
+                    Botble.showError(data.responseJSON.message);
                 } else {
                     $.each(data.responseJSON, (index, el) => {
                         $.each(el, (key, item) => {
-                            Botble.showNotice('error', item);
+                            Botble.showError(item);
                         });
                     });
                 }
             } else {
-                Botble.showNotice('error', data.statusText);
+                Botble.showError(data.statusText);
             }
         }
     }
@@ -148,7 +156,7 @@ class Botble {
                     $input_array.addClass('field-has-error');
                 }
         });
-        Botble.showNotice('error', message);
+        Botble.showError(message);
     }
 
     countCharacter() {
@@ -382,7 +390,7 @@ class Botble {
                 }
             });
         }
-        $('.tip').tooltip({placement: 'top'});
+        $('[data-toggle="tooltip"]').tooltip({placement: 'top'});
 
         if (jQuery().areYouSure) {
             $('form').areYouSure();

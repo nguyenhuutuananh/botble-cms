@@ -48,7 +48,7 @@ class LanguageGlobalManagement {
                     }
                 },
                 error: (data) => {
-                    Botble.showNotice('error', data.message);
+                    Botble.showError(data.message);
                 }
             });
         });

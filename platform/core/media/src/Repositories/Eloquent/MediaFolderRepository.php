@@ -2,16 +2,12 @@
 
 namespace Botble\Media\Repositories\Eloquent;
 
-use Auth;
 use Botble\Media\Repositories\Interfaces\MediaFolderInterface;
 use Botble\Support\Repositories\Eloquent\RepositoriesAbstract;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 
 /**
- * Class MediaFolderRepository
- * @package Botble\Media
- * @author Sang Nguyen
  * @since 19/08/2015 07:45 AM
  */
 class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderInterface
@@ -43,12 +39,12 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * {@inheritdoc}
      */
-    public function createSlug($name, $parent_id)
+    public function createSlug($name, $parentId)
     {
         $slug = Str::slug($name);
         $index = 1;
         $baseSlug = $slug;
-        while ($this->checkIfExists('slug', $slug, $parent_id)) {
+        while ($this->checkIfExists('slug', $slug, $parentId)) {
             $slug = $baseSlug . '-' . $index++;
         }
 
@@ -58,12 +54,12 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * {@inheritdoc}
      */
-    public function createName($name, $parent_id)
+    public function createName($name, $parentId)
     {
         $newName = $name;
         $index = 1;
         $baseSlug = $newName;
-        while ($this->checkIfExists('name', $newName, $parent_id)) {
+        while ($this->checkIfExists('name', $newName, $parentId)) {
             $newName = $baseSlug . '-' . $index++;
         }
 
@@ -73,14 +69,12 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * @param $key
      * @param $value
-     * @param $parent_id
-     * @return mixed
-     * @internal param $slug
-     * @author Sang Nguyen
+     * @param $parentId
+     * @return bool
      */
-    protected function checkIfExists($key, $value, $parent_id)
+    protected function checkIfExists($key, $value, $parentId)
     {
-        $count = $this->model->where($key, '=', $value)->where('parent_id', $parent_id)->withTrashed();
+        $count = $this->model->where($key, '=', $value)->where('parent_id', $parentId)->withTrashed();
 
         /**
          * @var Builder $count
@@ -93,13 +87,13 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * {@inheritdoc}
      */
-    public function getBreadcrumbs($parent_id, $breadcrumbs = [])
+    public function getBreadcrumbs($parentId, $breadcrumbs = [])
     {
-        if ($parent_id == 0) {
+        if ($parentId == 0) {
             return $breadcrumbs;
         }
 
-        $folder = $this->getFirstByWithTrash(['id' => $parent_id]);
+        $folder = $this->getFirstByWithTrash(['id' => $parentId]);
 
         if (empty($folder)) {
             return $breadcrumbs;
@@ -117,7 +111,7 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * {@inheritdoc}
      */
-    public function getTrashed($parent_id, array $params = [])
+    public function getTrashed($parentId, array $params = [])
     {
         $params = array_merge([
             'where' => [],
@@ -131,7 +125,7 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
         /**
          * @var Builder $data
          */
-        if ($parent_id == 0) {
+        if ($parentId == 0) {
             $data->leftJoin('media_folders as mf_parent', 'mf_parent.id', '=', 'media_folders.parent_id')
                 ->where(function ($query) {
                     /**
@@ -143,7 +137,7 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
                 })
                 ->withTrashed();
         } else {
-            $data->where('media_folders.parent_id', '=', $parent_id);
+            $data->where('media_folders.parent_id', '=', $parentId);
         }
 
         return $data->get();
@@ -169,17 +163,17 @@ class MediaFolderRepository extends RepositoriesAbstract implements MediaFolderI
     /**
      * {@inheritdoc}
      */
-    public function getAllChildFolders($parent_id, $child = [])
+    public function getAllChildFolders($parentId, $child = [])
     {
-        if ($parent_id == 0) {
+        if ($parentId == 0) {
             return $child;
         }
 
-        $folders = $this->allBy(['parent_id' => $parent_id]);
+        $folders = $this->allBy(['parent_id' => $parentId]);
 
         if (!empty($folders)) {
             foreach ($folders as $folder) {
-                $child[$parent_id][] = $folder;
+                $child[$parentId][] = $folder;
                 return $this->getAllChildFolders($folder->id, $child);
             }
         }

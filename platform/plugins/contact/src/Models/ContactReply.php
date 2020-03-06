@@ -2,9 +2,9 @@
 
 namespace Botble\Contact\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class ContactReply extends Eloquent
+class ContactReply extends BaseModel
 {
     /**
      * The database table used by the model.

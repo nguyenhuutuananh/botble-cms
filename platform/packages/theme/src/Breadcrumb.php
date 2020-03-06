@@ -58,13 +58,13 @@ class Breadcrumb
      * Render breadcrumbs.
      *
      * @return string
-     * @author Sang Nguyen
+     * 
      * @throws \Throwable
      */
     public function render()
     {
         $crumbs = $this->getCrumbs();
 
-        return view('packages.theme::partials.breadcrumb', compact('crumbs'))->render();
+        return view('packages/theme::partials.breadcrumb', compact('crumbs'))->render();
     }
 }

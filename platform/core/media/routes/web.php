@@ -1,7 +1,9 @@
 <?php
 
 Route::group(['namespace' => 'Botble\Media\Http\Controllers', 'middleware' => 'web'], function () {
-    Route::group(array_merge(['prefix' => config('media.route.prefix'), 'middleware' => config('media.route.middleware')], config('media.route.options', [])), function () {
+    Route::group(array_merge(['prefix'     => config('media.route.prefix'),
+                              'middleware' => config('media.route.middleware'),
+    ], config('media.route.options', [])), function () {
         Route::get('', [
             'as'   => 'media.index',
             'uses' => 'MediaController@getMedia',
@@ -13,8 +15,9 @@ Route::group(['namespace' => 'Botble\Media\Http\Controllers', 'middleware' => 'w
         ]);
 
         Route::get('list', [
-            'as'   => 'media.list',
-            'uses' => 'MediaController@getList',
+            'as'         => 'media.list',
+            'uses'       => 'MediaController@getList',
+            'permission' => 'media.index',
         ]);
 
         Route::get('quota', [
@@ -57,7 +60,7 @@ Route::group(['namespace' => 'Botble\Media\Http\Controllers', 'middleware' => 'w
         Route::group(['prefix' => 'folders'], function () {
             Route::post('create', [
                 'as'   => 'media.folders.create',
-                'uses' => 'MediaFolderController@postCreate',
+                'uses' => 'MediaFolderController@store',
             ]);
         });
     });

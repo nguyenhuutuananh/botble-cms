@@ -15,9 +15,6 @@ use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class AuditLogServiceProvider
- * @package Botble\AuditLog
- * @author Sang Nguyen
  * @since 02/07/2016 09:05 AM
  */
 class AuditLogServiceProvider extends ServiceProvider
@@ -29,12 +26,9 @@ class AuditLogServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(AuditLogInterface::class, function () {
+        $this->app->bind(AuditLogInterface::class, function () {
             return new AuditLogCacheDecorator(new AuditLogRepository(new AuditHistory));
         });
 
@@ -43,17 +37,13 @@ class AuditLogServiceProvider extends ServiceProvider
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(CommandServiceProvider::class);
 
         $this->setNamespace('plugins/audit-log')
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadAndPublishConfigurations(['permissions'])
@@ -71,8 +61,8 @@ class AuditLogServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-core-platform-administration',
                     'name'        => 'plugins/audit-log::history.name',
                     'icon'        => null,
-                    'url'         => route('audit-log.list'),
-                    'permissions' => ['audit-log.list'],
+                    'url'         => route('audit-log.index'),
+                    'permissions' => ['audit-log.index'],
                 ]);
         });
     }

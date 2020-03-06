@@ -37,15 +37,4 @@ class UpdatedContentEvent extends Event
         $this->request = $request;
         $this->data = $data;
     }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function broadcastOn()
-    {
-        return [];
-    }
 }

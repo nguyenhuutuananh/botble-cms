@@ -2,28 +2,13 @@
 
 namespace Botble\Analytics;
 
-use Botble\Base\Interfaces\PluginInterface;
+use Botble\PluginManagement\Abstracts\PluginOperationAbstract;
 use Botble\Dashboard\Models\DashboardWidget;
 use Botble\Dashboard\Repositories\Interfaces\DashboardWidgetInterface;
 
-class Plugin implements PluginInterface
+class Plugin extends PluginOperationAbstract
 {
     /**
-     * @author Sang Nguyen
-     */
-    public static function activate()
-    {
-    }
-
-    /**
-     * @author Sang Nguyen
-     */
-    public static function deactivate()
-    {
-    }
-
-    /**
-     * @author Sang Nguyen
      * @throws \Exception
      */
     public static function remove()

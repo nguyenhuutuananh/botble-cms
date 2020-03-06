@@ -3,11 +3,10 @@
 namespace Botble\Media\Models;
 
 use Botble\Media\Services\UploadsManager;
-use Eloquent;
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MediaFile extends Eloquent
+class MediaFile extends BaseModel
 {
     use SoftDeletes;
 
@@ -45,7 +44,6 @@ class MediaFile extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
      */
     public function folder()
     {
@@ -54,7 +52,6 @@ class MediaFile extends Eloquent
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getTypeAttribute()
     {
@@ -75,7 +72,6 @@ class MediaFile extends Eloquent
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getHumanSizeAttribute()
     {
@@ -84,31 +80,27 @@ class MediaFile extends Eloquent
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getIconAttribute()
     {
-        /**
-         * @var Model $this
-         */
         switch ($this->type) {
             case 'image':
-                $icon = 'fa fa-file-image';
+                $icon = 'far fa-file-image';
                 break;
             case 'video':
-                $icon = 'fa fa-file-video';
+                $icon = 'far fa-file-video';
                 break;
             case 'pdf':
-                $icon = 'fa fa-file-pdf';
+                $icon = 'far fa-file-pdf';
                 break;
             case 'excel':
-                $icon = 'fa fa-file-excel';
+                $icon = 'far fa-file-excel';
                 break;
             case 'youtube':
-                $icon = 'fa fa-youtube';
+                $icon = 'fab fa-youtube';
                 break;
             default:
-                $icon = 'fa fa-file-text';
+                $icon = 'far fa-file-alt';
                 break;
         }
         return $icon;
@@ -116,8 +108,7 @@ class MediaFile extends Eloquent
 
     /**
      * @param $value
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getOptionsAttribute($value)
     {
@@ -125,7 +116,6 @@ class MediaFile extends Eloquent
     }
 
     /**
-     * @author Sang Nguyen
      * @param $value
      */
     public function setOptionsAttribute($value)
@@ -133,9 +123,6 @@ class MediaFile extends Eloquent
         $this->attributes['options'] = json_encode($value);
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     protected static function boot()
     {
         parent::boot();

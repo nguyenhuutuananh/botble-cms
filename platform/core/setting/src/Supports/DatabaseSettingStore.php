@@ -52,7 +52,7 @@ class DatabaseSettingStore extends SettingStore
     /**
      * @var bool
      */
-    protected $connected_database = false;
+    protected $connectedDatabase = false;
 
     /**
      * Any extra columns that should be added to the rows.
@@ -64,6 +64,8 @@ class DatabaseSettingStore extends SettingStore
     /**
      * @param \Illuminate\Database\Connection $connection
      * @param string $table
+     * @param null $keyColumn
+     * @param null $valueColumn
      */
     public function __construct(Connection $connection, $table = null, $keyColumn = null, $valueColumn = null)
     {
@@ -158,12 +160,7 @@ class DatabaseSettingStore extends SettingStore
      */
     protected function write(array $data)
     {
-        $keysQuery = $this->newQuery();
-
-        // "lists" was removed in Laravel 5.3, at which point
-        // "pluck" should provide the same functionality.
-        $method = !method_exists($keysQuery, 'lists') ? 'pluck' : 'lists';
-        $keys = $keysQuery->$method($this->keyColumn);
+        $keys = $this->newQuery()->pluck($this->keyColumn);
 
         $insertData = Arr::dot($data);
         $updateData = [];
@@ -195,7 +192,7 @@ class DatabaseSettingStore extends SettingStore
                 ->delete();
         }
 
-        if (env('CMS_SETTING_STORE_CACHE', false)) {
+        if (config('core.setting.general.cache.enabled')) {
             try {
                 $jsonSettingStore = new JsonSettingStore(new Filesystem);
                 $jsonSettingStore->write($data);
@@ -206,7 +203,7 @@ class DatabaseSettingStore extends SettingStore
     }
 
     /**
-     * Transforms settings data into an array ready to be insterted into the
+     * Transforms settings data into an array ready to be inserted into the
      * database. Call array_dot on a multidimensional array before passing it
      * into this method!
      *
@@ -236,18 +233,19 @@ class DatabaseSettingStore extends SettingStore
 
     /**
      * {@inheritdoc}
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function read()
     {
-        if (!$this->connected_database) {
-            $this->connected_database = check_database_connection() && Schema::hasTable('settings');
+        if (!$this->connectedDatabase) {
+            $this->connectedDatabase = check_database_connection() && Schema::hasTable('settings');
         }
 
-        if (!$this->connected_database) {
+        if (!$this->connectedDatabase) {
             return [];
         }
 
-        if (env('CMS_SETTING_STORE_CACHE', false)) {
+        if (config('core.setting.general.cache.enabled')) {
             $jsonSettingStore = new JsonSettingStore(new Filesystem);
             if (File::exists($jsonSettingStore->getPath())) {
                 $data = $jsonSettingStore->read();
@@ -259,7 +257,7 @@ class DatabaseSettingStore extends SettingStore
 
         $data = $this->parseReadData($this->newQuery()->get());
 
-        if (env('CMS_SETTING_STORE_CACHE', false)) {
+        if (config('core.setting.general.cache.enabled')) {
             if (!isset($jsonSettingStore)) {
                 $jsonSettingStore = new JsonSettingStore(new Filesystem);
             }
@@ -293,7 +291,7 @@ class DatabaseSettingStore extends SettingStore
                 throw new UnexpectedValueException($msg);
             }
 
-            ArrayUtil::set($results, $key, $value);
+            Arr::set($results, $key, $value);
         }
 
         return $results;

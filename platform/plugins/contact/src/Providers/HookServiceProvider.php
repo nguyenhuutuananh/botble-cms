@@ -2,7 +2,7 @@
 
 namespace Botble\Contact\Providers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Botble\Contact\Repositories\Interfaces\ContactInterface;
 
@@ -14,8 +14,6 @@ class HookServiceProvider extends ServiceProvider
     protected $app;
 
     /**
-     * Boot the service provider.
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function boot()
@@ -27,14 +25,14 @@ class HookServiceProvider extends ServiceProvider
         if (function_exists('add_shortcode')) {
             add_shortcode('contact-form', __('Contact form'), __('Add contact form'), [$this, 'form']);
             shortcode()
-                ->setAdminConfig('contact-form', view('plugins.contact::partials.short-code-admin-config')->render());
+                ->setAdminConfig('contact-form', view('plugins/contact::partials.short-code-admin-config')->render());
         }
     }
 
     /**
      * @param string $options
      * @return string
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function registerTopHeaderNotification($options)
@@ -43,7 +41,11 @@ class HookServiceProvider extends ServiceProvider
             $contacts = $this->app->make(ContactInterface::class)
                 ->getUnread(['id', 'name', 'email', 'phone', 'created_at']);
 
-            return $options . view('plugins.contact::partials.notification', compact('contacts'))->render();
+            if ($contacts->count() == 0) {
+                return null;
+            }
+
+            return $options . view('plugins/contact::partials.notification', compact('contacts'))->render();
         }
         return null;
     }
@@ -52,7 +54,6 @@ class HookServiceProvider extends ServiceProvider
      * @param $number
      * @param $menu_id
      * @return string
-     * @author Sang Nguyen
      */
     public function getUnReadCount($number, $menu_id)
     {
@@ -62,6 +63,7 @@ class HookServiceProvider extends ServiceProvider
                 return '<span class="badge badge-success">' . $unread . '</span>';
             }
         }
+
         return $number;
     }
 
@@ -71,7 +73,7 @@ class HookServiceProvider extends ServiceProvider
      */
     public function form($shortcode)
     {
-        $view = 'plugins.contact::forms.contact';
+        $view = 'plugins/contact::forms.contact';
 
         if ($shortcode->view && view()->exists($shortcode->view)) {
             $view = $shortcode->view;
@@ -83,10 +85,9 @@ class HookServiceProvider extends ServiceProvider
      * @param null $data
      * @return string
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addContactSetting($data = null)
     {
-        return $data . view('plugins.contact::setting')->render();
+        return $data . view('plugins/contact::setting')->render();
     }
 }

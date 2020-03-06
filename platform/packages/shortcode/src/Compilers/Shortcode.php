@@ -32,7 +32,6 @@ class Shortcode
      * @param string $name
      * @param array $attributes
      * @param string $content
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function __construct($name, $attributes = [], $content)
@@ -48,7 +47,6 @@ class Shortcode
      * @param  string $attribute
      * @param $fallback
      * @return string|null
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function get($attribute, $fallback = null)
@@ -67,7 +65,6 @@ class Shortcode
      * Get shortcode name
      *
      * @return string
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function getName()
@@ -79,7 +76,6 @@ class Shortcode
      * Get shortcode attributes
      *
      * @return string
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function getContent()
@@ -91,7 +87,6 @@ class Shortcode
      * Return array of attributes;
      *
      * @return array
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function toArray()
@@ -104,7 +99,6 @@ class Shortcode
      *
      * @param  string $param
      * @return string|null
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function __get($param)

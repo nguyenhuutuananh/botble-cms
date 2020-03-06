@@ -33,12 +33,11 @@ class Description implements DescriptionContract
 
     /**
      * Make Description instance.
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function __construct()
     {
-        $this->set(setting('seo_description', ''));
+        $this->set(theme_option('seo_description'));
         $this->setMax(config('packages.seo-helper.general.description.max', 386));
     }
 
@@ -46,7 +45,6 @@ class Description implements DescriptionContract
      * Get raw description content.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getContent()
     {
@@ -57,7 +55,6 @@ class Description implements DescriptionContract
      * Get description content.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function get()
     {
@@ -70,7 +67,6 @@ class Description implements DescriptionContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function set($content)
     {
@@ -83,7 +79,6 @@ class Description implements DescriptionContract
      * Get description max length.
      *
      * @return int
-     * @author ARCANEDEV
      */
     public function getMax()
     {
@@ -96,7 +91,6 @@ class Description implements DescriptionContract
      * @param  int $max
      *
      * @return self
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function setMax($max)
@@ -115,7 +109,6 @@ class Description implements DescriptionContract
      * @param  int $max
      *
      * @return self
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public static function make($content, $max = 386)
@@ -127,7 +120,6 @@ class Description implements DescriptionContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -142,7 +134,6 @@ class Description implements DescriptionContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -153,7 +144,6 @@ class Description implements DescriptionContract
      * Check if description has content.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function hasContent()
     {
@@ -166,7 +156,6 @@ class Description implements DescriptionContract
      * @param  int $max
      *
      * @throws \Botble\SeoHelper\Exceptions\InvalidArgumentException
-     * @author ARCANEDEV
      */
     protected function checkMax($max)
     {

@@ -3,6 +3,7 @@
 namespace Botble\Table\Abstracts;
 
 use Assets;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\UpdatedContentEvent;
 use Botble\Support\Repositories\Interfaces\RepositoryInterface;
 use Botble\Table\Supports\TableExportHandler;
@@ -51,12 +52,12 @@ abstract class TableAbstract extends DataTable
     /**
      * @var string
      */
-    protected $view = 'core.table::table';
+    protected $view = 'core/table::table';
 
     /**
      * @var string
      */
-    protected $filterTemplate = 'core.table::filter';
+    protected $filterTemplate = 'core/table::filter';
 
     /**
      * @var array
@@ -107,7 +108,6 @@ abstract class TableAbstract extends DataTable
      * TableAbstract constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
-     * @author Sang Nguyen
      */
     public function __construct(Datatables $table, UrlGenerator $urlGenerator)
     {
@@ -132,7 +132,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param $key
      * @return string
-     * @author Sang Nguyen
      */
     public function getOption($key): ?string
     {
@@ -144,7 +143,6 @@ abstract class TableAbstract extends DataTable
      * @param $key
      * @param $value
      * @return $this
-     * @author Sang Nguyen
      */
     public function setOption($key, $value): self
     {
@@ -154,7 +152,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return bool
-     * @author Sang Nguyen
      */
     public function isHasFilter(): bool
     {
@@ -163,7 +160,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return RepositoryInterface
-     * @author Sang Nguyen
      */
     public function getRepository()
     {
@@ -172,7 +168,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getType(): string
     {
@@ -182,7 +177,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param string $type
      * @return $this
-     * @author Sang Nguyen
      */
     public function setType(string $type): self
     {
@@ -192,7 +186,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getView(): string
     {
@@ -202,7 +195,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param string $view
      * @return $this
-     * @author Sang Nguyen
      */
     public function setView(string $view): self
     {
@@ -212,7 +204,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getOptions(): array
     {
@@ -222,7 +213,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param array $options
      * @return $this
-     * @author Sang Nguyen
      */
     public function setOptions(array $options): self
     {
@@ -234,9 +224,9 @@ abstract class TableAbstract extends DataTable
      * Optional method if you want to use html builder.
      *
      * @return \Yajra\DataTables\Html\Builder
-     * @author Sang Nguyen
-     * @since 2.1
+     *
      * @throws \Throwable
+     * @since 2.1
      */
     public function html()
     {
@@ -257,7 +247,7 @@ abstract class TableAbstract extends DataTable
                 'info'         => true,
                 'searchDelay'  => 350,
                 'bStateSave'   => $this->bStateSave,
-                'lengthMenu'   => array_sort_recursive([
+                'lengthMenu'   => Arr::sortRecursive([
                     array_values(array_unique(array_merge([10, 30, 50], [$this->pageLength, -1]))),
                     array_values(array_unique(array_merge([10, 30, 50],
                         [$this->pageLength, trans('core/base::tables.all')]))),
@@ -269,7 +259,7 @@ abstract class TableAbstract extends DataTable
                 'bDeferRender' => true,
                 'bProcessing'  => true,
                 'language'     => [
-                    'aria'        => [
+                    'aria'              => [
                         'sortAscending'  => 'orderby asc',
                         'sortDescending' => 'orderby desc',
                         'paginate'       => [
@@ -277,17 +267,19 @@ abstract class TableAbstract extends DataTable
                             'previous' => trans('pagination.previous'),
                         ],
                     ],
-                    'emptyTable'  => trans('core/base::tables.no_data'),
-                    'info'        => view('core.table::table-info')->render(),
-                    'infoEmpty'   => trans('core/base::tables.no_record'),
-                    'lengthMenu'  => Html::tag('span', '_MENU_', ['class' => 'dt-length-style'])->toHtml(),
-                    'search'      => '',
-                    'zeroRecords' => trans('core/base::tables.no_record'),
-                    'processing'  => Html::image(url('vendor/core/images/loading-spinner-blue.gif')),
-                    'paginate'    => [
+                    'emptyTable'        => trans('core/base::tables.no_data'),
+                    'info'              => view('core/table::table-info')->render(),
+                    'infoEmpty'         => trans('core/base::tables.no_record'),
+                    'lengthMenu'        => Html::tag('span', '_MENU_', ['class' => 'dt-length-style'])->toHtml(),
+                    'search'            => '',
+                    'searchPlaceholder' => __('Search...'),
+                    'zeroRecords'       => trans('core/base::tables.no_record'),
+                    'processing'        => Html::image(url('vendor/core/images/loading-spinner-blue.gif')),
+                    'paginate'          => [
                         'next'     => trans('pagination.next'),
                         'previous' => trans('pagination.previous'),
                     ],
+                    'infoFiltered'      => trans('core/table::general.filtered'),
                 ],
                 'aaSorting'    => $this->useDefaultSorting ? [[($this->hasCheckbox ? 1 : 0), 'desc']] : [],
             ]);
@@ -297,7 +289,7 @@ abstract class TableAbstract extends DataTable
      * Get columns.
      *
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function getColumns(): array
@@ -329,14 +321,12 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return mixed
-     * @author Sang Nguyen
      * @since 2.1
      */
     abstract public function columns();
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getOperationsHeading()
     {
@@ -355,7 +345,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getCheckboxColumnHeading()
     {
@@ -377,7 +366,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getAjaxUrl(): string
     {
@@ -387,7 +375,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param string $ajaxUrl
      * @return $this
-     * @author Sang Nguyen
      */
     public function setAjaxUrl(string $ajaxUrl): self
     {
@@ -397,7 +384,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return null|string
-     * @author Sang Nguyen
      */
     protected function getDom(): ?string
     {
@@ -405,7 +391,7 @@ abstract class TableAbstract extends DataTable
 
         switch ($this->type) {
             case self::TABLE_TYPE_ADVANCED:
-                $dom = "Brt<'datatables__info_wrap'pli<'clearfix'>>";
+                $dom = "fBrt<'datatables__info_wrap'pli<'clearfix'>>";
                 break;
             case self::TABLE_TYPE_SIMPLE:
                 $dom = "t<'datatables__info_wrap'<'clearfix'>>";
@@ -417,9 +403,9 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
-     * @since 2.1
+     *
      * @throws \Throwable
+     * @since 2.1
      */
     public function getBuilderParameters(): array
     {
@@ -443,7 +429,7 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function getButtons(): array
@@ -470,7 +456,7 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function buttons()
@@ -480,7 +466,7 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function getActionsButton(): array
@@ -500,9 +486,9 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
-     * @since 2.1
+     *
      * @throws \Throwable
+     * @since 2.1
      */
     public function getActions(): array
     {
@@ -523,7 +509,7 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return mixed
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function actions()
@@ -533,7 +519,7 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function getDefaultButtons(): array
@@ -545,7 +531,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function htmlInitComplete(): ?string
     {
@@ -554,7 +539,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function htmlInitCompleteFunction(): ?string
     {
@@ -580,7 +564,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function htmlDrawCallback(): ?string
     {
@@ -593,7 +576,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function htmlDrawCallbackFunction(): ?string
     {
@@ -622,6 +604,10 @@ abstract class TableAbstract extends DataTable
                     minimumResultsForSearch: -1
                 });
             }
+    
+            $("[data-toggle=tooltip]").tooltip({
+                placement: "top"
+            });
         ';
     }
 
@@ -630,9 +616,8 @@ abstract class TableAbstract extends DataTable
      * @param array $mergeData
      * @param string $view
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     * @since 2.4
      * @throws \Throwable
-     * @author Sang Nguyen
+     * @since 2.4
      */
     public function renderTable($data = [], $mergeData = [])
     {
@@ -644,20 +629,18 @@ abstract class TableAbstract extends DataTable
      * @param array $data
      * @param array $mergeData
      * @return mixed
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function render($view, $data = [], $mergeData = [])
     {
         Assets::addScripts(['datatables', 'moment', 'datepicker'])
             ->addStyles(['datatables', 'datepicker'])
-            ->addStylesDirectly([
-                'vendor/core/css/components/table.css',
-            ])
+            ->addStylesDirectly('vendor/core/css/components/table.css')
             ->addScriptsDirectly([
-                'vendor/core/packages/bootstrap3-typeahead.min.js',
-            ])
-            ->addAppModule(['table', 'filter']);
+                'vendor/core/libraries/bootstrap3-typeahead.min.js',
+                'vendor/core/js/table.js',
+                'vendor/core/js/filter.js',
+            ]);
 
         $data['id'] = Arr::get($data, 'id', $this->getOption('id'));
         $data['class'] = Arr::get($data, 'class', $this->getOption('class'));
@@ -676,13 +659,12 @@ abstract class TableAbstract extends DataTable
     /**
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function bulkActions(): array
     {
         $actions = [];
         if ($this->getBulkChanges()) {
-            $actions['bulk-change'] = view('core.table::bulk-changes', [
+            $actions['bulk-change'] = view('core/table::bulk-changes', [
                 'bulk_changes' => $this->getBulkChanges(),
                 'class'        => get_class($this),
                 'url'          => $this->bulkChangeUrl,
@@ -694,7 +676,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getBulkChanges(): array
     {
@@ -704,7 +685,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
      * @return mixed
-     * @author Sang Nguyen
      */
     public function applyScopes($query)
     {
@@ -739,7 +719,6 @@ abstract class TableAbstract extends DataTable
      * @param string $operator
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function applyFilterCondition($query, string $key, string $operator, ?string $value)
     {
@@ -754,6 +733,11 @@ abstract class TableAbstract extends DataTable
                 $query = $query->whereDate($key, $operator, $value);
                 break;
             default:
+                if ($operator === 'like') {
+                    $query = $query->where($key, $operator, '%' . $value . '%');
+                    break;
+                }
+
                 if ($operator !== '=') {
                     $value = (float)$value;
                 }
@@ -770,7 +754,6 @@ abstract class TableAbstract extends DataTable
      * @param null $data
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function getValueInput(?string $title, ?string $value, ?string $type, $data = null): array
     {
@@ -803,7 +786,7 @@ abstract class TableAbstract extends DataTable
             case 'date':
                 $attributes['class'] = $attributes['class'] . ' datepicker';
                 $attributes['data-date-format'] = config('core.base.general.date_format.js.date');
-                $html = view('core.table::partials.date-field', [
+                $html = view('core/table::partials.date-field', [
                     'content' => Form::text($input_name, $value, $attributes)->toHtml(),
                 ])->render();
                 break;
@@ -843,6 +826,7 @@ abstract class TableAbstract extends DataTable
     public function saveBulkChangeItem($item, string $input_key, ?string $input_value)
     {
         $item->{$input_key} = $this->prepareBulkChangeValue($input_key, $input_value);
+
         return $this->repository->createOrUpdate($item);
     }
 
@@ -850,7 +834,6 @@ abstract class TableAbstract extends DataTable
      * @param string $key
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function prepareBulkChangeValue(string $key, ?string $value): string
     {
@@ -871,7 +854,6 @@ abstract class TableAbstract extends DataTable
     /**
      * @return null
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function renderFilter(): string
     {
@@ -912,7 +894,6 @@ abstract class TableAbstract extends DataTable
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     protected function getYesNoSelect(): array
     {
@@ -920,5 +901,40 @@ abstract class TableAbstract extends DataTable
             0 => __('No'),
             1 => __('Yes'),
         ];
+    }
+
+    /**
+     * @param array $buttons
+     * @param string $url
+     * @param null $permission
+     * @throws \Throwable
+     */
+    protected function addCreateButton(string $url, $permission = null, array $buttons = []): array
+    {
+        if (!$permission || Auth::user()->hasPermission($permission)) {
+            $buttons['create'] = [
+                'link' => $url,
+                'text' => view('core/base::elements.tables.actions.create')->render(),
+            ];
+        }
+
+        return $buttons;
+    }
+
+    /**
+     * @param string $url
+     * @param null $permission
+     * @param array $actions
+     */
+    protected function addDeleteAction(string $url, $permission = null, $actions = []): array
+    {
+        if (!$permission || Auth::user()->hasPermission($permission)) {
+            $actions['delete-many'] = view('core/table::partials.delete', [
+                'href'       => $url,
+                'data_class' => get_called_class(),
+            ]);
+        }
+
+        return $actions;
     }
 }

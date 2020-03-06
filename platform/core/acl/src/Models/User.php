@@ -2,27 +2,19 @@
 
 namespace Botble\ACL\Models;
 
-use Auth;
 use Botble\ACL\Notifications\ResetPasswordNotification;
 use Botble\ACL\Traits\PermissionTrait;
+use Botble\Media\Models\MediaFile;
+use Botble\Base\Supports\Gravatar;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
-use Laravel\Passport\HasApiTokens;
 
-/**
- * Class User
- * @package Botble\ACL\Models
- * @mixin \Eloquent
- */
 class User extends Authenticatable
 {
     use PermissionTrait;
     use Notifiable;
-    use Impersonate;
-    use HasApiTokens;
 
     /**
      * {@inheritDoc}
@@ -58,7 +50,7 @@ class User extends Authenticatable
         'interest',
         'about',
         'super_user',
-        'profile_image',
+        'avatar_id',
         'permissions',
     ];
 
@@ -87,7 +79,6 @@ class User extends Authenticatable
      * Always capitalize the first name when we retrieve it
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function getFirstNameAttribute($value)
     {
@@ -98,7 +89,6 @@ class User extends Authenticatable
      * Always capitalize the last name when we retrieve it
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function getLastNameAttribute($value)
     {
@@ -107,7 +97,6 @@ class User extends Authenticatable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getFullName()
     {
@@ -115,21 +104,23 @@ class User extends Authenticatable
     }
 
     /**
-     * @return string
-     * @author Sang Nguyen
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getProfileImage()
+    public function avatar()
     {
-        if (empty($this->profile_image)) {
-            return config('core.acl.general.avatar.default');
-        }
+        return $this->belongsTo(MediaFile::class)->withDefault();
+    }
 
-        return $this->profile_image;
+    /**
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar->url ? url($this->avatar->url) : Gravatar::image($this->attributes['email']);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     * @author Sang Nguyen
      */
     public function roles()
     {
@@ -138,17 +129,15 @@ class User extends Authenticatable
 
     /**
      * @return boolean
-     * @author Sang Nguyen
      */
     public function isSuperUser()
     {
-        return $this->super_user || $this->hasAccess('superuser');
+        return $this->super_user || $this->hasAccess(ACL_ROLE_SUPER_USER);
     }
 
     /**
      * @param string $permission
      * @return boolean
-     * @author Sang Nguyen
      */
     public function hasPermission($permission)
     {
@@ -162,7 +151,6 @@ class User extends Authenticatable
     /**
      * @param array $permissions
      * @return bool
-     * @author Sang Nguyen
      */
     public function hasAnyPermission(array $permissions)
     {
@@ -188,12 +176,12 @@ class User extends Authenticatable
 
     /**
      * @param string $date
-     * @author Sang Nguyen
      */
     public function setDobAttribute($date)
     {
         if (!empty($date)) {
-            $this->attributes['dob'] = Carbon::createFromFormat(config('core.base.general.date_format.date'), $date)->toDateTimeString();
+            $this->attributes['dob'] = Carbon::createFromFormat(config('core.base.general.date_format.date'), $date)
+                ->toDateTimeString();
         } else {
             $this->attributes['dob'] = $date;
         }
@@ -201,7 +189,7 @@ class User extends Authenticatable
 
     /**
      * @param $date
-     * @author Sang Nguyen
+     *
      * @return string
      */
     public function getDobAttribute($date)
@@ -291,14 +279,5 @@ class User extends Authenticatable
         }
 
         return parent::delete();
-    }
-
-    /**
-     * @param $username
-     * @return \Illuminate\Database\Eloquent\Model|null|object|static
-     */
-    public function findForPassport($username)
-    {
-        return self::where('username', $username)->first();
     }
 }

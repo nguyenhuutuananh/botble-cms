@@ -2,33 +2,17 @@
 
 namespace Botble\ACL\Listeners;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Events\RoleUpdateEvent;
-use Botble\ACL\Repositories\Interfaces\UserInterface;
 
 class RoleUpdateListener
 {
-    /**
-     * @var UserInterface
-     */
-    protected $userRepository;
-
-    /**
-     * RoleAssignmentListener constructor.
-     * @author Sang Nguyen
-     * @param UserInterface $userRepository
-     */
-    public function __construct(UserInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
     /**
      * Handle the event.
      *
      * @param  RoleUpdateEvent $event
      * @return void
-     * @author Sang Nguyen
+     *
      * @throws \Exception
      */
     public function handle(RoleUpdateEvent $event)
@@ -37,14 +21,11 @@ class RoleUpdateListener
 
         $permissions = $event->role->permissions;
         foreach ($event->role->users()->get() as $user) {
-            $permissions['superuser'] = $user->super_user;
-            $permissions['manage_supers'] = $user->manage_supers;
+            $permissions[ACL_ROLE_SUPER_USER] = $user->super_user;
+            $permissions[ACL_ROLE_MANAGE_SUPERS] = $user->manage_supers;
 
-            $this->userRepository->update([
-                'id' => $user->id,
-            ], [
-                'permissions' => json_encode($permissions),
-            ]);
+            $user->permissions = $permissions;
+            $user->save();
         }
 
         cache()->forget(md5('cache-dashboard-menu-' . Auth::user()->getKey()));

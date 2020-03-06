@@ -1,6 +1,6 @@
 <?php
 
-use Botble\Member\Notifications\ConfirmEmail;
+use Botble\Member\Notifications\ConfirmEmailNotification;
 
 return [
 
@@ -13,7 +13,7 @@ return [
     | a confirmation code.
     |
     */
-    'notification' => ConfirmEmail::class,
+    'notification' => ConfirmEmailNotification::class,
 
     'verify_email' => env('CMS_MEMBER_VERIFY_EMAIL', true),
 

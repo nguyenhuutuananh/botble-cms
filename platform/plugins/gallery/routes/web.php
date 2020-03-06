@@ -2,41 +2,14 @@
 
 Route::group(['namespace' => 'Botble\Gallery\Http\Controllers', 'middleware' => 'web'], function () {
     Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
+
+        Route::resource('galleries', 'GalleryController');
+
         Route::group(['prefix' => 'galleries'], function () {
-            Route::get('', [
-                'as'   => 'galleries.list',
-                'uses' => 'GalleryController@getList',
-            ]);
-
-            Route::get('create', [
-                'as'   => 'galleries.create',
-                'uses' => 'GalleryController@getCreate',
-            ]);
-
-            Route::post('create', [
-                'as'   => 'galleries.create',
-                'uses' => 'GalleryController@postCreate',
-            ]);
-
-            Route::get('edit/{id}', [
-                'as'   => 'galleries.edit',
-                'uses' => 'GalleryController@getEdit',
-            ]);
-
-            Route::post('edit/{id}', [
-                'as'   => 'galleries.edit',
-                'uses' => 'GalleryController@postEdit',
-            ]);
-
-            Route::get('delete/{id}', [
-                'as'   => 'galleries.delete',
-                'uses' => 'GalleryController@getDelete',
-            ]);
-
-            Route::post('delete-many', [
-                'as'         => 'galleries.delete.many',
-                'uses'       => 'GalleryController@postDeleteMany',
-                'permission' => 'galleries.delete',
+            Route::delete('items/destroy', [
+                'as'         => 'galleries.deletes',
+                'uses'       => 'GalleryController@deletes',
+                'permission' => 'galleries.destroy',
             ]);
         });
     });

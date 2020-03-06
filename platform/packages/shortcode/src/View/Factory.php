@@ -29,7 +29,6 @@ class Factory extends IlluminateViewFactory
      * @param ViewFinderInterface $finder
      * @param Dispatcher $events
      * @param ShortcodeCompiler $shortcode
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function __construct(
@@ -50,7 +49,6 @@ class Factory extends IlluminateViewFactory
      * @param  array $data
      * @param  array $mergeData
      * @return \Illuminate\Contracts\View\View|string|View
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function make($view, $data = [], $mergeData = [])

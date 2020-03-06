@@ -39,6 +39,11 @@ class BaseHttpResponse implements Responsable
     protected $withInput = false;
 
     /**
+     * @var array
+     */
+    protected $additional = [];
+
+    /**
      * @var int
      */
     protected $code = 200;
@@ -46,7 +51,6 @@ class BaseHttpResponse implements Responsable
     /**
      * @param $data
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function setData($data): self
     {
@@ -105,7 +109,6 @@ class BaseHttpResponse implements Responsable
     /**
      * @param $message
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function setMessage($message): self
     {
@@ -124,11 +127,20 @@ class BaseHttpResponse implements Responsable
     /**
      * @param $error
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function setError(bool $error = true): self
     {
         $this->error = $error;
+        return $this;
+    }
+
+    /**
+     * @param array $additional
+     * @return BaseHttpResponse
+     */
+    public function setAdditional(array $additional): self
+    {
+        $this->additional = $additional;
         return $this;
     }
 
@@ -138,10 +150,10 @@ class BaseHttpResponse implements Responsable
     public function toApiResponse()
     {
         if ($this->data instanceof JsonResource) {
-            return $this->data->additional([
+            return $this->data->additional(array_merge([
                 'error'   => $this->error,
                 'message' => $this->message,
-            ]);
+            ], $this->additional));
         }
 
         return $this->toResponse(request());
@@ -150,7 +162,6 @@ class BaseHttpResponse implements Responsable
     /**
      * @param \Illuminate\Http\Request $request
      * @return BaseHttpResponse|\Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
      */
     public function toResponse($request)
     {
@@ -175,7 +186,6 @@ class BaseHttpResponse implements Responsable
     /**
      * @param string $url
      * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
      */
     protected function responseRedirect($url)
     {

@@ -1,4 +1,4 @@
-@extends('plugins.member::layouts.skeleton')
+@extends('plugins/member::layouts.skeleton')
 @section('content')
   <div class="dashboard crop-avatar">
     <div class="container">
@@ -9,7 +9,7 @@
               <div class="avatar-container mb-2">
                 <div class="profile-image">
                   <div class="avatar-view mt-card-avatar mt-card-avatar-circle" style="max-width: 150px">
-                    <img src="{{ $user->avatar }}" alt="Avatar" class="br-100" style="width: 150px;">
+                    <img src="{{ $user->avatar_url }}" alt="Avatar" class="br-100" style="width: 150px;">
                     <div class="mt-overlay br2">
                       <span><i class="fa fa-edit"></i></span>
                     </div>
@@ -39,6 +39,6 @@
           </div>
       </div>
     </div>
-    @include('plugins.member::modals.avatar')
+    @include('plugins/member::modals.avatar')
   </div>
 @endsection

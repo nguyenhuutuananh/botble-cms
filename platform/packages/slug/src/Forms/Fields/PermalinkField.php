@@ -10,12 +10,12 @@ class PermalinkField extends FormField
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
     protected function getTemplate()
     {
-        Assets::addAppModule(['slug']);
+        Assets::addScriptsDirectly('vendor/core/packages/slug/js/slug.js');
 
-        return 'packages.slug::forms.fields.permalink';
+        return 'packages/slug::forms.fields.permalink';
     }
 }

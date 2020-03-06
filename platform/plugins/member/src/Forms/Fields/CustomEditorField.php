@@ -13,7 +13,7 @@ class CustomEditorField extends FormField
      */
     protected function getTemplate()
     {
-        return 'plugins.member::forms.fields.custom-editor';
+        return 'plugins/member::forms.fields.custom-editor';
     }
 
     /**

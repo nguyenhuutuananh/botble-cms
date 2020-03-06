@@ -27,7 +27,6 @@ class Attributes implements AttributesContract
      * Attributes constructor.
      *
      * @param  array $defaults
-     * @author ARCANEDEV
      */
     public function __construct(array $defaults = [])
     {
@@ -40,7 +39,6 @@ class Attributes implements AttributesContract
      * @param  string $siteKey
      *
      * @return array
-     * @author ARCANEDEV
      */
     protected function getItems($siteKey)
     {
@@ -56,7 +54,6 @@ class Attributes implements AttributesContract
      * @param  string $siteKey
      *
      * @return array
-     * @author ARCANEDEV
      */
     private function getDefaultAttributes($siteKey)
     {
@@ -72,7 +69,6 @@ class Attributes implements AttributesContract
      * @param  array $items
      *
      * @return self
-     * @author ARCANEDEV
      */
     private function setItems(array $items)
     {
@@ -89,7 +85,6 @@ class Attributes implements AttributesContract
      * @param  string $name
      *
      * @return string
-     * @author ARCANEDEV
      */
     private function getItem($name)
     {
@@ -107,7 +102,6 @@ class Attributes implements AttributesContract
      * @param  string $value
      *
      * @return self
-     * @author ARCANEDEV
      */
     private function setItem($name, $value)
     {
@@ -120,7 +114,6 @@ class Attributes implements AttributesContract
      * Get image type attribute.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function getImageAttribute()
     {
@@ -131,7 +124,6 @@ class Attributes implements AttributesContract
      * Get audio type attribute.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function getAudioAttribute()
     {
@@ -145,7 +137,6 @@ class Attributes implements AttributesContract
      * @param  array $items
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function build($siteKey, array $items = [])
     {
@@ -168,7 +159,6 @@ class Attributes implements AttributesContract
      * @return array
      *
      * @throws \Botble\Captcha\Exceptions\InvalidArgumentException
-     * @author ARCANEDEV
      */
     public function prepareNameAttribute($name)
     {
@@ -187,7 +177,6 @@ class Attributes implements AttributesContract
 
     /**
      * Check attributes.
-     * @author ARCANEDEV
      */
     private function checkAttributes()
     {
@@ -198,7 +187,6 @@ class Attributes implements AttributesContract
 
     /**
      * Check type attribute.
-     * @author ARCANEDEV
      */
     private function checkTypeAttribute()
     {
@@ -207,7 +195,6 @@ class Attributes implements AttributesContract
 
     /**
      * Check theme attribute.
-     * @author ARCANEDEV
      */
     private function checkThemeAttribute()
     {
@@ -216,7 +203,6 @@ class Attributes implements AttributesContract
 
     /**
      * Check size attribute.
-     * @author ARCANEDEV
      */
     private function checkSizeAttribute()
     {
@@ -229,7 +215,6 @@ class Attributes implements AttributesContract
      * @param  string $name
      * @param  string $default
      * @param  array $available
-     * @author ARCANEDEV
      */
     private function checkDataAttribute($name, $default, array $available)
     {
@@ -248,7 +233,6 @@ class Attributes implements AttributesContract
      * @param  string $name
      *
      * @return bool
-     * @author ARCANEDEV
      */
     private function hasItem($name)
     {

@@ -18,15 +18,13 @@ interface MediaFolderInterface extends RepositoryInterface
     /**
      * @param $name
      * @param $parent_id
-     * @return
-     * @author Sang Nguyen
+     * @return string
      */
     public function createSlug($name, $parent_id);
 
     /**
      * @param $name
      * @param $parent_id
-     * @author Sang Nguyen
      */
     public function createName($name, $parent_id);
 
@@ -61,19 +59,17 @@ interface MediaFolderInterface extends RepositoryInterface
      * @param $folder_id
      * @param string $path
      * @return string
-     * @author Sang Nguyen
+     *
      */
     public function getFullPath($folder_id, $path = '');
 
     /**
      * @param $folder_id
-     * @author Sang Nguyen
      */
     public function restoreFolder($folder_id);
 
     /**
      * @return mixed
-     * @author Sang Nguyen
      */
     public function emptyTrash();
 }

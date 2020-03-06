@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 
 @section('content')
     <div class="user-profile row">
@@ -10,7 +10,7 @@
                         <div class="thumb">
                             <div class="profile-userpic mt-card-item">
                                 <div class="avatar-view mt-card-avatar mt-overlay-1">
-                                    <img src="{{ url($user->getProfileImage()) }}" class="img-fluid" alt="avatar">
+                                    <img src="{{ $user->avatar_url }}" class="img-fluid" alt="avatar">
                                     @if ($can_change_profile)
                                         <div class="mt-overlay">
                                             <ul class="mt-info">

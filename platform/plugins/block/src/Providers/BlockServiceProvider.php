@@ -22,27 +22,21 @@ class BlockServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(BlockInterface::class, function () {
+        $this->app->bind(BlockInterface::class, function () {
             return new BlockCacheDecorator(new BlockRepository(new Block));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/block')
             ->loadAndPublishConfigurations(['permissions'])
             ->loadAndPublishTranslations()
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadMigrations();
 
@@ -53,8 +47,8 @@ class BlockServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'plugins/block::block.menu',
                 'icon'        => 'fa fa-code',
-                'url'         => route('block.list'),
-                'permissions' => ['block.list'],
+                'url'         => route('block.index'),
+                'permissions' => ['block.index'],
             ]);
         });
 

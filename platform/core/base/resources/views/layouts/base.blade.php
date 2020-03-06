@@ -31,7 +31,7 @@
 
     @yield('page')
 
-    @include('core.base::elements.common')
+    @include('core/base::elements.common')
 
     {!! Assets::renderFooter() !!}
 

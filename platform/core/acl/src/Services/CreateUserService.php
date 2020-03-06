@@ -2,7 +2,6 @@
 
 namespace Botble\ACL\Services;
 
-use AclManager;
 use Botble\ACL\Events\RoleAssignmentEvent;
 use Botble\ACL\Models\User;
 use Botble\ACL\Repositories\Interfaces\RoleInterface;
@@ -24,22 +23,26 @@ class CreateUserService implements ProduceServiceInterface
     protected $roleRepository;
 
     /**
+     * @var ActivateUserService
+     */
+    protected $activateUserService;
+
+    /**
      * CreateUserService constructor.
      * @param UserInterface $userRepository
      * @param RoleInterface $roleRepository
+     * @param ActivateUserService $activateUserService
      */
-    public function __construct(
-        UserInterface $userRepository,
-        RoleInterface $roleRepository
-    )
+    public function __construct(UserInterface $userRepository, RoleInterface $roleRepository, ActivateUserService $activateUserService)
     {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->activateUserService = $activateUserService;
     }
 
     /**
      * @param Request $request
-     * @author Sang Nguyen
+     *
      * @return User|false|\Illuminate\Database\Eloquent\Model|mixed
      */
     public function execute(Request $request)
@@ -47,9 +50,7 @@ class CreateUserService implements ProduceServiceInterface
         /**
          * @var User $user
          */
-        $user = $this->userRepository->createOrUpdate(array_merge($request->input(), [
-            'profile_image' => config('core.acl.general.avatar.default'),
-        ]));
+        $user = $this->userRepository->createOrUpdate($request->input());
 
         if ($request->has('username') && $request->has('password')) {
             $this->userRepository->update(['id' => $user->id], [
@@ -57,7 +58,7 @@ class CreateUserService implements ProduceServiceInterface
                 'password' => Hash::make($request->input('password')),
             ]);
 
-            if (AclManager::activate($user) && $request->input('role_id')) {
+            if ($this->activateUserService->activate($user) && $request->input('role_id')) {
                 $role = $this->roleRepository->getFirstBy([
                     'id' => $request->input('role_id'),
                 ]);

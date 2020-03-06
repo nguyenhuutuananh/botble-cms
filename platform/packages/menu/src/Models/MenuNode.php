@@ -3,12 +3,12 @@
 namespace Botble\Menu\Models;
 
 use DB;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 use Illuminate\Support\Arr;
 use Route;
 use stdClass;
 
-class MenuNode extends Eloquent
+class MenuNode extends BaseModel
 {
 
     /**
@@ -35,8 +35,7 @@ class MenuNode extends Eloquent
     ];
 
     /**
-     * @return mixed
-     * @author Sang Nguyen
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent()
     {
@@ -44,8 +43,7 @@ class MenuNode extends Eloquent
     }
 
     /**
-     * @return mixed
-     * @author Sang Nguyen
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function child()
     {
@@ -53,8 +51,7 @@ class MenuNode extends Eloquent
     }
 
     /**
-     * @return mixed
-     * @author Sang Nguyen
+     * @return stdClass
      */
     public function getRelated()
     {
@@ -81,7 +78,6 @@ class MenuNode extends Eloquent
 
     /**
      * @return bool
-     * @author Sang Nguyen
      */
     public function hasChild()
     {

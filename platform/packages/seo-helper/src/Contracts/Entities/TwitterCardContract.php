@@ -20,7 +20,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $type
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setType($type);
 
@@ -30,7 +29,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $site
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setSite($site);
 
@@ -40,7 +38,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $title
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setTitle($title);
 
@@ -50,7 +47,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $description
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setDescription($description);
 
@@ -60,7 +56,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $url
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addImage($url);
 
@@ -70,7 +65,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  array $meta
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMetas(array $meta);
 
@@ -81,7 +75,6 @@ interface TwitterCardContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMeta($name, $content);
 
@@ -89,7 +82,6 @@ interface TwitterCardContract extends RenderableContract
      * Get all supported card types.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function types();
 
@@ -97,7 +89,6 @@ interface TwitterCardContract extends RenderableContract
      * Reset the card.
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function reset();
 }

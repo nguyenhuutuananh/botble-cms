@@ -26,7 +26,7 @@ class LanguageNegotiator
     /**
      * @var bool
      */
-    protected $use_intl = false;
+    protected $useIntl = false;
 
     /**
      * @param string $defaultLocale
@@ -38,7 +38,7 @@ class LanguageNegotiator
         $this->defaultLocale = $defaultLocale;
 
         if (class_exists('Locale')) {
-            $this->use_intl = true;
+            $this->useIntl = true;
 
             foreach ($supportedLanguages as $key => $supportedLanguage) {
                 if (!isset($supportedLanguage['lang'])) {
@@ -83,7 +83,7 @@ class LanguageNegotiator
                 return $key;
             }
 
-            if ($this->use_intl) {
+            if ($this->useIntl) {
                 $key = Locale::canonicalize($key);
             }
 
@@ -101,7 +101,7 @@ class LanguageNegotiator
             return key($this->supportedLanguages);
         }
 
-        if ($this->use_intl && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        if ($this->useIntl && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $http_accept_language = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
             if (!empty($this->supportedLanguages[$http_accept_language])) {

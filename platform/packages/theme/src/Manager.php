@@ -2,8 +2,6 @@
 
 namespace Botble\Theme;
 
-use File;
-
 class Manager
 {
     /**
@@ -22,7 +20,7 @@ class Manager
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getAllThemes()
@@ -41,7 +39,7 @@ class Manager
     /**
      * @param $theme
      * @return void
-     * @author Sang Nguyen
+     *
      */
     public function registerTheme($theme)
     {
@@ -53,7 +51,7 @@ class Manager
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      */
     public function getThemes()
     {

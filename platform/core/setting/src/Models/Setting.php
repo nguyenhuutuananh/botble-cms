@@ -2,14 +2,9 @@
 
 namespace Botble\Setting\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Class Setting
- * @package Botble\Setting\Models
- * @mixin \Eloquent
- */
-class Setting extends Model
+class Setting extends BaseModel
 {
     /**
      * The database table used by the model.

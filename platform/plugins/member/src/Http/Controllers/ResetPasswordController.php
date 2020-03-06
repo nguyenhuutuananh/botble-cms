@@ -56,7 +56,7 @@ class ResetPasswordController extends Controller
     {
         SeoHelper::setTitle(__('Reset Password'));
 
-        return view('plugins.member::auth.passwords.reset', ['token' => $token, 'email' => $request->email]);
+        return view('plugins/member::auth.passwords.reset', ['token' => $token, 'email' => $request->email]);
     }
 
     /**

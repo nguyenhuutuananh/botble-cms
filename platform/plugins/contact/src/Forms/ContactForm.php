@@ -33,14 +33,14 @@ class ContactForm extends FormAbstract
             ->addMetaBoxes([
                 'information' => [
                     'title'      => trans('plugins/contact::contact.contact_information'),
-                    'content'    => view('plugins.contact::contact-info', ['contact' => $this->getModel()])->render(),
+                    'content'    => view('plugins/contact::contact-info', ['contact' => $this->getModel()])->render(),
                     'attributes' => [
                         'style' => 'margin-top: 0',
                     ],
                 ],
                 'replies' => [
                     'title'      => trans('plugins/contact::contact.replies'),
-                    'content'    => view('plugins.contact::reply-box', ['contact' => $this->getModel()])->render(),
+                    'content'    => view('plugins/contact::reply-box', ['contact' => $this->getModel()])->render(),
                 ],
             ]);
     }

@@ -6,7 +6,7 @@ use Botble\Base\Events\CreatedContentEvent;
 use Botble\Blog\Models\Post;
 use Botble\Blog\Services\Abstracts\StoreTagServiceAbstract;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class StoreTagService extends StoreTagServiceAbstract
 {
@@ -14,7 +14,7 @@ class StoreTagService extends StoreTagServiceAbstract
     /**
      * @param Request $request
      * @param Post $post
-     * @author Sang Nguyen
+     *
      * @return mixed|void
      */
     public function execute(Request $request, Post $post)

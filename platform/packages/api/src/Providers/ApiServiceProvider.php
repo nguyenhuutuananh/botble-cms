@@ -7,7 +7,6 @@ use Botble\Api\Http\Middleware\ForceJsonResponseMiddleware;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
-use Laravel\Passport\Passport;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -18,9 +17,6 @@ class ApiServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
         /**
@@ -32,30 +28,18 @@ class ApiServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('api', HandleCors::class);
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
-        config([
-            'auth.guards.api' => [
-                'driver'   => 'passport',
-                'provider' => 'users',
-            ],
-        ]);
-
-        Passport::routes();
-
-        Passport::tokensExpireIn(now()->addDays(15));
-
-        Passport::refreshTokensExpireIn(now()->addDays(30));
-
         $this->setNamespace('packages/api')
             ->publishPublicFolder();
 
         $this->app->booted(function () {
             config([
                 'apidoc.routes.0.match.prefixes' => ['api/*'],
+                'apidoc.routes.0.apply.headers'  => [
+                    'Authorization' => 'Bearer {token}',
+                    'Api-Version'   => 'v1',
+                ],
             ]);
         });
     }

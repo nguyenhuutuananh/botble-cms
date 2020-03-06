@@ -2,6 +2,7 @@
 
 namespace Botble\Blog\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Blog\Repositories\Interfaces\TagInterface;
 use Botble\Table\Abstracts\TableAbstract;
 use Illuminate\Contracts\Routing\UrlGenerator;
@@ -31,13 +32,18 @@ class TagTable extends TableAbstract
         $this->repository = $tagRepository;
         $this->setOption('id', 'table-tags');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['tags.edit', 'tags.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -45,6 +51,10 @@ class TagTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('tags.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('tags.edit', $item->id), $item->name);
             })
             ->editColumn('checkbox', function ($item) {
@@ -62,7 +72,7 @@ class TagTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, TAG_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('tags.edit', 'tags.delete', $item);
+                return table_actions('tags.edit', 'tags.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -72,7 +82,7 @@ class TagTable extends TableAbstract
      * Get the query object to be processed by table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -91,7 +101,7 @@ class TagTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -122,18 +132,13 @@ class TagTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('tags.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('tags.create'), 'tags.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, TAG_MODULE_SCREEN_NAME);
     }
@@ -144,14 +149,7 @@ class TagTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('tags.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('tags.deletes'), 'tags.destroy', parent::bulkActions());
     }
 
     /**
@@ -164,7 +162,6 @@ class TagTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getTags',
             ],
             'tags.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -180,13 +177,5 @@ class TagTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->repository->pluck('tags.name', 'tags.id');
     }
 }

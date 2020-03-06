@@ -3,7 +3,6 @@
 namespace Botble\SeoHelper\Contracts;
 
 use Botble\SeoHelper\Contracts\Entities\DescriptionContract;
-use Botble\SeoHelper\Contracts\Entities\KeywordsContract;
 use Botble\SeoHelper\Contracts\Entities\MiscTagsContract;
 use Botble\SeoHelper\Contracts\Entities\TitleContract;
 use Botble\SeoHelper\Contracts\Entities\WebmastersContract;
@@ -17,7 +16,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  \Botble\SeoHelper\Contracts\Entities\TitleContract $title
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function title(TitleContract $title);
 
@@ -27,19 +25,8 @@ interface SeoMetaContract extends RenderableContract
      * @param  \Botble\SeoHelper\Contracts\Entities\DescriptionContract $description
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function description(DescriptionContract $description);
-
-    /**
-     * Set the Keywords instance.
-     *
-     * @param  \Botble\SeoHelper\Contracts\Entities\KeywordsContract $keywords
-     *
-     * @return self
-     * @author ARCANEDEV
-     */
-    public function keywords(KeywordsContract $keywords);
 
     /**
      * Set the MiscTags instance.
@@ -47,7 +34,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  \Botble\SeoHelper\Contracts\Entities\MiscTagsContract $misc
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function misc(MiscTagsContract $misc);
 
@@ -57,7 +43,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  \Botble\SeoHelper\Contracts\Entities\WebmastersContract $webmasters
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function webmasters(WebmastersContract $webmasters);
 
@@ -69,7 +54,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $separator
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setTitle($title, $siteName = null, $separator = null);
 
@@ -79,39 +63,8 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setDescription($content);
-
-    /**
-     * Set the keywords content.
-     *
-     * @param  array|string $content
-     *
-     * @return self
-     * @author ARCANEDEV
-     */
-    public function setKeywords($content);
-
-    /**
-     * Add a keyword.
-     *
-     * @param  string $keyword
-     *
-     * @return self
-     * @author ARCANEDEV
-     */
-    public function addKeyword($keyword);
-
-    /**
-     * Add many keywords.
-     *
-     * @param  array $keywords
-     *
-     * @return self
-     * @author ARCANEDEV
-     */
-    public function addKeywords(array $keywords);
 
     /**
      * Add a webmaster tool site verifier.
@@ -120,7 +73,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addWebmaster($webmaster, $content);
 
@@ -130,7 +82,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $url
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setUrl($url);
 
@@ -140,7 +91,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $code
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setGoogleAnalytics($code);
 
@@ -151,7 +101,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMeta($name, $content);
 
@@ -161,7 +110,6 @@ interface SeoMetaContract extends RenderableContract
      * @param  array $meta
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMetas(array $meta);
 }

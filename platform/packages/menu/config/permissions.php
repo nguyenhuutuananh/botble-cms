@@ -3,22 +3,22 @@
 return [
     [
         'name'        => 'Menu',
-        'flag'        => 'menus.list',
+        'flag'        => 'menus.index',
         'parent_flag' => 'core.appearance',
     ],
     [
         'name'        => 'Create',
         'flag'        => 'menus.create',
-        'parent_flag' => 'menus.list',
+        'parent_flag' => 'menus.index',
     ],
     [
         'name'        => 'Edit',
         'flag'        => 'menus.edit',
-        'parent_flag' => 'menus.list',
+        'parent_flag' => 'menus.index',
     ],
     [
         'name'        => 'Delete',
-        'flag'        => 'menus.delete',
-        'parent_flag' => 'menus.list',
+        'flag'        => 'menus.destroy',
+        'parent_flag' => 'menus.index',
     ],
 ];

@@ -67,7 +67,6 @@ class Captcha implements CaptchaContract
      * @param  string $siteKey
      * @param  string|null $lang
      * @param  array $attributes
-     * @author ARCANEDEV
      * @throws ApiException
      */
     public function __construct($secret, $siteKey, $lang = null, array $attributes = [])
@@ -86,7 +85,6 @@ class Captcha implements CaptchaContract
      * @param  string $secret
      *
      * @return self
-     * @author ARCANEDEV
      * @throws ApiException
      */
     protected function setSecret($secret)
@@ -104,7 +102,6 @@ class Captcha implements CaptchaContract
      * @param  string $siteKey
      *
      * @return self
-     * @author ARCANEDEV
      * @throws ApiException
      */
     protected function setSiteKey($siteKey)
@@ -122,7 +119,6 @@ class Captcha implements CaptchaContract
      * @param  string $lang
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setLang($lang)
     {
@@ -137,7 +133,6 @@ class Captcha implements CaptchaContract
      * @param  string|null $callbackName
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function getScriptSrc($callbackName = null)
     {
@@ -161,7 +156,6 @@ class Captcha implements CaptchaContract
      * @param  RequestContract $request
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setRequestClient(RequestContract $request)
     {
@@ -176,7 +170,6 @@ class Captcha implements CaptchaContract
      * @param  AttributesContract $attributes
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setAttributes(AttributesContract $attributes)
     {
@@ -192,7 +185,6 @@ class Captcha implements CaptchaContract
      * @param  array $attributes
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function display($name = null, array $attributes = [])
     {
@@ -211,7 +203,6 @@ class Captcha implements CaptchaContract
      * @param  array $attributes
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function image($name = null, array $attributes = [])
     {
@@ -228,7 +219,6 @@ class Captcha implements CaptchaContract
      * @param  array $attributes
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function audio($name = null, array $attributes = [])
     {
@@ -245,7 +235,6 @@ class Captcha implements CaptchaContract
      * @param  string $clientIp
      *
      * @return bool
-     * @author ARCANEDEV
      */
     public function verify($response, $clientIp = null)
     {
@@ -269,7 +258,6 @@ class Captcha implements CaptchaContract
      * @param  \Psr\Http\Message\ServerRequestInterface $request
      *
      * @return bool
-     * @author ARCANEDEV
      */
     public function verifyRequest(ServerRequestInterface $request)
     {
@@ -293,7 +281,6 @@ class Captcha implements CaptchaContract
      * @param  string|null $callbackName
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function script($callbackName = null)
     {
@@ -314,7 +301,6 @@ class Captcha implements CaptchaContract
      * @param  string $callbackName
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function scriptWithCallback(array $captcha, $callbackName = 'captchaRenderCallback')
     {
@@ -339,7 +325,6 @@ class Captcha implements CaptchaContract
      * @param  array $captcha
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderCaptchas(array $captcha)
     {
@@ -352,7 +337,6 @@ class Captcha implements CaptchaContract
      * Check if has lang.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function hasLang()
     {
@@ -365,7 +349,6 @@ class Captcha implements CaptchaContract
      * @param  string|null $callbackName
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function hasCallbackName($callbackName)
     {
@@ -377,7 +360,6 @@ class Captcha implements CaptchaContract
      *
      * @param  string $name
      * @param  string $value
-     * @author ARCANEDEV
      * @throws ApiException
      */
     private function checkKey($name, &$value)
@@ -396,7 +378,6 @@ class Captcha implements CaptchaContract
      * @param  string $value
      *
      * @throws ApiException
-     * @author ARCANEDEV
      */
     protected function checkIsString($name, $value)
     {
@@ -414,7 +395,6 @@ class Captcha implements CaptchaContract
      * @param string $value
      *
      * @throws ApiException
-     * @author ARCANEDEV
      */
     protected function checkIsNotEmpty($name, $value)
     {
@@ -429,7 +409,6 @@ class Captcha implements CaptchaContract
      * @param  array $query
      *
      * @return array
-     * @author ARCANEDEV
      */
     protected function sendVerifyRequest(array $query = [])
     {

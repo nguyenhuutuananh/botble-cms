@@ -14,6 +14,6 @@ class CustomSelectField extends SelectType
      */
     protected function getTemplate()
     {
-        return 'core.base::forms.fields.custom-select';
+        return 'core/base::forms.fields.custom-select';
     }
 }

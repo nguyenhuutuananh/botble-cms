@@ -2,6 +2,7 @@
 
 namespace Botble\Gallery\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Gallery\Repositories\Interfaces\GalleryInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -34,13 +35,18 @@ class GalleryTable extends TableAbstract
         $this->repository = $galleryRepository;
         $this->setOption('id', 'table-galleries');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['galleries.edit', 'galleries.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -48,6 +54,10 @@ class GalleryTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('galleries.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('galleries.edit', $item->id), $item->name);
             })
             ->editColumn('image', function ($item) {
@@ -65,7 +75,7 @@ class GalleryTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, GALLERY_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('galleries.edit', 'galleries.delete', $item);
+                return table_actions('galleries.edit', 'galleries.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -75,7 +85,7 @@ class GalleryTable extends TableAbstract
      * Get the query object to be processed by table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -90,12 +100,13 @@ class GalleryTable extends TableAbstract
                 'galleries.status',
                 'galleries.image',
             ]);
+
         return $this->applyScopes(apply_filters(BASE_FILTER_TABLE_QUERY, $query, $model, GALLERY_MODULE_SCREEN_NAME));
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -136,18 +147,13 @@ class GalleryTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('galleries.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('galleries.create'), 'galleries.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, GALLERY_MODULE_SCREEN_NAME);
     }
@@ -158,14 +164,7 @@ class GalleryTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('galleries.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('galleries.deletes'), 'galleries.destroy', parent::bulkActions());
     }
 
     /**
@@ -178,7 +177,6 @@ class GalleryTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getGalleries',
             ],
             'galleries.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -191,13 +189,5 @@ class GalleryTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getGalleries()
-    {
-        return $this->repository->pluck('galleries.name', 'galleries.id');
     }
 }

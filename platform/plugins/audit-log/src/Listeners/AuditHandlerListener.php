@@ -22,7 +22,7 @@ class AuditHandlerListener
      * AuditHandlerListener constructor.
      * @param AuditLogInterface $auditLogRepository
      * @param Request $request
-     * @author Sang Nguyen
+     * 
      */
     public function __construct(AuditLogInterface $auditLogRepository, Request $request)
     {
@@ -35,7 +35,7 @@ class AuditHandlerListener
      *
      * @param  AuditHandlerEvent $event
      * @return void
-     * @author Sang Nguyen
+     * 
      */
     public function handle(AuditHandlerEvent $event)
     {

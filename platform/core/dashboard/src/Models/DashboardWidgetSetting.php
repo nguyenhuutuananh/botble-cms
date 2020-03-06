@@ -3,13 +3,9 @@
 namespace Botble\Dashboard\Models;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-/**
- * @mixin \Eloquent
- * @mixin \Illuminate\Database\Eloquent\Concerns\HasRelationships
- */
-class DashboardWidgetSetting extends Model
+class DashboardWidgetSetting extends BaseModel
 {
     /**
      * The database table used by the model.
@@ -41,7 +37,6 @@ class DashboardWidgetSetting extends Model
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setSettingsAttribute($value)
     {
@@ -51,7 +46,6 @@ class DashboardWidgetSetting extends Model
     /**
      * @param $value
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getSettingsAttribute($value)
     {
@@ -68,7 +62,6 @@ class DashboardWidgetSetting extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
      */
     public function widget()
     {

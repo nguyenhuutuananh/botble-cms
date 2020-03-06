@@ -3,24 +3,26 @@
 namespace Botble\Member\Http\Controllers;
 
 use Assets;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Media\Http\Requests\MediaFileRequest;
+use Botble\Media\Repositories\Interfaces\MediaFileInterface;
+use Botble\Media\Services\ThumbnailService;
+use Botble\Media\Services\UploadsManager;
 use Botble\Member\Http\Requests\AvatarRequest;
 use Botble\Member\Http\Requests\SettingRequest;
 use Botble\Member\Http\Requests\UpdatePasswordRequest;
 use Botble\Member\Repositories\Interfaces\MemberActivityLogInterface;
 use Botble\Member\Repositories\Interfaces\MemberInterface;
-use Botble\Member\Services\CropAvatar;
 use Exception;
 use File;
 use Hash;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
 use RvMedia;
 use SeoHelper;
-use Storage;
 use Validator;
 
 class PublicController extends Controller
@@ -36,25 +38,32 @@ class PublicController extends Controller
     protected $activityLogRepository;
 
     /**
+     * @var MediaFileInterface
+     */
+    protected $fileRepository;
+
+    /**
      * PublicController constructor.
      * @param Repository $config
      * @param MemberInterface $memberRepository
      * @param MemberActivityLogInterface $memberActivityLogRepository
+     * @param MediaFileInterface $fileRepository
      */
     public function __construct(
         Repository $config,
         MemberInterface $memberRepository,
-        MemberActivityLogInterface $memberActivityLogRepository
+        MemberActivityLogInterface $memberActivityLogRepository,
+        MediaFileInterface $fileRepository
     ) {
         $this->memberRepository = $memberRepository;
         $this->activityLogRepository = $memberActivityLogRepository;
+        $this->fileRepository = $fileRepository;
 
         Assets::setConfig($config->get('plugins.member.assets'));
     }
 
     /**
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function getDashboard()
     {
@@ -62,12 +71,12 @@ class PublicController extends Controller
 
         SeoHelper::setTitle(auth()->guard('member')->user()->getFullName());
 
-        return view('plugins.member::dashboard.index', compact('user'));
+        return view('plugins/member::dashboard.index', compact('user'));
     }
 
     /**
      * @return \Response
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSettings()
@@ -76,14 +85,13 @@ class PublicController extends Controller
 
         $user = auth()->guard('member')->user();
 
-        return view('plugins.member::settings.index', compact('user'));
+        return view('plugins/member::settings.index', compact('user'));
     }
 
     /**
      * @param SettingRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postSettings(SettingRequest $request, BaseHttpResponse $response)
     {
@@ -103,7 +111,7 @@ class PublicController extends Controller
             }
         }
 
-        $this->memberRepository->createOrUpdate($request->input(), ['id' => auth()->guard('member')->user()->getKey()]);
+        $this->memberRepository->createOrUpdate($request->except('email'), ['id' => auth()->guard('member')->user()->getKey()]);
 
         $this->activityLogRepository->createOrUpdate(['action' => 'update_setting']);
 
@@ -114,21 +122,20 @@ class PublicController extends Controller
 
     /**
      * @return \Response
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getSecurity()
     {
         SeoHelper::setTitle(__('Security'));
 
-        return view('plugins.member::settings.security');
+        return view('plugins/member::settings.security');
     }
 
     /**
      * @param UpdatePasswordRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postSecurity(UpdatePasswordRequest $request, BaseHttpResponse $response)
     {
@@ -149,38 +156,64 @@ class PublicController extends Controller
 
     /**
      * @param AvatarRequest $request
-     * @return array
-     * @author Sang Nguyen <sangnguyenplus@gmail.com>
+     * @param UploadsManager $uploadManager
+     * @param ImageManager $imageManager
+     * @param ThumbnailService $thumbnailService
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
      */
-    public function postAvatar(AvatarRequest $request)
+    public function postAvatar(
+        AvatarRequest $request,
+        UploadsManager $uploadManager,
+        ImageManager $imageManager,
+        ThumbnailService $thumbnailService,
+        BaseHttpResponse $response
+    )
     {
         try {
-            $member = auth()->guard('member')->user();
+            $fileUpload = $request->file('avatar_file');
 
-            $file = $request->file('avatar_file');
-            $fileName = $file->getClientOriginalName();
-            $fileExtension = $file->getClientOriginalExtension();
+            $file_ext = $fileUpload->getClientOriginalExtension();
 
-            $avatar = [
-                'path'     => config('plugins.member.general.avatar.folder.container_dir') . DIRECTORY_SEPARATOR . md5($member->email) . '/full-' . Str::slug(basename($fileName,
-                        $fileExtension)) . '-' . time() . '.' . $fileExtension,
-                'realPath' => config('plugins.member.general.avatar.folder.container_dir') . DIRECTORY_SEPARATOR . md5($member->email) . '/thumb-' . Str::slug(basename($fileName,
-                        $fileExtension)) . '-' . time() . '.' . $fileExtension,
-                'ext'      => $fileExtension,
-                'mime'     => $file->getMimeType(),
-                'name'     => $fileName,
-                'user'     => $member->id,
-                'size'     => $file->getSize(),
+            $folder_path = '/members';
 
-            ];
-            File::deleteDirectory(config('plugins.member.general.avatar.folder.upload') . DIRECTORY_SEPARATOR . config('plugins.member.general.avatar.folder.container_dir') . DIRECTORY_SEPARATOR . md5($member->email));
+            $fileName = $this->fileRepository->createName(File::name($fileUpload->getClientOriginalName()), 0);
 
-            config()->set('filesystems.disks.local.root', config('plugins.member.general.avatar.folder.upload'));
+            $fileName = $this->fileRepository->createSlug($fileName, $file_ext, $uploadManager->uploadPath($folder_path));
 
-            Storage::put($avatar['path'], file_get_contents($file->getRealPath()), 'public');
-            $crop = new CropAvatar($request->input('avatar_src'), $request->input('avatar_data'), $avatar);
-            $member->avatar = str_replace(public_path(), '',
-                    config('plugins.member.general.avatar.folder.upload')) . '/' . $crop->getResult();
+            $member = $this->memberRepository->findById(Auth::guard('member')->user()->getKey());
+
+            $image = $imageManager->make($request->file('avatar_file')->getRealPath());
+            $avatarData = json_decode($request->input('avatar_data'));
+            $image->crop((int)$avatarData->height, (int)$avatarData->width, (int) $avatarData->x, (int) $avatarData->y);
+            $path = $folder_path . '/' . $fileName;
+
+            $uploadManager->saveFile($path, $image->stream()->__toString());
+
+            $readable_size = explode('x', config('media.sizes.thumb'));
+
+            $thumbnailService
+                ->setImage($fileUpload->getRealPath())
+                ->setSize($readable_size[0], $readable_size[1])
+                ->setDestinationPath($folder_path)
+                ->setFileName(File::name($fileName) . '-' . config('media.sizes.thumb') . '.' . $file_ext)
+                ->save();
+
+            $data = $uploadManager->fileDetails($path);
+
+            $file = $this->fileRepository->getModel();
+            $file->name = $fileName;
+            $file->url = $data['url'];
+            $file->size = $data['size'];
+            $file->mime_type = $data['mime_type'];
+            $file->folder_id = 0;
+            $file->user_id = 0;
+            $file->options = [];
+            $file = $this->fileRepository->createOrUpdate($file);
+
+            $this->fileRepository->forceDelete(['id' => $member->avatar_id]);
+
+            $member->avatar_id = $file->id;
 
             $this->memberRepository->createOrUpdate($member);
 
@@ -188,16 +221,13 @@ class PublicController extends Controller
                 'action' => 'changed_avatar',
             ]);
 
-            return [
-                'error'   => false,
-                'message' => __('plugins/member::dashboard.update_avatar_success'),
-                'result'  => $member->avatar,
-            ];
+            return $response
+                ->setMessage(trans('plugins/member::dashboard.update_avatar_success'))
+                ->setData(['url' => url($data['url'])]);
         } catch (Exception $ex) {
-            return [
-                'error'   => true,
-                'message' => $ex->getMessage(),
-            ];
+            return $response
+                ->setError()
+                ->setMessage($ex->getMessage());
         }
     }
 

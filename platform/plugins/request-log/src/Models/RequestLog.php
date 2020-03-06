@@ -2,9 +2,9 @@
 
 namespace Botble\RequestLog\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class RequestLog extends Eloquent
+class RequestLog extends BaseModel
 {
     /**
      * The database table used by the model.
@@ -35,7 +35,6 @@ class RequestLog extends Eloquent
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setReferrerAttribute($value)
     {
@@ -44,8 +43,7 @@ class RequestLog extends Eloquent
 
     /**
      * @param $value
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getReferrerAttribute($value)
     {
@@ -54,7 +52,6 @@ class RequestLog extends Eloquent
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setUserIdAttribute($value)
     {
@@ -63,8 +60,7 @@ class RequestLog extends Eloquent
 
     /**
      * @param $value
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getUserIdAttribute($value)
     {

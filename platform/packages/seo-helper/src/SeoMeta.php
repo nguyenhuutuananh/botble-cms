@@ -4,7 +4,6 @@ namespace Botble\SeoHelper;
 
 use Botble\SeoHelper\Contracts\Entities\AnalyticsContract;
 use Botble\SeoHelper\Contracts\Entities\DescriptionContract;
-use Botble\SeoHelper\Contracts\Entities\KeywordsContract;
 use Botble\SeoHelper\Contracts\Entities\MiscTagsContract;
 use Botble\SeoHelper\Contracts\Entities\TitleContract;
 use Botble\SeoHelper\Contracts\Entities\WebmastersContract;
@@ -26,13 +25,6 @@ class SeoMeta implements SeoMetaContract
      * @var \Botble\SeoHelper\Contracts\Entities\DescriptionContract
      */
     protected $description;
-
-    /**
-     * The Keywords instance.
-     *
-     * @var \Botble\SeoHelper\Contracts\Entities\KeywordsContract
-     */
-    protected $keywords;
 
     /**
      * The MiscTags instance.
@@ -62,14 +54,12 @@ class SeoMeta implements SeoMetaContract
 
     /**
      * Make SeoMeta instance.
-     * @author ARCANEDEV
      * @throws Exceptions\InvalidArgumentException
      */
     public function __construct()
     {
         $this->title(new Entities\Title());
         $this->description(new Entities\Description());
-        $this->keywords(new Entities\Keywords());
         $this->misc(new Entities\MiscTags());
         $this->webmasters(new Entities\Webmasters());
         $this->analytics(new Entities\Analytics());
@@ -81,7 +71,6 @@ class SeoMeta implements SeoMetaContract
      * @param  \Botble\SeoHelper\Contracts\Entities\TitleContract $title
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function title(TitleContract $title)
     {
@@ -96,26 +85,10 @@ class SeoMeta implements SeoMetaContract
      * @param  \Botble\SeoHelper\Contracts\Entities\DescriptionContract $description
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function description(DescriptionContract $description)
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Set the Keywords instance.
-     *
-     * @param  \Botble\SeoHelper\Contracts\Entities\KeywordsContract $keywords
-     *
-     * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
-     */
-    public function keywords(KeywordsContract $keywords)
-    {
-        $this->keywords = $keywords;
 
         return $this;
     }
@@ -126,7 +99,6 @@ class SeoMeta implements SeoMetaContract
      * @param  \Botble\SeoHelper\Contracts\Entities\MiscTagsContract $misc
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function misc(MiscTagsContract $misc)
     {
@@ -141,7 +113,6 @@ class SeoMeta implements SeoMetaContract
      * @param  \Botble\SeoHelper\Contracts\Entities\WebmastersContract $webmasters
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function webmasters(WebmastersContract $webmasters)
     {
@@ -156,7 +127,6 @@ class SeoMeta implements SeoMetaContract
      * @param  \Botble\SeoHelper\Contracts\Entities\AnalyticsContract $analytics
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     protected function analytics(AnalyticsContract $analytics)
     {
@@ -168,7 +138,6 @@ class SeoMeta implements SeoMetaContract
     /**
      * @param $code
      * @return $this
-     * @author ARCANEDEV
      */
     public function setGoogle($code)
     {
@@ -184,7 +153,6 @@ class SeoMeta implements SeoMetaContract
      * @param  string $separator
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function setTitle($title, $siteName = null, $separator = null)
     {
@@ -209,56 +177,10 @@ class SeoMeta implements SeoMetaContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function setDescription($content)
     {
         $this->description->set($content);
-
-        return $this;
-    }
-
-    /**
-     * Set the keywords content.
-     *
-     * @param  array|string $content
-     *
-     * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
-     */
-    public function setKeywords($content)
-    {
-        $this->keywords->set($content);
-
-        return $this;
-    }
-
-    /**
-     * Add a keyword.
-     *
-     * @param  string $keyword
-     *
-     * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
-     */
-    public function addKeyword($keyword)
-    {
-        $this->keywords->add($keyword);
-
-        return $this;
-    }
-
-    /**
-     * Add many keywords.
-     *
-     * @param  array $keywords
-     *
-     * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
-     */
-    public function addKeywords(array $keywords)
-    {
-        $this->keywords->addMany($keywords);
 
         return $this;
     }
@@ -270,7 +192,6 @@ class SeoMeta implements SeoMetaContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function addWebmaster($webmaster, $content)
     {
@@ -285,7 +206,6 @@ class SeoMeta implements SeoMetaContract
      * @param  string $url
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function setUrl($url)
     {
@@ -301,7 +221,6 @@ class SeoMeta implements SeoMetaContract
      * @param  string $code
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function setGoogleAnalytics($code)
     {
@@ -317,7 +236,6 @@ class SeoMeta implements SeoMetaContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function addMeta($name, $content)
     {
@@ -332,7 +250,6 @@ class SeoMeta implements SeoMetaContract
      * @param  array $meta
      *
      * @return \Botble\SeoHelper\SeoMeta
-     * @author ARCANEDEV
      */
     public function addMetas(array $meta)
     {
@@ -345,14 +262,12 @@ class SeoMeta implements SeoMetaContract
      * Render all seo tags.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
         return implode(PHP_EOL, array_filter([
             $this->title->render(),
             $this->description->render(),
-            $this->keywords->render(),
             $this->misc->render(),
             $this->webmasters->render(),
             $this->analytics->render(),
@@ -363,7 +278,6 @@ class SeoMeta implements SeoMetaContract
      * Render all seo tags.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {

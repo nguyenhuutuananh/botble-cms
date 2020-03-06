@@ -22,13 +22,13 @@ class BackupManagement {
 
             $.ajax({
                 url: deleteURL,
-                type: 'GET',
+                type: 'DELETE',
                 success: (data) => {
                     if (data.error) {
-                        Botble.showNotice('error', data.message);
+                        Botble.showError(data.message);
                     } else {
                         table_backup.find('a[data-section="' + deleteURL + '"]').closest('tr').remove();
-                        Botble.showNotice('success', data.message);
+                        Botble.showSuccess(data.message);
                     }
                 },
                 error: (data) => {
@@ -50,9 +50,9 @@ class BackupManagement {
                     _self.closest('.modal').modal('hide');
 
                     if (data.error) {
-                        Botble.showNotice('error', data.message);
+                        Botble.showError(data.message);
                     } else {
-                        Botble.showNotice('success', data.message);
+                        Botble.showSuccess(data.message);
                         window.location.reload();
                     }
                 },
@@ -80,11 +80,11 @@ class BackupManagement {
             let error = false;
             if (name === '' || name === null) {
                 error = true;
-                Botble.showNotice('error', 'Backup name is required!');
+                Botble.showError('Backup name is required!');
             }
             if (description === '' || description === null) {
                 error = true;
-                Botble.showNotice('error', 'Backup description is required!');
+                Botble.showError('Backup description is required!');
             }
 
             if (!error) {
@@ -100,11 +100,11 @@ class BackupManagement {
                         _self.closest('.modal').modal('hide');
 
                         if (data.error) {
-                            Botble.showNotice('error', data.message);
+                            Botble.showError(data.message);
                         } else {
                             table_backup.find('.no-backup-row').remove();
                             table_backup.find('tbody').append(data.data);
-                            Botble.showNotice('success', data.message);
+                            Botble.showSuccess(data.message);
                         }
                     },
                     error: (data) => {

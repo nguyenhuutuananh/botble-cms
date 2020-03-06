@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     {!! Form::open(['route' => ['settings.media']]) !!}
     <div class="max-width-1200">
@@ -22,6 +22,7 @@
                         <div class="ui-select-wrapper">
                             <select name="media_driver" class="ui-select" id="media_driver">
                                 <option value="local" @if (setting('media_driver') === 'local') selected @endif>Local</option>
+                                <option value="public" @if (setting('media_driver') === 'public') selected @endif>Public</option>
                                 <option value="s3" @if (setting('media_driver') === 's3') selected @endif>Amazon S3</option>
                             </select>
                             <svg class="svg-next-icon svg-next-icon-size-16">

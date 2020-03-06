@@ -62,7 +62,7 @@ class PublicController extends Controller
      * @param string $slug
      * @param UserInterface $userRepository
      * @return \Response
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getAuthor($slug, UserInterface $userRepository)
@@ -72,7 +72,9 @@ class PublicController extends Controller
             return abort(404);
         }
 
-        admin_bar()->registerLink('Edit this user', route('user.profile.view', $author->id));
+        if (function_exists('admin_bar')) {
+            admin_bar()->registerLink('Edit this user', route('user.profile.view', $author->id));
+        }
 
         SeoHelper::setTitle($author->getFullName())->setDescription($author->about);
         Theme::breadcrumb()
@@ -81,7 +83,7 @@ class PublicController extends Controller
 
         do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, USER_MODULE_SCREEN_NAME, $author);
 
-        return Theme::scope('author', compact('author'), 'plugins.blog::themes.author')->render();
+        return Theme::scope('author', compact('author'), 'plugins/blog::themes.author')->render();
     }
 
     /**
@@ -94,7 +96,7 @@ class PublicController extends Controller
         if (!$slug) {
             abort(404);
         }
-        $tag = $this->tagRepository->getFirstBy(['id' => $slug->reference_id, 'status' => BaseStatusEnum::PUBLISH]);
+        $tag = $this->tagRepository->getFirstBy(['id' => $slug->reference_id, 'status' => BaseStatusEnum::PUBLISHED]);
 
         if (!$tag) {
             abort(404);
@@ -108,7 +110,9 @@ class PublicController extends Controller
         $meta->setTitle($tag->name);
         $meta->setType('article');
 
-        admin_bar()->registerLink(trans('plugins/blog::tags.edit_this_tag'), route('tags.edit', $tag->id));
+        if (function_exists('admin_bar')) {
+            admin_bar()->registerLink(trans('plugins/blog::tags.edit_this_tag'), route('tags.edit', $tag->id));
+        }
 
         $posts = get_posts_by_tag($tag->id);
 
@@ -116,6 +120,6 @@ class PublicController extends Controller
 
         do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, TAG_MODULE_SCREEN_NAME, $tag);
 
-        return Theme::scope('tag', compact('tag', 'posts'), 'plugins.blog::themes.tag')->render();
+        return Theme::scope('tag', compact('tag', 'posts'), 'plugins/blog::themes.tag')->render();
     }
 }

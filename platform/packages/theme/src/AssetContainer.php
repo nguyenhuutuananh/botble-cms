@@ -42,7 +42,7 @@ class AssetContainer
     /**
      * Create a new asset container instance.
      *
-     * @param  string $name
+     * @param string $name
      */
     public function __construct($name)
     {
@@ -52,8 +52,8 @@ class AssetContainer
     /**
      * Root asset path.
      *
-     * @param  string $uri
-     * @param  boolean $secure
+     * @param string $uri
+     * @param boolean $secure
      * @return string
      */
     public function originUrl($uri, $secure = null)
@@ -64,8 +64,8 @@ class AssetContainer
     /**
      * Generate a URL to an application asset.
      *
-     * @param  string $path
-     * @param  bool $secure
+     * @param string $path
+     * @param bool $secure
      * @return string
      */
     protected function configAssetUrl($path, $secure = null)
@@ -112,8 +112,8 @@ class AssetContainer
     /**
      * Return asset path with current theme path.
      *
-     * @param  string $uri
-     * @param  boolean $secure
+     * @param string $uri
+     * @param boolean $secure
      * @return string
      */
     public function url($uri, $secure = null)
@@ -170,10 +170,10 @@ class AssetContainer
      *      Asset::add('jquery', 'js/jquery.js', null, ['defer']);
      * </code>
      *
-     * @param  string $name
-     * @param  string $source
-     * @param  array $dependencies
-     * @param  array $attributes
+     * @param string $name
+     * @param string $source
+     * @param array $dependencies
+     * @param array $attributes
      * @return AssetContainer
      */
     protected function added($name, $source, $dependencies = [], $attributes = [])
@@ -200,10 +200,10 @@ class AssetContainer
     /**
      * Write a script to the container.
      *
-     * @param  string $name
-     * @param  string string
-     * @param  string $source
-     * @param  array $dependencies
+     * @param string $name
+     * @param string string
+     * @param string $source
+     * @param array $dependencies
      * @return AssetContainer
      */
     public function writeScript($name, $source, $dependencies = [])
@@ -216,10 +216,10 @@ class AssetContainer
     /**
      * Write a content to the container.
      *
-     * @param  string $name
-     * @param  string string
-     * @param  string $source
-     * @param  array $dependencies
+     * @param string $name
+     * @param string string
+     * @param string $source
+     * @param array $dependencies
      * @return AssetContainer
      */
     protected function write($name, $type, $source, $dependencies = [])
@@ -243,11 +243,11 @@ class AssetContainer
     /**
      * Add an asset to the array of registered assets.
      *
-     * @param  string $type
-     * @param  string $name
-     * @param  string $source
-     * @param  array $dependencies
-     * @param  array $attributes
+     * @param string $type
+     * @param string $name
+     * @param string $source
+     * @param array $dependencies
+     * @param array $attributes
      * @return void
      */
     protected function register($type, $name, $source, $dependencies, $attributes)
@@ -262,10 +262,10 @@ class AssetContainer
     /**
      * Write a style to the container.
      *
-     * @param  string $name
-     * @param  string string
-     * @param  string $source
-     * @param  array $dependencies
+     * @param string $name
+     * @param string string
+     * @param string $source
+     * @param array $dependencies
      * @return AssetContainer
      */
     public function writeStyle($name, $source, $dependencies = [])
@@ -278,10 +278,10 @@ class AssetContainer
     /**
      * Write a content without tag wrapper.
      *
-     * @param  string $name
-     * @param  string string
-     * @param  string $source
-     * @param  array $dependencies
+     * @param string $name
+     * @param string string
+     * @param string $source
+     * @param array $dependencies
      * @return AssetContainer
      */
     public function writeContent($name, $source, $dependencies = [])
@@ -292,10 +292,10 @@ class AssetContainer
     /**
      * Add a CSS file to the registered assets.
      *
-     * @param  string $name
-     * @param  string $source
-     * @param  array $dependencies
-     * @param  array $attributes
+     * @param string $name
+     * @param string $source
+     * @param array $dependencies
+     * @param array $attributes
      * @return AssetContainer
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -331,7 +331,7 @@ class AssetContainer
     /**
      * Evaluate path to current theme or force use theme.
      *
-     * @param  string $source
+     * @param string $source
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -357,7 +357,7 @@ class AssetContainer
     /**
      * Force use a theme path.
      *
-     * @param  boolean $use
+     * @param boolean $use
      * @return AssetContainer
      */
     public function usePath($use = true)
@@ -370,10 +370,10 @@ class AssetContainer
     /**
      * Add a JavaScript file to the registered assets.
      *
-     * @param  string $name
-     * @param  string $source
-     * @param  array $dependencies
-     * @param  array $attributes
+     * @param string $name
+     * @param string $source
+     * @param array $dependencies
+     * @param array $attributes
      * @return AssetContainer
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -406,7 +406,7 @@ class AssetContainer
     /**
      * Get all of the registered assets for a given type / group.
      *
-     * @param  string $group
+     * @param string $group
      * @return string
      * @throws Exception
      */
@@ -423,6 +423,209 @@ class AssetContainer
         }
 
         return $assets;
+    }
+
+    /**
+     * Sort and retrieve assets based on their dependencies
+     *
+     * @param array $assets
+     * @return  array
+     * @throws Exception
+     */
+    protected function arrange($assets)
+    {
+        list($original, $sorted) = [$assets, []];
+
+        while (count($assets) > 0) {
+            foreach ($assets as $asset => $value) {
+                $this->evaluateAsset($asset, $value, $original, $sorted, $assets);
+            }
+        }
+
+        return $sorted;
+    }
+
+    /**
+     * Evaluate an asset and its dependencies.
+     *
+     * @param string $asset
+     * @param string $value
+     * @param array $original
+     * @param array $sorted
+     * @param array $assets
+     * @return void
+     * @throws Exception
+     */
+    protected function evaluateAsset($asset, $value, $original, &$sorted, &$assets)
+    {
+        // If the asset has no more dependencies, we can add it to the sorted list
+        // and remove it from the array of assets. Otherwise, we will not verify
+        // the asset's dependencies and determine if they've been sorted.
+        if (count($assets[$asset]['dependencies']) == 0) {
+            $sorted[$asset] = $value;
+
+            unset($assets[$asset]);
+        } else {
+            foreach ($assets[$asset]['dependencies'] as $key => $dependency) {
+                if (!$this->dependencyIsValid($asset, $dependency, $original, $assets)) {
+                    unset($assets[$asset]['dependencies'][$key]);
+
+                    continue;
+                }
+
+                // If the dependency has not yet been added to the sorted list, we can not
+                // remove it from this asset's array of dependencies. We'll try again on
+                // the next trip through the loop.
+                if (!isset($sorted[$dependency])) {
+                    continue;
+                }
+
+                unset($assets[$asset]['dependencies'][$key]);
+            }
+        }
+    }
+
+    /**
+     * Verify that an asset's dependency is valid.
+     * A dependency is considered valid if it exists, is not a circular reference, and is
+     * not a reference to the owning asset itself. If the dependency doesn't exist, no
+     * error or warning will be given. For the other cases, an exception is thrown.
+     *
+     * @param string $asset
+     * @param string $dependency
+     * @param array $original
+     * @param array $assets
+     *
+     * @return bool
+     * @throws Exception
+     */
+    protected function dependencyIsValid($asset, $dependency, $original, $assets)
+    {
+        if (!isset($original[$dependency])) {
+            return false;
+        } elseif ($dependency === $asset) {
+            throw new Exception('Asset [' . $asset . '] is dependent on itself.');
+        } elseif (isset($assets[$dependency]) && in_array($asset, $assets[$dependency]['dependencies'])) {
+            throw new Exception('Assets [' . $asset . '] and [' . $dependency . '] have a circular dependency.');
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the HTML link to a registered asset.
+     *
+     * @param string $group
+     * @param string $name
+     * @return string
+     */
+    protected function asset($group, $name)
+    {
+        if (!isset($this->assets[$group][$name])) {
+            return '';
+        }
+
+        $asset = $this->assets[$group][$name];
+
+        // If the bundle source is not a complete URL, we will go ahead and prepend
+        // the bundle's asset path to the source provided with the asset. This will
+        // ensure that we attach the correct path to the asset.
+        if (filter_var($asset['source'], FILTER_VALIDATE_URL) === false) {
+            $asset['source'] = $this->path($asset['source']);
+        }
+
+        // If source is not a path to asset, render without wrap a HTML.
+        if (strpos($asset['source'], '<') !== false) {
+            return $asset['source'];
+        }
+
+        // This line fixing config path.
+        $asset['source'] = $this->configAssetUrl($asset['source']);
+
+        //return Html::$group($asset['source'], $asset['attributes']);
+        return $this->html($group, $asset['source'], $asset['attributes']);
+    }
+
+    /**
+     * Returns the full-path for an asset.
+     *
+     * @param string $source
+     * @return string
+     */
+    public function path($source)
+    {
+        return $source;
+    }
+
+    /**
+     * Render asset as HTML.
+     *
+     * @param string $group
+     * @param mixed $source
+     * @param array $attributes
+     * @return string
+     */
+    public function html($group, $source, $attributes)
+    {
+        switch ($group) {
+            case 'script':
+                $attributes['src'] = $source;
+
+                return '<script' . $this->attributes($attributes) . '></script>' . PHP_EOL;
+            case 'style':
+                $defaults = ['media' => 'all', 'type' => 'text/css', 'rel' => 'stylesheet'];
+
+                $attributes = $attributes + $defaults;
+
+                $attributes['href'] = $source;
+
+                return '<link' . $this->attributes($attributes) . '>' . PHP_EOL;
+        }
+        return null;
+    }
+
+    /**
+     * Build an HTML attribute string from an array.
+     *
+     * @param array $attributes
+     * @return string
+     */
+    public function attributes($attributes)
+    {
+        $html = [];
+
+        // For numeric keys we will assume that the key and the value are the same
+        // as this will convert HTML attributes such as "required" to a correct
+        // form like required="required" instead of using incorrect numerics.
+        foreach ((array)$attributes as $key => $value) {
+            $element = $this->attributeElement($key, $value);
+
+            if (!empty($element)) {
+                $html[] = $element;
+            }
+        }
+
+        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
+    }
+
+    /**
+     * Build a single attribute element.
+     *
+     * @param string $key
+     * @param string $value
+     * @return string
+     */
+    protected function attributeElement($key, $value)
+    {
+        if (is_numeric($key)) {
+            $key = $value;
+        }
+
+        if (!empty($value)) {
+            return $key . '="' . e($value) . '"';
+        }
+
+        return null;
     }
 
     /**
@@ -468,209 +671,6 @@ class AssetContainer
         }
 
         return $this->configAssetUrl($asset['source']);
-    }
-
-    /**
-     * Sort and retrieve assets based on their dependencies
-     *
-     * @param   array $assets
-     * @return  array
-     * @throws Exception
-     */
-    protected function arrange($assets)
-    {
-        list($original, $sorted) = [$assets, []];
-
-        while (count($assets) > 0) {
-            foreach ($assets as $asset => $value) {
-                $this->evaluateAsset($asset, $value, $original, $sorted, $assets);
-            }
-        }
-
-        return $sorted;
-    }
-
-    /**
-     * Evaluate an asset and its dependencies.
-     *
-     * @param  string $asset
-     * @param  string $value
-     * @param  array $original
-     * @param  array $sorted
-     * @param  array $assets
-     * @return void
-     * @throws Exception
-     */
-    protected function evaluateAsset($asset, $value, $original, &$sorted, &$assets)
-    {
-        // If the asset has no more dependencies, we can add it to the sorted list
-        // and remove it from the array of assets. Otherwise, we will not verify
-        // the asset's dependencies and determine if they've been sorted.
-        if (count($assets[$asset]['dependencies']) == 0) {
-            $sorted[$asset] = $value;
-
-            unset($assets[$asset]);
-        } else {
-            foreach ($assets[$asset]['dependencies'] as $key => $dependency) {
-                if (!$this->dependencyIsValid($asset, $dependency, $original, $assets)) {
-                    unset($assets[$asset]['dependencies'][$key]);
-
-                    continue;
-                }
-
-                // If the dependency has not yet been added to the sorted list, we can not
-                // remove it from this asset's array of dependencies. We'll try again on
-                // the next trip through the loop.
-                if (!isset($sorted[$dependency])) {
-                    continue;
-                }
-
-                unset($assets[$asset]['dependencies'][$key]);
-            }
-        }
-    }
-
-    /**
-     * Verify that an asset's dependency is valid.
-     * A dependency is considered valid if it exists, is not a circular reference, and is
-     * not a reference to the owning asset itself. If the dependency doesn't exist, no
-     * error or warning will be given. For the other cases, an exception is thrown.
-     *
-     * @param  string $asset
-     * @param  string $dependency
-     * @param  array $original
-     * @param  array $assets
-     *
-     * @throws Exception
-     * @return bool
-     */
-    protected function dependencyIsValid($asset, $dependency, $original, $assets)
-    {
-        if (!isset($original[$dependency])) {
-            return false;
-        } elseif ($dependency === $asset) {
-            throw new Exception('Asset [' . $asset . '] is dependent on itself.');
-        } elseif (isset($assets[$dependency]) && in_array($asset, $assets[$dependency]['dependencies'])) {
-            throw new Exception('Assets [' . $asset . '] and [' . $dependency . '] have a circular dependency.');
-        }
-
-        return true;
-    }
-
-    /**
-     * Get the HTML link to a registered asset.
-     *
-     * @param  string $group
-     * @param  string $name
-     * @return string
-     */
-    protected function asset($group, $name)
-    {
-        if (!isset($this->assets[$group][$name])) {
-            return '';
-        }
-
-        $asset = $this->assets[$group][$name];
-
-        // If the bundle source is not a complete URL, we will go ahead and prepend
-        // the bundle's asset path to the source provided with the asset. This will
-        // ensure that we attach the correct path to the asset.
-        if (filter_var($asset['source'], FILTER_VALIDATE_URL) === false) {
-            $asset['source'] = $this->path($asset['source']);
-        }
-
-        // If source is not a path to asset, render without wrap a HTML.
-        if (strpos($asset['source'], '<') !== false) {
-            return $asset['source'];
-        }
-
-        // This line fixing config path.
-        $asset['source'] = $this->configAssetUrl($asset['source']);
-
-        //return Html::$group($asset['source'], $asset['attributes']);
-        return $this->html($group, $asset['source'], $asset['attributes']);
-    }
-
-    /**
-     * Returns the full-path for an asset.
-     *
-     * @param  string $source
-     * @return string
-     */
-    public function path($source)
-    {
-        return $source;
-    }
-
-    /**
-     * Render asset as HTML.
-     *
-     * @param  string $group
-     * @param  mixed $source
-     * @param  array $attributes
-     * @return string
-     */
-    public function html($group, $source, $attributes)
-    {
-        switch ($group) {
-            case 'script':
-                $attributes['src'] = $source;
-
-                return '<script' . $this->attributes($attributes) . '></script>' . PHP_EOL;
-            case 'style':
-                $defaults = ['media' => 'all', 'type' => 'text/css', 'rel' => 'stylesheet'];
-
-                $attributes = $attributes + $defaults;
-
-                $attributes['href'] = $source;
-
-                return '<link' . $this->attributes($attributes) . '>' . PHP_EOL;
-        }
-        return null;
-    }
-
-    /**
-     * Build an HTML attribute string from an array.
-     *
-     * @param  array $attributes
-     * @return string
-     */
-    public function attributes($attributes)
-    {
-        $html = [];
-
-        // For numeric keys we will assume that the key and the value are the same
-        // as this will convert HTML attributes such as "required" to a correct
-        // form like required="required" instead of using incorrect numerics.
-        foreach ((array)$attributes as $key => $value) {
-            $element = $this->attributeElement($key, $value);
-
-            if (!empty($element)) {
-                $html[] = $element;
-            }
-        }
-
-        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
-    }
-
-    /**
-     * Build a single attribute element.
-     *
-     * @param  string $key
-     * @param  string $value
-     * @return string
-     */
-    protected function attributeElement($key, $value)
-    {
-        if (is_numeric($key)) {
-            $key = $value;
-        }
-
-        if (!empty($value)) {
-            return $key . '="' . e($value) . '"';
-        }
-
-        return null;
     }
 
     /**

@@ -13,7 +13,6 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 {
     /**
      * @throws \DaveJamesMiller\Breadcrumbs\Exceptions\DuplicateBreadcrumbException
-     * @author Sang Nguyen
      */
     public function boot()
     {
@@ -27,7 +26,6 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 
         /**
          * Register breadcrumbs based on menu stored in session
-         * @author Sang Nguyen
          */
         Breadcrumbs::register('main', function (BreadcrumbsGenerator $breadcrumbs, $defaultTitle = null) {
             $prefix = '/' . ltrim($this->app->make('request')->route()->getPrefix(), '/');
@@ -39,28 +37,30 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             }
             $found = false;
             foreach ($arMenu as $menuCategory) {
-                if (($url == $menuCategory->url || (Str::contains($menuCategory->url, $prefix) && $prefix != '//')) && !empty($menuCategory->name)) {
+                if (($url == $menuCategory['url'] || (Str::contains($menuCategory['url'], $prefix) && $prefix != '//')) && !empty($menuCategory['name'])) {
                     $found = true;
-                    $breadcrumbs->push(trans($menuCategory->name), $url);
-                    if ($defaultTitle != trans($menuCategory->name) && $defaultTitle != $site_title) {
-                        $breadcrumbs->push($defaultTitle, $url);
+                    $breadcrumbs->push(trans($menuCategory['name']), $menuCategory['url']);
+                    if ($defaultTitle != trans($menuCategory['name']) && $defaultTitle != $site_title) {
+                        $breadcrumbs->push($defaultTitle, $menuCategory['url']);
                     }
                     break;
                 }
             }
             if (!$found) {
                 foreach ($arMenu as $menuCategory) {
-                    if (!$menuCategory->children->isEmpty()) {
-                        foreach ($menuCategory->children as $menuItem) {
-                            if (($url == $menuItem->url || (Str::contains($menuItem->url, $prefix) && $prefix != '//')) && !empty($menuItem->name)) {
-                                $found = true;
-                                $breadcrumbs->push(trans($menuCategory->name), $menuCategory->url);
-                                $breadcrumbs->push(trans($menuItem->name), $menuItem->url);
-                                if ($defaultTitle != trans($menuItem->name) && $defaultTitle != $site_title) {
-                                    $breadcrumbs->push($defaultTitle, $url);
-                                }
-                                break;
+                    if (!count($menuCategory['children'])) {
+                        continue;
+                    }
+
+                    foreach ($menuCategory['children'] as $menuItem) {
+                        if (($url == $menuItem['url'] || (Str::contains($menuItem['url'], $prefix) && $prefix != '//')) && !empty($menuItem['name'])) {
+                            $found = true;
+                            $breadcrumbs->push(trans($menuCategory['name']), $menuCategory['url']);
+                            $breadcrumbs->push(trans($menuItem['name']), $menuItem['url']);
+                            if ($defaultTitle != trans($menuItem['name']) && $defaultTitle != $site_title) {
+                                $breadcrumbs->push($defaultTitle, $menuItem['url']);
                             }
+                            break;
                         }
                     }
                 }

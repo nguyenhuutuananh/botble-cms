@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * Class MediaFileRepository
- * @package Botble\Media
- * @author Sang Nguyen
  * @since 19/08/2015 07:45 AM
  */
 class MediaFileRepository extends RepositoriesAbstract implements MediaFileInterface
@@ -386,12 +383,11 @@ class MediaFileRepository extends RepositoriesAbstract implements MediaFileInter
     }
 
     /**
-     * {@inheritdoc}
+     * @param $params
+     * @return \Eloquent
      */
     protected function getFile($params)
     {
-        $this->applyCriteria();
-
         $this->applyConditions($params['condition']);
 
         if ($params['filter'] != 'everything') {

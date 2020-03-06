@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * @author Sang Nguyen
  * @since 02/07/2016 09:50 AM
  */
 class DashboardServiceProvider extends ServiceProvider
@@ -29,18 +28,15 @@ class DashboardServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(DashboardWidgetInterface::class, function () {
+        $this->app->bind(DashboardWidgetInterface::class, function () {
             return new DashboardWidgetCacheDecorator(
                 new DashboardWidgetRepository(new DashboardWidget)
             );
         });
 
-        $this->app->singleton(DashboardWidgetSettingInterface::class, function () {
+        $this->app->bind(DashboardWidgetSettingInterface::class, function () {
             return new DashboardWidgetSettingCacheDecorator(
                 new DashboardWidgetSettingRepository(new DashboardWidgetSetting)
             );
@@ -49,15 +45,10 @@ class DashboardServiceProvider extends ServiceProvider
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('core/dashboard')
-            ->loadAndPublishConfigurations(['permissions'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->publishAssetsFolder()
@@ -73,7 +64,7 @@ class DashboardServiceProvider extends ServiceProvider
                     'name'        => 'core/base::layouts.dashboard',
                     'icon'        => 'fa fa-home',
                     'url'         => route('dashboard.index'),
-                    'permissions' => ['dashboard.index'],
+                    'permissions' => [],
                 ]);
         });
     }

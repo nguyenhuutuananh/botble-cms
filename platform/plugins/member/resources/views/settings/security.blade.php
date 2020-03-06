@@ -1,9 +1,9 @@
-@extends('plugins.member::layouts.skeleton')
+@extends('plugins/member::layouts.skeleton')
 @section('content')
   <div class="settings">
     <div class="container">
       <div class="row">
-        @include('plugins.member::settings.sidebar')
+        @include('plugins/member::settings.sidebar')
         <div class="col-12 col-md-9">
           <div class="mb-5">
             <!-- Title -->
@@ -41,43 +41,6 @@
                   </div>
                   <button type="submit" class="btn default-btn fw6">{{ trans('plugins/member::dashboard.password_update_btn') }}</button>
                 </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-3 br2">
-            <!-- Title -->
-            <div class="row">
-              <div class="col-12">
-                <h4>{{ trans('plugins/member::dashboard.danger_zone_title') }}</h4>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-8">
-                <div class="ba br2 b--darkest-red">
-                  <ul class="list pa0">
-                    <li class="pa3" style="background: none;">
-                      @if(empty(auth()->guard('member')->user()->destroy_date))
-                        <div class="mb-2">{{ trans('plugins/member::dashboard.delete_account_desc') }}</div>
-                        <form method="POST" action="/users/destroy">
-                          @csrf
-                          <button type="button" class="btn default-btn fw6 darkest-red" onclick="if (confirm('{{ trans('plugins/member::dashboard.delete_account_confirmation') }}')) { $(this).closest('form').submit(); } return false;">
-                            {{ trans('plugins/member::dashboard.delete_account_btn') }}
-                          </button>
-                        </form>
-                      @else
-                        <div class="mb-2">{!! trans('plugins/member::dashboard.deleted_account_desc', ['destroy_date' => auth()->guard('member')->user()->destroy_date]) !!}</div>
-                        <form method="POST" action="/users/reverse">
-                          @csrf
-                          <button type="submit" class="btn default-btn fw6 darkest-red">
-                            {{ trans('plugins/member::dashboard.cancel_delete_account_btn') }}
-                          </button>
-                        </form>
-                      @endif
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>

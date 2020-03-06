@@ -14,11 +14,11 @@ class SettingsManager extends Manager
     protected $app;
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function getDefaultDriver()
     {
-        return env('CMS_SETTING_STORE_DRIVER', 'database');
+        return config('core.setting.general.driver');
     }
 
     /**

@@ -36,7 +36,7 @@ class CustomFieldForm extends FormAbstract
         $customFieldItems = [];
         if ($this->getModel()) {
             $customFieldItems = $this->fieldGroupRepository->getFieldGroupItems($this->getModel()->id);
-            $this->setActionButtons(view('plugins.custom-field::actions', ['object' => $this->getModel()])->render());
+            $this->setActionButtons(view('plugins/custom-field::actions', ['object' => $this->getModel()])->render());
         }
         $this
             ->setModuleName(CUSTOM_FIELD_MODULE_SCREEN_NAME)
@@ -67,7 +67,7 @@ class CustomFieldForm extends FormAbstract
             ->addMetaBoxes([
                 'rules'            => [
                     'title'   => trans('plugins/custom-field::base.form.rules.rules'),
-                    'content' => view('plugins.custom-field::rules', [
+                    'content' => view('plugins/custom-field::rules', [
                         'object'           => $this->getModel(),
                         'customFieldItems' => json_encode($customFieldItems),
                         'rules_template'   => CustomField::renderRules(),
@@ -75,7 +75,7 @@ class CustomFieldForm extends FormAbstract
                 ],
                 'field-items-list' => [
                     'title'   => trans('plugins/custom-field::base.form.field_items_information'),
-                    'content' => view('plugins.custom-field::field-items-list')->render(),
+                    'content' => view('plugins/custom-field::field-items-list')->render(),
                 ],
             ]);
     }

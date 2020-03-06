@@ -46,9 +46,9 @@ class MailVariable
         $this->variableValues['core'] = [
             'header'           => get_setting_email_template_content('core', 'base', 'header'),
             'footer'           => get_setting_email_template_content('core', 'base', 'footer'),
-            'site_title'       => setting('site_title'),
+            'site_title'       => setting('admin_title'),
             'site_url'         => url(''),
-            'site_logo'        => url(theme_option('logo', setting('admin_logo', config('core.base.general.logo')))),
+            'site_logo'        => url(setting('admin_logo', config('core.base.general.logo'))),
             'date_time'        => now(config('app.timezone'))->toDateTimeString(),
             'date_year'        => now(config('app.timezone'))->format('Y'),
             'site_admin_email' => setting('admin_email'),

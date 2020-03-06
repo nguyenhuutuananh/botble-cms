@@ -28,9 +28,6 @@ class MemberServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
         config([
@@ -61,20 +58,17 @@ class MemberServiceProvider extends ServiceProvider
         $router->aliasMiddleware('member', RedirectIfNotMember::class);
         $router->aliasMiddleware('member.guest', RedirectIfMember::class);
 
-        $this->app->singleton(MemberInterface::class, function () {
+        $this->app->bind(MemberInterface::class, function () {
             return new MemberCacheDecorator(new MemberRepository(new Member));
         });
 
-        $this->app->singleton(MemberActivityLogInterface::class, function () {
+        $this->app->bind(MemberActivityLogInterface::class, function () {
             return new MemberActivityLogCacheDecorator(new MemberActivityLogRepository(new MemberActivityLog));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/member')
@@ -93,8 +87,8 @@ class MemberServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'plugins/member::member.menu_name',
                 'icon'        => 'fa fa-users',
-                'url'         => route('member.list'),
-                'permissions' => ['member.list'],
+                'url'         => route('member.index'),
+                'permissions' => ['member.index'],
             ]);
         });
 

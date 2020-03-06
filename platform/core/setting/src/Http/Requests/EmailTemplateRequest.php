@@ -9,9 +9,7 @@ class EmailTemplateRequest extends Request
 
     /**
      * Get the validation rules that apply to the request.
-     *
      * @return array
-     * @author Sang Nguyen
      */
     public function rules()
     {

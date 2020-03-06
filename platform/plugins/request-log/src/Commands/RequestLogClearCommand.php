@@ -29,7 +29,7 @@ class RequestLogClearCommand extends Command
     /**
      * RequestLogClearCommand constructor.
      * @param RequestLogInterface $requestLogRepository
-     * @author Sang Nguyen
+     * 
      */
     public function __construct(RequestLogInterface $requestLogRepository)
     {
@@ -39,7 +39,7 @@ class RequestLogClearCommand extends Command
 
     /**
      * Execute the console command.
-     * @author Sang Nguyen
+     * 
      * @throws \Throwable
      */
     public function handle()

@@ -3,28 +3,24 @@
 namespace Botble\Slug\Providers;
 
 use Assets;
+use Botble\Base\Forms\FormAbstract;
+use Botble\Slug\Forms\Fields\PermalinkField;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use Kris\LaravelFormBuilder\FormHelper;
 
 class HookServiceProvider extends ServiceProvider
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         add_filter(BASE_FILTER_SLUG_AREA, [$this, 'addSlugBox'], 17, 3);
 
         add_filter(BASE_FILTER_BEFORE_GET_FRONT_PAGE_ITEM, [$this, 'getItemSlug'], 3, 3);
+
+        add_filter('form_custom_fields', [$this, 'addCustomFormFields'], 29, 2);
     }
 
     /**
@@ -33,15 +29,15 @@ class HookServiceProvider extends ServiceProvider
      * @param null $prefix
      * @return null|string
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addSlugBox($screen, $object = null)
     {
         if (in_array($screen, config('packages.slug.general.supported'))) {
-            Assets::addAppModule(['slug']);
+            Assets::addScriptsDirectly('vendor/core/packages/slug/js/slug.js');
             $prefix = Arr::get(config('packages.slug.general.prefixes', []), $screen, '');
-            return view('packages.slug::partials.slug', compact('object', 'screen', 'prefix'))->render();
+            return view('packages/slug::partials.slug', compact('object', 'screen', 'prefix'))->render();
         }
+
         return null;
     }
 
@@ -50,7 +46,6 @@ class HookServiceProvider extends ServiceProvider
      * @param Model $model
      * @param string $screen
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getItemSlug($data, $model, $screen = null)
     {
@@ -93,5 +88,19 @@ class HookServiceProvider extends ServiceProvider
         }
 
         return $data;
+    }
+
+    /**
+     * @param FormAbstract $form
+     * @param FormHelper $formHelper
+     * @return FormAbstract
+     */
+    public function addCustomFormFields(FormAbstract $form, FormHelper $formHelper)
+    {
+        if (!$formHelper->hasCustomField('permalink') && config('packages.slug.general.supported')) {
+            $form->addCustomField('permalink', PermalinkField::class);
+        }
+
+        return $form;
     }
 }

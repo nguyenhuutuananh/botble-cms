@@ -12,6 +12,6 @@ class CustomRadioField extends FormField
      */
     protected function getTemplate()
     {
-        return 'core.base::forms.fields.custom-radio';
+        return 'core/base::forms.fields.custom-radio';
     }
 }

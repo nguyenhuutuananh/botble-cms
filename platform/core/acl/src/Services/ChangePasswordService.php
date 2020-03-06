@@ -2,7 +2,7 @@
 
 namespace Botble\ACL\Services;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Support\Services\ProduceServiceInterface;
 use Exception;
@@ -28,19 +28,16 @@ class ChangePasswordService implements ProduceServiceInterface
     /**
      * @param Request $request
      * @return bool|\Exception
-     * @author Sang Nguyen
      */
     public function execute(Request $request)
     {
-        $currentUser = Auth::user();
-
-        if (!$currentUser->isSuperUser()) {
-            if (!Hash::check($request->input('old_password'), Auth::user()->getAuthPassword())) {
+        if (!$request->user()->isSuperUser()) {
+            if (!Hash::check($request->input('old_password'), $request->user()->getAuthPassword())) {
                 return new Exception(trans('core/acl::users.current_password_not_valid'));
             }
         }
 
-        $user = $this->userRepository->findById($request->input('id', Auth::user()->getKey()));
+        $user = $this->userRepository->findById($request->input('id', $request->user()->getKey()));
         $this->userRepository->update(['id' => $user->id], [
             'password' => Hash::make($request->input('password')),
         ]);

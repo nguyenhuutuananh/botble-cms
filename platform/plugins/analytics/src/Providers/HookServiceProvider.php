@@ -3,7 +3,7 @@
 namespace Botble\Analytics\Providers;
 
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Dashboard\Supports\DashboardWidgetInstance;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
@@ -11,13 +11,7 @@ use Illuminate\Support\ServiceProvider;
 class HookServiceProvider extends ServiceProvider
 {
     /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
      * Bootstrap the application events.
-     * @author Sang Nguyen
      */
     public function boot()
     {
@@ -33,7 +27,7 @@ class HookServiceProvider extends ServiceProvider
 
     /**
      * @return void
-     * @author Sang Nguyen
+     *
      */
     public function registerScripts()
     {
@@ -44,8 +38,10 @@ class HookServiceProvider extends ServiceProvider
             'analytics.referrer',
         ])) {
             Assets::addScripts(['jvectormap', 'raphael', 'morris'])
-                ->addStyles(['jvectormap', 'raphael', 'morris'])
-                ->addScriptsDirectly(['/vendor/core/plugins/analytics/js/analytics.js']);
+                ->addStyles(['jvectormap', 'morris'])
+                ->addScriptsDirectly([
+                    '/vendor/core/plugins/analytics/js/analytics.js'
+                ]);
         }
     }
 
@@ -54,23 +50,20 @@ class HookServiceProvider extends ServiceProvider
      * @param Collection $widgetSettings
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addGeneralWidget($widgets, $widgetSettings)
     {
-        $widget = new DashboardWidgetInstance();
-
-        $widget->permission = 'analytics.general';
-        $widget->key = 'widget_analytics_general';
-        $widget->title = trans('plugins/analytics::analytics.widget_analytics_general');
-        $widget->icon = 'fas fa-chart-line';
-        $widget->color = '#f2784b';
-        $widget->route = route('analytics.general');
-        $widget->bodyClass = 'row';
-        $widget->hasLoadCallback = true;
-        $widget->isEqualHeight = false;
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setPermission('analytics.general')
+            ->setKey('widget_analytics_general')
+            ->setTitle(trans('plugins/analytics::analytics.widget_analytics_general'))
+            ->setIcon('fas fa-chart-line')
+            ->setColor('#f2784b')
+            ->setRoute(route('analytics.general'))
+            ->setBodyClass('row')
+            ->setHasLoadCallback(true)
+            ->setIsEqualHeight(false)
+            ->init($widgets, $widgetSettings);
     }
 
     /**
@@ -78,22 +71,19 @@ class HookServiceProvider extends ServiceProvider
      * @param Collection $widgetSettings
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addPageWidget($widgets, $widgetSettings)
     {
-        $widget = new DashboardWidgetInstance();
-
-        $widget->permission = 'analytics.page';
-        $widget->key = 'widget_analytics_page';
-        $widget->title = trans('plugins/analytics::analytics.widget_analytics_page');
-        $widget->icon = 'far fa-newspaper';
-        $widget->color = '#3598dc';
-        $widget->route = route('analytics.page');
-        $widget->bodyClass = 'scroll-table';
-        $widget->column = 'col-md-6 col-sm-6';
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setPermission('analytics.page')
+            ->setKey('widget_analytics_page')
+            ->setTitle(trans('plugins/analytics::analytics.widget_analytics_page'))
+            ->setIcon('far fa-newspaper')
+            ->setColor('#3598dc')
+            ->setRoute(route('analytics.page'))
+            ->setBodyClass('scroll-table')
+            ->setColumn('col-md-6 col-sm-6')
+            ->init($widgets, $widgetSettings);
     }
 
     /**
@@ -101,22 +91,19 @@ class HookServiceProvider extends ServiceProvider
      * @param Collection $widgetSettings
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addBrowserWidget($widgets, $widgetSettings)
     {
-        $widget = new DashboardWidgetInstance();
-
-        $widget->permission = 'analytics.browser';
-        $widget->key = 'widget_analytics_browser';
-        $widget->title = trans('plugins/analytics::analytics.widget_analytics_browser');
-        $widget->icon = 'fab fa-safari';
-        $widget->color = '#8e44ad';
-        $widget->route = route('analytics.browser');
-        $widget->bodyClass = 'scroll-table';
-        $widget->column = 'col-md-6 col-sm-6';
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setPermission('analytics.browser')
+            ->setKey('widget_analytics_browser')
+            ->setTitle(trans('plugins/analytics::analytics.widget_analytics_browser'))
+            ->setIcon('fab fa-safari')
+            ->setColor('#8e44ad')
+            ->setRoute(route('analytics.browser'))
+            ->setBodyClass('scroll-table')
+            ->setColumn('col-md-6 col-sm-6')
+            ->init($widgets, $widgetSettings);
     }
 
     /**
@@ -124,32 +111,28 @@ class HookServiceProvider extends ServiceProvider
      * @param Collection $widgetSettings
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addReferrerWidget($widgets, $widgetSettings)
     {
-        $widget = new DashboardWidgetInstance();
-
-        $widget->permission = 'analytics.referrer';
-        $widget->key = 'widget_analytics_referrer';
-        $widget->title = trans('plugins/analytics::analytics.widget_analytics_referrer');
-        $widget->icon = 'fas fa-user-friends';
-        $widget->color = '#3598dc';
-        $widget->route = route('analytics.general');
-        $widget->bodyClass = 'scroll-table';
-        $widget->column = 'col-md-6 col-sm-6';
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setPermission('analytics.referrer')
+            ->setKey('widget_analytics_referrer')
+            ->setTitle(trans('plugins/analytics::analytics.widget_analytics_referrer'))
+            ->setIcon('fas fa-user-friends')
+            ->setColor('#3598dc')
+            ->setRoute(route('analytics.referrer'))
+            ->setBodyClass('scroll-table')
+            ->setColumn('col-md-6 col-sm-6')
+            ->init($widgets, $widgetSettings);
     }
 
     /**
      * @param null $data
      * @return string
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addAnalyticsSetting($data = null)
     {
-        return $data . view('plugins.analytics::setting')->render();
+        return $data . view('plugins/analytics::setting')->render();
     }
 }

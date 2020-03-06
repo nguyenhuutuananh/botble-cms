@@ -14,6 +14,6 @@ class GoogleFontsField extends SelectType
      */
     protected function getTemplate()
     {
-        return 'core.base::forms.fields.google-fonts';
+        return 'core/base::forms.fields.google-fonts';
     }
 }

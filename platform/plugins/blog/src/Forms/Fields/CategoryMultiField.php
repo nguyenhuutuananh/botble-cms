@@ -9,10 +9,10 @@ class CategoryMultiField extends FormField
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
     protected function getTemplate()
     {
-        return 'plugins.blog::categories.partials.categories-multi';
+        return 'plugins/blog::categories.partials.categories-multi';
     }
 }

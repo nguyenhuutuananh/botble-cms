@@ -3,21 +3,21 @@
 return [
     [
         'name' => 'Custom Fields',
-        'flag' => 'custom-fields.list',
+        'flag' => 'custom-fields.index',
     ],
     [
         'name'        => 'Create',
         'flag'        => 'custom-fields.create',
-        'parent_flag' => 'custom-fields.list',
+        'parent_flag' => 'custom-fields.index',
     ],
     [
         'name'        => 'Edit',
         'flag'        => 'custom-fields.edit',
-        'parent_flag' => 'custom-fields.list',
+        'parent_flag' => 'custom-fields.index',
     ],
     [
         'name'        => 'Delete',
-        'flag'        => 'custom-fields.delete',
-        'parent_flag' => 'custom-fields.list',
+        'flag'        => 'custom-fields.destroy',
+        'parent_flag' => 'custom-fields.index',
     ],
 ];

@@ -6,10 +6,10 @@
         <div class="footer-txt">
             <p>
                 <a href=".">
-                    <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ setting('site_title') }}">
+                    <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ theme_option('site_title') }}">
                 </a>
             </p>
-            <p>{{ setting('site_title') }}</p>
+            <p>{{ theme_option('site_title') }}</p>
             <div class="hi-icon-wrap hi-icon-effect-3 hi-icon-effect-3a">
                 <a href="{{ setting('facebook') }}" title="Facebook" class="hi-icon fa fa-facebook"></a>
                 <a href="{{ setting('twitter') }}" title="Twitter" class="hi-icon fa fa-google-plus"></a>

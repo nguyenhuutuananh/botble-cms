@@ -108,7 +108,7 @@
                                                                            target="_blank">
                                                                             <img title="Logo"
                                                                                  src="{{ site_logo }}"
-                                                                                 width="107"
+                                                                                 height="70"
                                                                                  style="max-width: 107px;display: block !important;height: auto !important;"
                                                                                  alt="Logo" border="0"
                                                                                  hspace="0"

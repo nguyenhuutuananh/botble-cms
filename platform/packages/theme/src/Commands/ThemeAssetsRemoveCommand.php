@@ -49,7 +49,7 @@ class ThemeAssetsRemoveCommand extends Command
      * Execute the console command.
      *
      * @return bool
-     * @author Sang Nguyen
+     *
      */
     public function handle()
     {

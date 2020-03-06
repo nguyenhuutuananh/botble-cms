@@ -3,7 +3,6 @@
 namespace Botble\Base\Http\Middleware;
 
 use Assets;
-use Auth;
 use Closure;
 
 class LocaleMiddleware
@@ -15,7 +14,6 @@ class LocaleMiddleware
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
-     * @author Sang Nguyen
      * @throws \Exception
      */
     public function handle($request, Closure $next)

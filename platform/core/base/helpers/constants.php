@@ -149,3 +149,7 @@ if (!defined('BASE_FILTER_BEFORE_RENDER_FORM')) {
 if (!defined('BASE_FILTER_FORM_EDITOR_BUTTONS')) {
     define('BASE_FILTER_FORM_EDITOR_BUTTONS', 'base_filter_form_editor_buttons');
 }
+
+if (!defined('BASE_ACTION_INIT')) {
+    define('BASE_ACTION_INIT', 'init');
+}

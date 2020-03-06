@@ -17,7 +17,7 @@ class LoginListener
     /**
      * AuditHandlerListener constructor.
      * @param AuditHistory $auditHistory
-     * @author Sang Nguyen
+     *
      */
     public function __construct(AuditHistory $auditHistory)
     {
@@ -29,7 +29,7 @@ class LoginListener
      *
      * @param  Login $event
      * @return void
-     * @author Sang Nguyen
+     *
      */
     public function handle(Login $event)
     {

@@ -15,9 +15,10 @@ class RegisterRequest extends Request
     public function rules()
     {
         return [
-            'name'     => 'required|max:120|min:2',
-            'email'    => 'required|max:60|min:6|email|unique:members',
-            'password' => 'required|min:6|confirmed',
+            'first_name' => 'required|max:120|min:2',
+            'last_name'  => 'required|max:120|min:2',
+            'email'      => 'required|max:60|min:6|email|unique:members',
+            'password'   => 'required|min:6|confirmed',
         ];
     }
 }

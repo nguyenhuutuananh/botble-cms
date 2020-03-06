@@ -19,21 +19,29 @@ export default class Botble {
 
         };
         toastr[messageType](message, messageHeader);
-    };
+    }
+
+    static showError(message) {
+        this.showNotice('error', message, 'Error!');
+    }
+
+    static showSuccess(message) {
+        this.showNotice('success', message, 'Success!');
+    }
 
     static handleError(data) {
         if (typeof (data.responseJSON) !== 'undefined') {
             if (typeof (data.responseJSON.message) !== 'undefined') {
-                Botble.showNotice('error', data.responseJSON.message, 'Error!');
+                Botble.showError(data.responseJSON.message, 'Error!');
             } else {
                 $.each(data.responseJSON, function (index, el) {
                     $.each(el, function (key, item) {
-                        Botble.showNotice('error', item, 'Error!');
+                        Botble.showError(item, 'Error!');
                     });
                 });
             }
         } else {
-            Botble.showNotice('error', data.statusText, 'Error!');
+            Botble.showError(data.statusText, 'Error!');
         }
     }
 }

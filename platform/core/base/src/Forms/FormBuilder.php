@@ -11,7 +11,6 @@ class FormBuilder extends BaseFormBuilder
      * @param array $options
      * @param array $data
      * @return FormAbstract|\Kris\LaravelFormBuilder\Form
-     * @author Sang Nguyen
      */
     public function create($formClass, array $options = [], array $data = [])
     {

@@ -18,7 +18,7 @@ class PasswordForm extends FormAbstract
         $this
             ->setModuleName(USER_MODULE_SCREEN_NAME)
             ->setValidatorClass(UpdatePasswordRequest::class)
-            ->setFormOption('template', 'core.base::forms.form-no-wrap')
+            ->setFormOption('template', 'core/base::forms.form-no-wrap')
             ->setFormOption('id', 'password-form')
             ->add('old_password', 'password', [
                 'label'      => trans('core/acl::users.current_password'),
@@ -57,6 +57,6 @@ class PasswordForm extends FormAbstract
                     'class' => $this->formHelper->getConfig('defaults.wrapper_class') . ' col-md-6',
                 ],
             ])
-            ->setActionButtons(view('core.acl::users.profile.actions')->render());
+            ->setActionButtons(view('core/acl::users.profile.actions')->render());
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Botble\Member\Http\Controllers;
 
-use Assets;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Member\Forms\MemberForm;
 use Botble\Member\Tables\MemberTable;
 use Botble\Member\Http\Requests\MemberCreateRequest;
@@ -19,6 +19,7 @@ use Botble\Base\Events\UpdatedContentEvent;
 
 class MemberController extends BaseController
 {
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var MemberInterface
@@ -27,7 +28,7 @@ class MemberController extends BaseController
 
     /**
      * @param MemberInterface $memberRepository
-     * @author Sang Nguyen
+     *
      */
     public function __construct(MemberInterface $memberRepository)
     {
@@ -38,10 +39,10 @@ class MemberController extends BaseController
      * Display all members
      * @param MemberTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(MemberTable $dataTable)
+    public function index(MemberTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/member::member.menu_name'));
 
@@ -52,13 +53,11 @@ class MemberController extends BaseController
      * Show create form
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/member::member.create'));
-
-        Assets::addScriptsDirectly(['/vendor/core/plugins/member/js/member-admin.js']);
 
         return $formBuilder
             ->create(MemberForm::class)
@@ -72,9 +71,9 @@ class MemberController extends BaseController
      * @param MemberCreateRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postCreate(MemberCreateRequest $request, BaseHttpResponse $response)
+    public function store(MemberCreateRequest $request, BaseHttpResponse $response)
     {
         $request->merge(['password' => bcrypt($request->input('password'))]);
         $member = $this->memberRepository->createOrUpdate($request->input());
@@ -82,7 +81,7 @@ class MemberController extends BaseController
         event(new CreatedContentEvent(MEMBER_MODULE_SCREEN_NAME, $request, $member));
 
         return $response
-            ->setPreviousUrl(route('member.list'))
+            ->setPreviousUrl(route('member.index'))
             ->setNextUrl(route('member.edit', $member->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -93,12 +92,10 @@ class MemberController extends BaseController
      * @param $id
      * @param FormBuilder $formBuilder
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
-     * @author Sang Nguyen
+     *
      */
-    public function getEdit($id, FormBuilder $formBuilder)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        Assets::addScriptsDirectly(['/vendor/core/plugins/member/js/member-admin.js']);
-
         $member = $this->memberRepository->findOrFail($id);
         page_title()->setTitle(trans('plugins/member::member.edit'));
 
@@ -114,9 +111,9 @@ class MemberController extends BaseController
      * @param MemberEditRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postEdit($id, MemberEditRequest $request, BaseHttpResponse $response)
+    public function update($id, MemberEditRequest $request, BaseHttpResponse $response)
     {
         if ($request->input('is_change_password') == 1) {
             $request->merge(['password' => bcrypt($request->input('password'))]);
@@ -129,7 +126,7 @@ class MemberController extends BaseController
         event(new UpdatedContentEvent(MEMBER_MODULE_SCREEN_NAME, $request, $member));
 
         return $response
-            ->setPreviousUrl(route('member.list'))
+            ->setPreviousUrl(route('member.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -138,9 +135,9 @@ class MemberController extends BaseController
      * @param $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $member = $this->memberRepository->findOrFail($id);
@@ -159,24 +156,11 @@ class MemberController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $member = $this->memberRepository->findOrFail($id);
-            $this->memberRepository->delete($member);
-            event(new DeletedContentEvent(MEMBER_MODULE_SCREEN_NAME, $request, $member));
-        }
-
-        return $response->setMessage(trans('core/base::notices.delete_success_message'));
+        return $this->executeDeleteItems($request, $response, $this->memberRepository, MEMBER_MODULE_SCREEN_NAME);
     }
 }

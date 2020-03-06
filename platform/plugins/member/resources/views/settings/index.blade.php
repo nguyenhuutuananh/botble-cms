@@ -1,9 +1,9 @@
-@extends('plugins.member::layouts.skeleton')
+@extends('plugins/member::layouts.skeleton')
 @section('content')
   <div class="settings crop-avatar">
     <div class="container">
       <div class="row">
-        @include('plugins.member::settings.sidebar')
+        @include('plugins/member::settings.sidebar')
         <div class="col-12 col-md-9">
           <!-- Setting Title -->
           <div class="row">
@@ -20,7 +20,7 @@
                     <div id="account-avatar">
                       <div class="profile-image">
                         <div class="avatar-view mt-card-avatar">
-                            <img class="br2" src="{{ $user->avatar }}" style="width: 200px;">
+                            <img class="br2" src="{{ $user->avatar_url }}" style="width: 200px;">
                             <div class="mt-overlay br2">
                               <span><i class="fa fa-edit"></i></span>
                             </div>
@@ -102,7 +102,7 @@
         </div>
       </div>
     </div>
-    @include('plugins.member::modals.avatar')
+    @include('plugins/member::modals.avatar')
   </div>
 @endsection
 @push('scripts')

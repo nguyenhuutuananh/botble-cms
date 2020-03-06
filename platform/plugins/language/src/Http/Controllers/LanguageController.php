@@ -34,7 +34,6 @@ class LanguageController extends BaseController
      * LanguageController constructor.
      * @param LanguageInterface $languageRepository
      * @param LanguageMetaInterface $languageMetaRepository
-     * @author Sang Nguyen
      */
     public function __construct(LanguageInterface $languageRepository, LanguageMetaInterface $languageMetaRepository)
     {
@@ -43,10 +42,9 @@ class LanguageController extends BaseController
     }
 
     /**
-     * Get list language page
-     * @author Sang Nguyen
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getList()
+    public function index()
     {
         page_title()->setTitle(trans('plugins/language::language.name'));
 
@@ -55,14 +53,14 @@ class LanguageController extends BaseController
         $languages = Language::getListLanguages();
         $flags = Language::getListLanguageFlags();
         $active_languages = $this->languageRepository->all();
-        return view('plugins.language::index', compact('languages', 'flags', 'active_languages'));
+        return view('plugins/language::index', compact('languages', 'flags', 'active_languages'));
     }
 
     /**
      * @param LanguageRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function postStore(LanguageRequest $request, BaseHttpResponse $response)
@@ -85,7 +83,7 @@ class LanguageController extends BaseController
             event(new CreatedContentEvent(LANGUAGE_MODULE_SCREEN_NAME, $request, $language));
 
             return $response
-                ->setData(view('plugins.language::partials.language-item', ['item' => $language])->render())
+                ->setData(view('plugins/language::partials.language-item', ['item' => $language])->render())
                 ->setMessage(trans('core/base::notices.create_success_message'));
         } catch (Exception $ex) {
             return $response
@@ -98,10 +96,10 @@ class LanguageController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function postEdit(Request $request, BaseHttpResponse $response)
+    public function update(Request $request, BaseHttpResponse $response)
     {
         try {
             $language = $this->languageRepository->getFirstBy(['lang_id' => $request->input('lang_id')]);
@@ -114,7 +112,7 @@ class LanguageController extends BaseController
             event(new UpdatedContentEvent(LANGUAGE_MODULE_SCREEN_NAME, $request, $language));
 
             return $response
-                ->setData(view('plugins.language::partials.language-item', ['item' => $language])->render())
+                ->setData(view('plugins/language::partials.language-item', ['item' => $language])->render())
                 ->setMessage(trans('core/base::notices.update_success_message'));
         } catch (Exception $ex) {
             return $response
@@ -127,7 +125,6 @@ class LanguageController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postChangeItemLanguage(Request $request, BaseHttpResponse $response)
     {
@@ -174,9 +171,8 @@ class LanguageController extends BaseController
      * @param $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $language = $this->languageRepository->getFirstBy(['lang_id' => $id]);
@@ -209,7 +205,6 @@ class LanguageController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function getSetDefault(Request $request, BaseHttpResponse $response)
     {
@@ -229,7 +224,6 @@ class LanguageController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function getLanguage(Request $request, BaseHttpResponse $response)
     {
@@ -242,7 +236,6 @@ class LanguageController extends BaseController
      * @param BaseHttpResponse $response
      * @param SettingStore $settingStore
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postEditSettings(Request $request, BaseHttpResponse $response, SettingStore $settingStore)
     {
@@ -260,7 +253,7 @@ class LanguageController extends BaseController
      * @param $code
      * @param \Botble\Language\LanguageManager $language
      * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
+     *
      * @since 2.2
      */
     public function getChangeDataLanguage($code, LanguageManager $language)

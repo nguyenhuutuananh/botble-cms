@@ -2,13 +2,10 @@
 
 namespace Botble\Base\Traits;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
 /**
- * Trait LoadAndPublishDataTrait
- * @package Botble\Base\Traits
  * @mixin ServiceProvider
  */
 trait LoadAndPublishDataTrait
@@ -34,16 +31,6 @@ trait LoadAndPublishDataTrait
     }
 
     /**
-     * @param $isInConsole
-     * @return $this
-     * @deprecated
-     */
-    public function setIsInConsole($isInConsole): self
-    {
-        return $this;
-    }
-
-    /**
      * @param $path
      * @return $this
      */
@@ -63,20 +50,20 @@ trait LoadAndPublishDataTrait
 
     /**
      * Publish the given configuration file name (without extension) and the given module
-     * @param $file_names
+     * @param $fileNames
      * @return $this
      */
-    public function loadAndPublishConfigurations($file_names): self
+    public function loadAndPublishConfigurations($fileNames): self
     {
-        if (!is_array($file_names)) {
-            $file_names = [$file_names];
+        if (!is_array($fileNames)) {
+            $fileNames = [$fileNames];
         }
-        foreach ($file_names as $file_name) {
-            $this->mergeConfigFrom($this->getConfigFilePath($file_name), $this->getDotedNamespace() . '.' . $file_name);
+        foreach ($fileNames as $fileName) {
+            $this->mergeConfigFrom($this->getConfigFilePath($fileName), $this->getDotedNamespace() . '.' . $fileName);
             if ($this->app->runningInConsole()) {
                 $this->publishes([
-                    $this->getConfigFilePath($file_name) => config_path($this->getDashedNamespace() . '/' . $file_name . '.php'),
-                ], 'config');
+                    $this->getConfigFilePath($fileName) => config_path($this->getDashedNamespace() . '/' . $fileName . '.php'),
+                ], 'cms-config');
             }
         }
 
@@ -85,16 +72,16 @@ trait LoadAndPublishDataTrait
 
     /**
      * Publish the given configuration file name (without extension) and the given module
-     * @param $file_names
+     * @param $fileNames
      * @return $this
      */
-    public function loadRoutes($file_names = ['web']): self
+    public function loadRoutes($fileNames = ['web']): self
     {
-        if (!is_array($file_names)) {
-            $file_names = [$file_names];
+        if (!is_array($fileNames)) {
+            $fileNames = [$fileNames];
         }
-        foreach ($file_names as $file_name) {
-            $this->loadRoutesFrom($this->getRouteFilePath($file_name));
+        foreach ($fileNames as $fileName) {
+            $this->loadRoutesFrom($this->getRouteFilePath($fileName));
         }
 
         return $this;
@@ -105,9 +92,9 @@ trait LoadAndPublishDataTrait
      */
     public function loadAndPublishViews(): self
     {
-        $this->loadViewsFrom($this->getViewsPath(), $this->getDotedNamespace());
+        $this->loadViewsFrom($this->getViewsPath(), $this->getDashedNamespace());
         if ($this->app->runningInConsole()) {
-            $this->publishes([$this->getViewsPath() => resource_path('views/vendor/' . $this->getDashedNamespace())], 'views');
+            $this->publishes([$this->getViewsPath() => resource_path('views/vendor/' . $this->getDashedNamespace())], 'cms-views');
         }
 
         return $this;
@@ -120,7 +107,7 @@ trait LoadAndPublishDataTrait
     {
         $this->loadTranslationsFrom($this->getTranslationsPath(), $this->getDashedNamespace());
         if ($this->app->runningInConsole()) {
-            $this->publishes([$this->getTranslationsPath() => resource_path('lang/vendor/' . $this->getDashedNamespace())], 'lang');
+            $this->publishes([$this->getTranslationsPath() => resource_path('lang/vendor/' . $this->getDashedNamespace())], 'cms-lang');
         }
 
         return $this;
@@ -141,7 +128,7 @@ trait LoadAndPublishDataTrait
     public function publishAssetsFolder(): self
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([$this->getAssetsPath() => resource_path('assets/' . $this->getDashedNamespace())], 'assets');
+            $this->publishes([$this->getAssetsPath() => resource_path('assets/' . $this->getDashedNamespace())], 'cms-assets');
         }
 
         return $this;
@@ -155,9 +142,9 @@ trait LoadAndPublishDataTrait
     {
         if ($this->app->runningInConsole()) {
             if (empty($path)) {
-                $path = Str::contains($this->getDotedNamespace(), 'plugins.') ? 'vendor/core/' . $this->getDashedNamespace() : 'vendor/core';
+                $path = !Str::contains($this->getDotedNamespace(), 'core.') ? 'vendor/core/' . $this->getDashedNamespace() : 'vendor/core';
             }
-            $this->publishes([$this->getPublicPath() => public_path($path)], 'public');
+            $this->publishes([$this->getPublicPath() => public_path($path)], 'cms-public');
         }
 
         return $this;
@@ -236,13 +223,5 @@ trait LoadAndPublishDataTrait
     protected function getDashedNamespace(): string
     {
         return str_replace('.', '/', $this->namespace);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getModuleName(): string
-    {
-        return Arr::last(explode('/', $this->getDashedNamespace()));
     }
 }

@@ -3,7 +3,7 @@
 namespace Botble\Base\Providers;
 
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Models\UserMeta;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -14,12 +14,11 @@ class ComposerServiceProvider extends ServiceProvider
 {
 
     /**
-     * @author Sang Nguyen
      * @param Factory $view
      */
     public function boot(Factory $view)
     {
-        $view->composer(['core.base::layouts.partials.top-header'], function (View $view) {
+        $view->composer(['core/base::layouts.partials.top-header'], function (View $view) {
             $themes = Assets::getThemes();
             $locales = Assets::getAdminLocales();
 
@@ -44,7 +43,7 @@ class ComposerServiceProvider extends ServiceProvider
             $view->with(compact('themes', 'locales', 'active_theme'));
         });
 
-        $view->composer(['core.acl::auth.master'], function (View $view) {
+        $view->composer(['core/acl::auth.master'], function (View $view) {
             $themes = Assets::getThemes();
             $active_theme = config('core.base.general.default-theme');
 

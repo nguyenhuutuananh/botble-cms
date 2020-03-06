@@ -2,6 +2,7 @@
 
 namespace Botble\Blog\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Blog\Repositories\Interfaces\CategoryInterface;
 use Botble\Table\Abstracts\TableAbstract;
 use Illuminate\Contracts\Routing\UrlGenerator;
@@ -21,6 +22,11 @@ class CategoryTable extends TableAbstract
     protected $useDefaultSorting = false;
 
     /**
+     * @var bool
+     */
+    protected $hasFilter = true;
+
+    /**
      * CategoryTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
@@ -31,13 +37,18 @@ class CategoryTable extends TableAbstract
         $this->repository = $categoryRepository;
         $this->setOption('id', 'table-categories');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['categories.edit', 'categories.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Exception
      */
@@ -46,6 +57,10 @@ class CategoryTable extends TableAbstract
         $data = $this->table
             ->of($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('categories.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('categories.edit', $item->id), $item->indent_text . ' ' . $item->name);
             })
             ->editColumn('checkbox', function ($item) {
@@ -67,7 +82,7 @@ class CategoryTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, CATEGORY_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return view('plugins.blog::categories.partials.actions', compact('item'))->render();
+                return view('plugins/blog::categories.partials.actions', compact('item'))->render();
             })
             ->escapeColumns([])
             ->make(true);
@@ -77,7 +92,7 @@ class CategoryTable extends TableAbstract
      * Get the query object to be processed by table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -87,7 +102,7 @@ class CategoryTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -123,18 +138,13 @@ class CategoryTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('categories.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('categories.create'), 'categories.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, CATEGORY_MODULE_SCREEN_NAME);
     }
@@ -145,14 +155,7 @@ class CategoryTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('categories.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('categories.deletes'), 'categories.destroy', parent::bulkActions());
     }
 
     /**
@@ -165,7 +168,6 @@ class CategoryTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getCategories',
             ],
             'categories.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -181,13 +183,5 @@ class CategoryTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getCategories()
-    {
-        return $this->repository->pluck('categories.name', 'categories.id');
     }
 }

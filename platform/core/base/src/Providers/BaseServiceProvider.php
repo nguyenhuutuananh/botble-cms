@@ -2,9 +2,7 @@
 
 namespace Botble\Base\Providers;
 
-use Botble\Base\Charts\Supports\ChartBuilder;
 use Botble\Base\Exceptions\Handler;
-use Botble\Base\Http\Middleware\AdminBarMiddleware;
 use Botble\Base\Http\Middleware\DisableInDemoModeMiddleware;
 use Botble\Base\Http\Middleware\HttpsProtocolMiddleware;
 use Botble\Base\Http\Middleware\LocaleMiddleware;
@@ -12,18 +10,18 @@ use Botble\Base\Models\MetaBox as MetaBoxModel;
 use Botble\Base\Repositories\Caches\MetaBoxCacheDecorator;
 use Botble\Base\Repositories\Eloquent\MetaBoxRepository;
 use Botble\Base\Repositories\Interfaces\MetaBoxInterface;
+use Botble\Base\Supports\CustomResourceRegistrar;
 use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Botble\Setting\Providers\SettingServiceProvider;
 use Botble\Setting\Supports\SettingStore;
 use Event;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Routing\ResourceRegistrar;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use MetaBox;
-use Schema;
 
 class BaseServiceProvider extends ServiceProvider
 {
@@ -38,10 +36,13 @@ class BaseServiceProvider extends ServiceProvider
      * Register any application services.
      *
      * @return void
-     * @author Sang Nguyen
      */
     public function register()
     {
+        $this->app->bind(ResourceRegistrar::class, function ($app) {
+            return new CustomResourceRegistrar($app['router']);
+        });
+
         Helper::autoload(__DIR__ . '/../../helpers');
 
         $this->setNamespace('core/base')
@@ -107,43 +108,31 @@ class BaseServiceProvider extends ServiceProvider
 
         $router->pushMiddlewareToGroup('web', LocaleMiddleware::class);
         $router->pushMiddlewareToGroup('web', HttpsProtocolMiddleware::class);
-        $router->pushMiddlewareToGroup('web', AdminBarMiddleware::class);
         $router->aliasMiddleware('preventDemo', DisableInDemoModeMiddleware::class);
 
-        $this->app->bind('chart-builder', function (Container $container) {
-            return new ChartBuilder($container);
-        });
-
-        $this->app->singleton(MetaBoxInterface::class, function () {
+        $this->app->bind(MetaBoxInterface::class, function () {
             return new MetaBoxCacheDecorator(new MetaBoxRepository(new MetaBoxModel));
         });
-
-        $this->app->register(PluginServiceProvider::class);
     }
 
-    /**
-     * Boot the service provider.
-     * @return void
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('core/base')
             ->loadAndPublishConfigurations(['permissions', 'assets'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
+            ->loadRoutes(['web'])
             ->loadMigrations()
             ->publishAssetsFolder()
             ->publishPublicFolder();
 
-        Schema::defaultStringLength(191);
-
         $this->app->booted(function () {
-            do_action('init');
+            do_action(BASE_ACTION_INIT);
             add_action(BASE_ACTION_META_BOXES, [MetaBox::class, 'doMetaBoxes'], 8, 3);
 
-            $this->app->make('config')->set([
-                'app.locale' => env('APP_LOCALE', $this->app->make('config')->get('app.locale')),
+            $config = $this->app->make('config');
+            $config->set([
+                'app.locale' => $config->get('core.base.general.locale', $config->get('app.locale')),
             ]);
         });
 
@@ -154,20 +143,10 @@ class BaseServiceProvider extends ServiceProvider
 
     /**
      * Add default dashboard menu for core
-     * @author Sang Nguyen
      */
     public function registerDefaultMenus()
     {
         dashboard_menu()
-            ->registerItem([
-                'id'          => 'cms-core-plugins',
-                'priority'    => 997,
-                'parent_id'   => null,
-                'name'        => 'core/base::layouts.plugins',
-                'icon'        => 'fa fa-plug',
-                'url'         => route('plugins.list'),
-                'permissions' => ['plugins.list'],
-            ])
             ->registerItem([
                 'id'          => 'cms-core-platform-administration',
                 'priority'    => 999,
@@ -175,7 +154,7 @@ class BaseServiceProvider extends ServiceProvider
                 'name'        => 'core/base::layouts.platform_admin',
                 'icon'        => 'fa fa-user-shield',
                 'url'         => null,
-                'permissions' => ['users.list'],
+                'permissions' => ['users.index'],
             ])
             ->registerItem([
                 'id'          => 'cms-core-system-information',
@@ -184,16 +163,19 @@ class BaseServiceProvider extends ServiceProvider
                 'name'        => 'core/base::system.info.title',
                 'icon'        => null,
                 'url'         => route('system.info'),
-                'permissions' => ['superuser'],
-            ])
-            ->registerItem([
+                'permissions' => [ACL_ROLE_SUPER_USER],
+            ]);
+
+        if (function_exists('proc_open')) {
+            dashboard_menu()->registerItem([
                 'id'          => 'cms-core-system-cache',
                 'priority'    => 6,
                 'parent_id'   => 'cms-core-platform-administration',
                 'name'        => 'core/base::cache.cache_management',
                 'icon'        => null,
                 'url'         => route('system.cache'),
-                'permissions' => ['superuser'],
+                'permissions' => [ACL_ROLE_SUPER_USER],
             ]);
+        }
     }
 }

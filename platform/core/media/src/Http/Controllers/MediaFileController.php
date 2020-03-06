@@ -2,7 +2,7 @@
 
 namespace Botble\Media\Http\Controllers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Media\Http\Requests\MediaFileRequest;
 use Botble\Media\Repositories\Interfaces\MediaFileInterface;
 use Botble\Media\Repositories\Interfaces\MediaFolderInterface;
@@ -14,9 +14,6 @@ use Illuminate\Support\Arr;
 use RvMedia;
 
 /**
- * Class FileController
- * @package Botble\Media\Http\Controllers
- * @author Sang Nguyen
  * @since 19/08/2015 07:50 AM
  */
 class MediaFileController extends Controller
@@ -40,14 +37,12 @@ class MediaFileController extends Controller
      * @param MediaFileInterface $fileRepository
      * @param MediaFolderInterface $folderRepository
      * @param UploadsManager $uploadManager
-     * @author Sang Nguyen
      */
     public function __construct(
         MediaFileInterface $fileRepository,
         MediaFolderInterface $folderRepository,
         UploadsManager $uploadManager
-    )
-    {
+    ) {
         $this->fileRepository = $fileRepository;
         $this->folderRepository = $folderRepository;
         $this->uploadManager = $uploadManager;
@@ -56,7 +51,6 @@ class MediaFileController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
-     * @author Sang Nguyen
      */
     public function postAddExternalService(Request $request)
     {
@@ -81,7 +75,6 @@ class MediaFileController extends Controller
     /**
      * @param MediaFileRequest $request
      * @return JsonResponse
-     * @author Sang Nguyen
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function postUpload(MediaFileRequest $request)
@@ -101,7 +94,6 @@ class MediaFileController extends Controller
     /**
      * @param MediaFileRequest $request
      * @return JsonResponse
-     * @author Sang Nguyen
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function postUploadFromEditor(MediaFileRequest $request)
@@ -111,12 +103,15 @@ class MediaFileController extends Controller
         if ($result['error'] == false) {
             $file = $result['data'];
             if ($request->input('upload_type') == 'tinymce') {
-                return response('<script>parent.setImageValue("' . url($file->url) . '"); </script>')->header('Content-Type', 'text/html');
+                return response('<script>parent.setImageValue("' . url($file->url) . '"); </script>')->header('Content-Type',
+                    'text/html');
             }
 
-            return response('<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction("' . $request->input('CKEditorFuncNum') . '", "' . (config('filesystems.default') === 'local' ? '/' . ltrim($file->url, '/') : $file->url) . '", "");</script>')->header('Content-Type', 'text/html');
+            return response('<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction("' . $request->input('CKEditorFuncNum') . '", "' . (config('filesystems.default') === 'local' ? '/' . ltrim($file->url,
+                        '/') : $file->url) . '", "");</script>')->header('Content-Type', 'text/html');
         }
 
-        return response('<script>alert("' . Arr::get($result, 'message') . '")</script>')->header('Content-Type', 'text/html');
+        return response('<script>alert("' . Arr::get($result, 'message') . '")</script>')->header('Content-Type',
+            'text/html');
     }
 }

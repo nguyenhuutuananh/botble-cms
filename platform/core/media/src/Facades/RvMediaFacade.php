@@ -9,7 +9,6 @@ class RvMediaFacade extends Facade
 {
     /**
      * @return string
-     * @author Sang Nguyen
      */
     protected static function getFacadeAccessor()
     {

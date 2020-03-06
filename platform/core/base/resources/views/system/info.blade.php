@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     <div class="row">
         <div class="col-sm-12">
@@ -10,6 +10,7 @@
                     <textarea name="txt-report" id="txt-report" class="col-sm-12" rows="10" spellcheck="false" onfocus="this.select()">
                         ### {{ trans('core/base::system.system_environment') }}
 
+                        - {{ trans('core/base::system.cms_version') }}: {{ get_cms_version() }}
                         - {{ trans('core/base::system.framework_version') }}: {{ $systemEnv['version'] }}
                         - {{ trans('core/base::system.timezone') }}: {{ $systemEnv['timezone'] }}
                         - {{ trans('core/base::system.debug_mode') }}: {!! $systemEnv['debug_mode'] ? '&#10004;' : '&#10008;' !!}
@@ -28,6 +29,7 @@
                         - {{ trans('core/base::system.database') }}: {{ $serverEnv['database_connection_name'] }}
                         - {{ trans('core/base::system.ssl_installed') }}: {!! $serverEnv['ssl_installed'] ? '&#10004;' : '&#10008;' !!}
                         - {{ trans('core/base::system.cache_driver') }}: {{ $serverEnv['cache_driver'] }}
+                        - {{ trans('core/base::system.queue_connection') }}: {{ $serverEnv['queue_connection'] }}
                         - {{ trans('core/base::system.session_driver') }}: {{ $serverEnv['session_driver'] }}
                         - {{ trans('core/base::system.mbstring_ext') }}: {!! $serverEnv['mbstring'] ? '&#10004;' : '&#10008;' !!}
                         - {{ trans('core/base::system.openssl_ext') }}: {!! $serverEnv['openssl'] ? '&#10004;' : '&#10008;' !!}
@@ -84,6 +86,7 @@
                 </div>
 
                 <ul class="list-group">
+                    <li class="list-group-item">{{ trans('core/base::system.cms_version') }}: {{ get_cms_version() }}</li>
                     <li class="list-group-item">{{ trans('core/base::system.framework_version') }}: {{ $systemEnv['version'] }}</li>
                     <li class="list-group-item">{{ trans('core/base::system.timezone') }}: {{ $systemEnv['timezone'] }}</li>
                     <li class="list-group-item">{{ trans('core/base::system.debug_mode') }}: {!! $systemEnv['debug_mode'] ? '<span class="fas fa-check"></span>' : '<span class="fas fa-times"></span>' !!}</li>
@@ -111,6 +114,7 @@
                     <li class="list-group-item">{{ trans('core/base::system.ssl_installed') }}: {!! $serverEnv['ssl_installed'] ? '<span class="fas fa-check"></span>' : '<span class="fas fa-times"></span>' !!}</li>
                     <li class="list-group-item">{{ trans('core/base::system.cache_driver') }}: {{ $serverEnv['cache_driver'] }}</li>
                     <li class="list-group-item">{{ trans('core/base::system.session_driver') }}: {{ $serverEnv['session_driver'] }}</li>
+                    <li class="list-group-item">{{ trans('core/base::system.queue_connection') }}: {{ $serverEnv['queue_connection'] }}</li>
                     <li class="list-group-item">{{ trans('core/base::system.openssl_ext') }}: {!! $serverEnv['openssl'] ? '<span class="fas fa-check"></span>' : '<span class="fas fa-times"></span>' !!}</li>
                     <li class="list-group-item">{{ trans('core/base::system.mbstring_ext') }}: {!! $serverEnv['mbstring'] ? '<span class="fas fa-check"></span>' : '<span class="fas fa-times"></span>' !!}</li>
                     <li class="list-group-item">{{ trans('core/base::system.pdo_ext') }}: {!! $serverEnv['pdo'] ? '<span class="fas fa-check"></span>' : '<span class="fas fa-times"></span>' !!}</li>

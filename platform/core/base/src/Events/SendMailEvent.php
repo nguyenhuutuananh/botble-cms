@@ -40,7 +40,7 @@ class SendMailEvent extends Event
      * @param string $to
      * @param array $args
      * @param bool $debug
-     * @author Sang Nguyen
+     * 
      */
     public function __construct($content, $title, $to, $args, $debug = false)
     {
@@ -49,16 +49,5 @@ class SendMailEvent extends Event
         $this->to = $to;
         $this->args = $args;
         $this->debug = $debug;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function broadcastOn()
-    {
-        return [];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Botble\Blog\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Blog\Exports\PostExport;
 use Botble\Blog\Models\Post;
@@ -52,13 +53,18 @@ class PostTable extends TableAbstract
         $this->setOption('id', 'table-posts');
         $this->categoryRepository = $categoryRepository;
         parent::__construct($table, $urlGenerator);
+
+        if (Auth::check() && !Auth::user()->hasAnyPermission(['posts.edit', 'posts.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -66,6 +72,10 @@ class PostTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (Auth::check() && !Auth::user()->hasPermission('posts.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('posts.edit', $item->id), $item->name);
             })
             ->editColumn('image', function ($item) {
@@ -95,7 +105,7 @@ class PostTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, POST_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('posts.edit', 'posts.delete', $item);
+                return table_actions('posts.edit', 'posts.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -105,7 +115,7 @@ class PostTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -129,7 +139,7 @@ class PostTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -179,18 +189,13 @@ class PostTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('posts.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('posts.create'), 'posts.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, POST_MODULE_SCREEN_NAME);
     }
@@ -201,14 +206,7 @@ class PostTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('posts.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('posts.deletes'), 'posts.destroy', parent::bulkActions());
     }
 
     /**
@@ -221,7 +219,6 @@ class PostTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getPosts',
             ],
             'posts.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -238,25 +235,8 @@ class PostTable extends TableAbstract
                 'title'    => __('Category'),
                 'type'     => 'select-search',
                 'validate' => 'required',
-                'callback' => 'getCategories',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getPosts()
-    {
-        return $this->repository->pluck('posts.name', 'posts.id');
-    }
-
-    /**
-     * @return array
-     */
-    public function getCategories()
-    {
-        return $this->categoryRepository->pluck('categories.name', 'categories.id');
     }
 
     /**
@@ -271,21 +251,14 @@ class PostTable extends TableAbstract
         switch ($key) {
             case 'posts.created_at':
                 $value = Carbon::createFromFormat('Y/m/d', $value)->toDateString();
-                $query = $query->whereDate($key, $operator, $value);
-                break;
+                return $query->whereDate($key, $operator, $value);
             case 'category':
-                $query->join('post_categories', 'post_categories.post_id', '=', 'posts.id')
+                return $query->join('post_categories', 'post_categories.post_id', '=', 'posts.id')
                     ->join('categories', 'post_categories.category_id', '=', 'categories.id')
                     ->where('post_categories.category_id', $operator, $value);
-                break;
-            default:
-                if ($operator !== '=') {
-                    $value = (float)$value;
-                }
-                $query = $query->where($key, $operator, $value);
         }
 
-        return $query;
+        return parent::applyFilterCondition($query, $key, $operator, $value);
     }
 
     /**

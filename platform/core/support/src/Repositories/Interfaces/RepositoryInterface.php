@@ -2,8 +2,6 @@
 
 namespace Botble\Support\Repositories\Interfaces;
 
-use Botble\Support\Criteria\AbstractCriteria;
-use Botble\Support\Criteria\Contracts\CriteriaContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -13,7 +11,6 @@ interface RepositoryInterface
 {
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getScreen(): string;
 
@@ -22,62 +19,20 @@ interface RepositoryInterface
      * @param $screen
      * @param bool $is_single
      * @return Builder
-     * @author Sang Nguyen
      */
     public function applyBeforeExecuteQuery($data, $screen, $is_single = false);
 
     /**
-     * @return array
-     * @author Tedozi Manson
-     */
-    public function getCriteria();
-
-    /**
-     * @param CriteriaContract $criteria
-     * @return $this
-     * @author Tedozi Manson
-     */
-    public function pushCriteria(CriteriaContract $criteria);
-
-    /**
-     * @param AbstractCriteria|string $criteria
-     * @return $this
-     * @author Tedozi Manson
-     */
-    public function dropCriteria($criteria);
-
-    /**
-     * @param bool $bool
-     * @return $this
-     * @author Tedozi Manson
-     */
-    public function skipCriteria($bool = true);
-
-    /**
-     * @return $this
-     * @author Tedozi Manson
-     */
-    public function applyCriteria();
-
-    /**
-     * @param CriteriaContract $criteria
-     * @return mixed
-     * @author Tedozi Manson
-     */
-    public function getByCriteria(CriteriaContract $criteria);
-
-    /**
      * Runtime override of the model.
      *
-     * @param  string $model
+     * @param string $model
      * @return $this
      */
     public function setModel($model);
 
     /**
      * Get empty model.
-     * @return mixed
-     * @author Sang Nguyen
+     * @return \Eloquent|Model
      */
     public function getModel();
 
@@ -85,7 +40,6 @@ interface RepositoryInterface
      * Get table name.
      *
      * @return string
-     * @author Sang Nguyen
      */
     public function getTable();
 
@@ -93,7 +47,6 @@ interface RepositoryInterface
      * Make a new instance of the entity to query on.
      *
      * @param array $with
-     * @author Sang Nguyen
      */
     public function make(array $with = []);
 
@@ -104,7 +57,6 @@ interface RepositoryInterface
      * @param array $select
      * @param array $with
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getFirstBy(array $condition = [], array $select = [], array $with = []);
 
@@ -114,7 +66,6 @@ interface RepositoryInterface
      * @param $id
      * @param array $with
      * @return mixed
-     * @author Sang Nguyen
      */
     public function findById($id, array $with = []);
 
@@ -122,15 +73,13 @@ interface RepositoryInterface
      * @param $id
      * @param array $with
      * @return mixed
-     * @author Sang Nguyen
      */
     public function findOrFail($id, array $with = []);
 
     /**
      * @param string $column
      * @param string $key
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function pluck($column, $key = null);
 
@@ -138,8 +87,7 @@ interface RepositoryInterface
      * Get all models.
      *
      * @param array $with Eager load related models
-     * @return mixed
-     * @author Sang Nguyen
+     * @return Collection
      */
     public function all(array $with = []);
 
@@ -149,7 +97,7 @@ interface RepositoryInterface
      * @param array $condition
      * @param array $with
      * @param array $select
-     * @author Sang Nguyen
+     *
      * @return Collection
      */
     public function allBy(array $condition, array $with = [], array $select = ['*']);
@@ -157,7 +105,6 @@ interface RepositoryInterface
     /**
      * @param array $data
      * @return mixed
-     * @author Sang Nguyen
      */
     public function create(array $data);
 
@@ -167,7 +114,6 @@ interface RepositoryInterface
      * @param Model|array $data
      * @param array $condition
      * @return false|Model
-     * @author Sang Nguyen
      */
     public function createOrUpdate($data, $condition = []);
 
@@ -177,7 +123,6 @@ interface RepositoryInterface
      * @param Model $model
      * @return bool
      * @throws \Exception
-     * @author Sang Nguyen
      */
     public function delete(Model $model);
 
@@ -185,7 +130,6 @@ interface RepositoryInterface
      * @param array $data
      * @param array $with
      * @return mixed
-     * @author Sang Nguyen
      */
     public function firstOrCreate(array $data, array $with = []);
 
@@ -193,7 +137,6 @@ interface RepositoryInterface
      * @param array $condition
      * @param array $data
      * @return mixed
-     * @author Sang Nguyen
      */
     public function update(array $condition, array $data);
 
@@ -201,21 +144,18 @@ interface RepositoryInterface
      * @param array $select
      * @param array $condition
      * @return mixed
-     * @author Sang Nguyen
      */
     public function select(array $select = ['*'], array $condition = []);
 
     /**
      * @param array $condition
      * @return mixed
-     * @author Sang Nguyen
      */
     public function deleteBy(array $condition = []);
 
     /**
      * @param array $condition
      * @return mixed
-     * @author Sang Nguyen
      */
     public function count(array $condition = []);
 
@@ -224,7 +164,6 @@ interface RepositoryInterface
      * @param array $value
      * @param array $args
      * @return \Illuminate\Database\Eloquent\Collection|static[]
-     * @author Sang Nguyen
      */
     public function getByWhereIn($column, array $value = [], array $args = []);
 
@@ -242,7 +181,6 @@ interface RepositoryInterface
     /**
      * @param array $condition
      * @return mixed
-     * @author Sang Nguyen
      */
     public function restoreBy(array $condition = []);
 
@@ -252,14 +190,12 @@ interface RepositoryInterface
      * @param array $condition
      * @param array $select
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getFirstByWithTrash(array $condition = [], array $select = []);
 
     /**
      * @param array $data
      * @return bool
-     * @author Sang Nguyen
      */
     public function insert(array $data);
 

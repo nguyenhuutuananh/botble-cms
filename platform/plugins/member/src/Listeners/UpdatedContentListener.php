@@ -9,19 +9,18 @@ use Exception;
 
 class UpdatedContentListener
 {
-
     /**
      * Handle the event.
      *
      * @param UpdatedContentEvent $event
      * @return void
-     * @author Sang Nguyen
      */
     public function handle(UpdatedContentEvent $event)
     {
         try {
             if ($event->data->id &&
                 $event->data->author_type === Member::class &&
+                auth()->guard('member')->check() &&
                 $event->data->author_id == auth()->guard('member')->user()->getKey()
             ) {
                 app(MemberActivityLogInterface::class)->createOrUpdate([

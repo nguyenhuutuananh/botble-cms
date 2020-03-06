@@ -31,7 +31,7 @@ class ForgotPasswordController extends Controller
     public function showLinkRequestForm()
     {
         SeoHelper::setTitle(trans('plugins/member::member.forgot_password'));
-        return view('plugins.member::auth.passwords.email');
+        return view('plugins/member::auth.passwords.email');
     }
 
     /**

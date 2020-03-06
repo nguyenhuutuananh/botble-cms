@@ -2,14 +2,13 @@
 
 namespace Botble\Media\Models;
 
-use Eloquent;
 use Exception;
+use Botble\Base\Models\BaseModel;
 
-class MediaSetting extends Eloquent
+class MediaSetting extends BaseModel
 {
     /**
      * The database table used by the model.
-     *
      * @var string
      */
     protected $table = 'media_settings';
@@ -38,7 +37,6 @@ class MediaSetting extends Eloquent
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setValueAttribute($value)
     {

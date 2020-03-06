@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     {!! Form::open(['route' => ['settings.edit']]) !!}
     <div class="max-width-1200">
@@ -15,20 +15,6 @@
 
             <div class="flexbox-annotated-section-content">
                 <div class="wrapper-content pd-all-20">
-                    <div class="form-group">
-                        <label class="text-title-field"
-                               for="site_title">{{ trans('core/setting::setting.general.site_title') }}</label>
-                        <input data-counter="120" type="text" class="next-input" name="site_title" id="site_title"
-                               value="{{ setting('site_title') }}">
-                    </div>
-
-                    <div class="form-group">
-                        <div class="mt5">
-                            <input type="hidden" name="show_site_name" value="0">
-                            <label><input type="checkbox" class="hrv-checkbox" value="1"
-                                          @if (setting('show_site_name', false)) checked @endif name="show_site_name"> {{ trans('core/setting::setting.general.show_site_name') }} </label>
-                        </div>
-                    </div>
 
                     <div class="form-group">
                         <label class="text-title-field"
@@ -43,8 +29,8 @@
                         </label>
                         <div class="ui-select-wrapper">
                             <select name="time_zone" class="ui-select" id="time_zone">
-                                @foreach(DateTimeZone::listIdentifiers(DateTimeZone::ALL) as $time_zone)
-                                    <option value="{{ $time_zone }}" @if (setting('time_zone', 'UTC') === $time_zone) selected @endif>{{ $time_zone }}</option>
+                                @foreach(DateTimeZone::listIdentifiers(DateTimeZone::ALL) as $timezone)
+                                    <option value="{{ $timezone }}" @if (setting('time_zone', 'UTC') === $timezone) selected @endif>{{ $timezone }}</option>
                                 @endforeach
                             </select>
                             <svg class="svg-next-icon svg-next-icon-size-16">
@@ -94,7 +80,7 @@
                         <label class="text-title-field"
                                for="admin_title">{{ trans('core/setting::setting.general.admin_title') }}</label>
                         <input data-counter="120" type="text" class="next-input" name="admin_title" id="admin_title"
-                               value="{{ setting('admin_title') }}">
+                               value="{{ setting('admin_title', config('app.name')) }}">
                     </div>
 
                     <div class="form-group">
@@ -128,16 +114,6 @@
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-
-                        <div class="mt5">
-                            <input type="hidden" name="show_admin_bar" value="0">
-                            <label><input type="checkbox" class="hrv-checkbox" value="1"
-                                          @if (setting('show_admin_bar')) checked @endif name="show_admin_bar"> {{ trans('core/setting::setting.general.show_admin_bar') }} </label>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <div class="mt5">
                             <input type="hidden" name="enable_change_admin_theme" value="0">
@@ -156,57 +132,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flexbox-annotated-section">
-            <div class="flexbox-annotated-section-annotation">
-                <div class="annotated-section-title pd-all-20">
-                    <h2>{{ trans('core/setting::setting.general.seo_block') }}</h2>
-                </div>
-                <div class="annotated-section-description pd-all-20 p-none-t">
-                    <p class="color-note">{{ trans('core/setting::setting.general.seo_block_description') }}</p>
-                </div>
-            </div>
-
-            <div class="flexbox-annotated-section-content">
-                <div class="wrapper-content pd-all-20">
-                    <div class="form-group">
-                        <label class="text-title-field"
-                               for="seo_title">{{ trans('core/setting::setting.general.seo_title') }}</label>
-                        <input data-counter="120" type="text" class="next-input" name="seo_title" id="seo_title"
-                               value="{{ setting('seo_title') }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="text-title-field"
-                               for="seo_description">{{ trans('core/setting::setting.general.seo_description') }}</label>
-                        <textarea data-counter="386"  class="next-input" name="seo_description" id="seo_description">{{ setting('seo_description') }}</textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flexbox-annotated-section">
-            <div class="flexbox-annotated-section-annotation">
-                <div class="annotated-section-title pd-all-20">
-                    <h2>{{ trans('core/setting::setting.general.webmaster_tools_block') }}</h2>
-                </div>
-                <div class="annotated-section-description pd-all-20 p-none-t">
-                    <p class="color-note">{{ trans('core/setting::setting.general.webmaster_tools_description') }}</p>
-                </div>
-            </div>
-
-            <div class="flexbox-annotated-section-content">
-                <div class="wrapper-content pd-all-20">
-                    <div class="form-group">
-                        <label class="text-title-field"
-                               for="google_site_verification">{{ trans('core/setting::setting.general.google_site_verification') }}</label>
-                        <input data-counter="120" type="text" class="next-input" name="google_site_verification"
-                               id="google_site_verification" value="{{ setting('google_site_verification') }}">
-                    </div>
-
                 </div>
             </div>
         </div>

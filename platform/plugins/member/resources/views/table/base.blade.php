@@ -1,4 +1,4 @@
-@extends('plugins.member::layouts.skeleton')
+@extends('plugins/member::layouts.skeleton')
 @section('content')
 <div class="container page-content" style="background: none">
     <div class="table-wrapper">
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="table-responsive" style="overflow-x: inherit">
+                <div class="table-responsive @if ($actions) table-has-actions @endif @if ($table->isHasFilter()) table-has-filter @endif" style="overflow-x: inherit">
                     @section('main-table')
                         {!! $dataTable->table(compact('id', 'class'), false) !!}
                     @show
@@ -41,7 +41,7 @@
         </div>
     </div>
 </div>
-@include('core.table::modal')
+@include('core/table::modal')
 @endsection
 @push('scripts')
     {!! $dataTable->scripts() !!}

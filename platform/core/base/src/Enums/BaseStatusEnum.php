@@ -7,12 +7,12 @@ use Html;
 
 /**
  * @method static BaseStatusEnum DRAFT()
- * @method static BaseStatusEnum PUBLISH()
+ * @method static BaseStatusEnum PUBLISHED()
  * @method static BaseStatusEnum PENDING()
  */
 class BaseStatusEnum extends Enum
 {
-    public const PUBLISH = 'publish';
+    public const PUBLISHED = 'published';
     public const DRAFT = 'draft';
     public const PENDING = 'pending';
 
@@ -33,8 +33,8 @@ class BaseStatusEnum extends Enum
             case self::PENDING:
                 return Html::tag('span', self::PENDING()->label(), ['class' => 'label-warning status-label'])
                     ->toHtml();
-            case self::PUBLISH:
-                return Html::tag('span', self::PUBLISH()->label(), ['class' => 'label-success status-label'])
+            case self::PUBLISHED:
+                return Html::tag('span', self::PUBLISHED()->label(), ['class' => 'label-success status-label'])
                     ->toHtml();
             default:
                 return null;

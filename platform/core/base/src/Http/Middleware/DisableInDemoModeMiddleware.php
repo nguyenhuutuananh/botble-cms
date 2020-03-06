@@ -20,7 +20,7 @@ class DisableInDemoModeMiddleware
     protected $httpResponse;
 
     /**
-     * AdminBarMiddleware constructor.
+     * DisableInDemoModeMiddleware constructor.
      * @param Application $application
      * @param BaseHttpResponse $response
      */
@@ -36,7 +36,7 @@ class DisableInDemoModeMiddleware
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function handle($request, Closure $next)

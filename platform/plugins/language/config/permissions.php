@@ -3,21 +3,21 @@
 return [
     [
         'name' => 'Languages',
-        'flag' => 'languages.list',
+        'flag' => 'languages.index',
     ],
     [
         'name'        => 'Create',
         'flag'        => 'languages.create',
-        'parent_flag' => 'languages.list',
+        'parent_flag' => 'languages.index',
     ],
     [
         'name'        => 'Edit',
         'flag'        => 'languages.edit',
-        'parent_flag' => 'languages.list',
+        'parent_flag' => 'languages.index',
     ],
     [
         'name'        => 'Delete',
-        'flag'        => 'languages.delete',
-        'parent_flag' => 'languages.list',
+        'flag'        => 'languages.destroy',
+        'parent_flag' => 'languages.index',
     ],
 ];

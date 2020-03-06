@@ -15,6 +15,7 @@ return [
         'content'   => 'Content',
     ],
     'contact_information'           => 'Contact information',
+    'replies'                       => 'Replies',
     'email'                         => [
         'header'  => 'Email',
         'title'   => 'New contact from your site',

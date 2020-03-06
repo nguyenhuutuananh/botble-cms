@@ -2,6 +2,7 @@
 
 namespace Botble\Menu\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Menu\Repositories\Interfaces\MenuInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -22,7 +23,7 @@ class MenuTable extends TableAbstract
     protected $hasFilter = true;
 
     /**
-     * TagTable constructor.
+     * MenuTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param MenuInterface $menuRepository
@@ -32,13 +33,18 @@ class MenuTable extends TableAbstract
         $this->repository = $menuRepository;
         $this->setOption('id', 'table-menus');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['menus.edit', 'menus.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -46,6 +52,10 @@ class MenuTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('menus.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('menus.edit', $item->id), $item->name);
             })
             ->editColumn('checkbox', function ($item) {
@@ -60,7 +70,7 @@ class MenuTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, MENU_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('menus.edit', 'menus.delete', $item);
+                return table_actions('menus.edit', 'menus.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -70,7 +80,7 @@ class MenuTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -90,7 +100,7 @@ class MenuTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -121,18 +131,14 @@ class MenuTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('menus.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('menus.create'), 'menus.create');
+
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, MENU_MODULE_SCREEN_NAME);
     }
 
@@ -142,14 +148,7 @@ class MenuTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('menus.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('menus.deletes'), 'menus.destroy', parent::bulkActions());
     }
 
     /**
@@ -162,7 +161,6 @@ class MenuTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getMenus',
             ],
             'menus.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -175,13 +173,5 @@ class MenuTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getMenus()
-    {
-        return $this->repository->pluck('menus.name', 'menus.id');
     }
 }

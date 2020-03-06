@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     <div class="tabbable-custom tabbable-tabdrop">
         <ul class="nav nav-tabs">
@@ -96,7 +96,7 @@
                                 </thead>
                                 <tbody>
                                 @foreach ($active_languages as $item)
-                                    @include('plugins.language::partials.language-item', compact('item'))
+                                    @include('plugins/language::partials.language-item', compact('item'))
                                 @endforeach
                                 </tbody>
                             </table>
@@ -188,4 +188,5 @@
             </div>
         </div>
     </div>
+    @include('core/table::modal')
 @stop

@@ -25,7 +25,7 @@
 
 @if ($form->getValidatorClass())
     @if ($form->isUseInlineJs())
-        {!! Assets::getAppModuleItemToHtml('form-validation') !!}
+        {!! Assets::scriptToHtml('form-validation') !!}
         {!! $form->renderValidatorJs() !!}
         @include('media::partials.media')
         <script>

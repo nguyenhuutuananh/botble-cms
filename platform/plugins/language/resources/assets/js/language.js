@@ -67,17 +67,17 @@ class LanguageManagement {
 
             $.ajax({
                 url: deleteURL,
-                type: 'GET',
+                type: 'DELETE',
                 success: (data) => {
                     if (data.error) {
-                        Botble.showNotice('error', data.message);
+                        Botble.showError(data.message);
                     } else {
                         if (data.data) {
                             table_language.find('i[data-id=' + data.data + ']').unwrap();
                             $('.tooltip').remove();
                         }
                         table_language.find('a[data-section="' + deleteURL + '"]').closest('tr').remove();
-                        Botble.showNotice('success', data.message);
+                        Botble.showSuccess(data.message);
                     }
                 },
                 error: (data) => {
@@ -95,13 +95,13 @@ class LanguageManagement {
                 type: 'GET',
                 success: (data) => {
                     if (data.error) {
-                        Botble.showNotice('error', data.message);
+                        Botble.showError(data.message);
                     } else {
                         let star = table_language.find('td > i');
                         star.replaceWith('<a data-section="' + route('languages.set.default') + '?lang_id=' + star.data('id') + '" class="set-language-default tip" data-original-title="Choose ' + star.data('name') + ' as default language">' + star.closest('td').html() + '</a>');
                         _self.find('i').unwrap();
                         $('.tooltip').remove();
-                        Botble.showNotice('success', data.message);
+                        Botble.showSuccess(data.message);
                     }
                 },
                 error: (data) => {
@@ -119,7 +119,7 @@ class LanguageManagement {
                 type: 'GET',
                 success: (data) => {
                     if (data.error) {
-                        Botble.showNotice('error', data.message);
+                        Botble.showError(data.message);
                     } else {
                         let language = data.data;
                         $('#lang_id').val(language.lang_id);
@@ -161,14 +161,14 @@ class LanguageManagement {
             },
             success: (data) => {
                 if (data.error) {
-                    Botble.showNotice('error', data.message);
+                    Botble.showError(data.message);
                 } else {
                     if (edit) {
                         $('.table-language').find('tr[data-id=' + id + ']').replaceWith(data.data);
                     } else {
                         $('.table-language').append(data.data);
                     }
-                    Botble.showNotice('success', data.message);
+                    Botble.showSuccess(data.message);
                 }
 
                 $('#language_id').val('').trigger('change');

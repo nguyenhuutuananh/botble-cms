@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     <div class="table-wrapper">
         @if ($table->isHasFilter())
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="table-responsive">
+                <div class="table-responsive @if ($actions) table-has-actions @endif @if ($table->isHasFilter()) table-has-filter @endif">
                     @section('main-table')
                         {!! $dataTable->table(compact('id', 'class'), false) !!}
                     @show
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    @include('core.table::modal')
+    @include('core/table::modal')
 @stop
 @section('javascript')
     {!! $dataTable->scripts() !!}

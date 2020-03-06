@@ -7,23 +7,6 @@ use Botble\Support\Repositories\Eloquent\RepositoriesAbstract;
 
 class UserRepository extends RepositoriesAbstract implements UserInterface
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDataSiteMap()
-    {
-        $data = $this->model
-            ->where('username', '!=', null)
-            ->select(['username', 'updated_at'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $this->resetModel();
-
-        return $data;
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -2,10 +2,10 @@
 
 namespace Botble\CustomField\Models;
 
-use Eloquent;
 use Exception;
+use Botble\Base\Models\BaseModel;
 
-class CustomField extends Eloquent
+class CustomField extends BaseModel
 {
     /**
      * @var string

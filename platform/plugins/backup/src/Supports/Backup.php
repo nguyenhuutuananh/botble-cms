@@ -28,7 +28,7 @@ class Backup
     protected $folder;
 
     /**
-     * @author Sang Nguyen
+     *
      */
     public function __construct()
     {
@@ -38,7 +38,7 @@ class Backup
     /**
      * @param Request $request
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createBackupFolder(Request $request)
@@ -84,7 +84,7 @@ class Backup
     /**
      * @param string $folder
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function createFolder($folder)
     {
@@ -98,7 +98,7 @@ class Backup
 
     /**
      * @return bool
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
     public function backupDb()
@@ -106,12 +106,20 @@ class Backup
         $file = 'database-' . Carbon::now(config('app.timezone'))->format('Y-m-d-H-i-s');
         $path = $this->folder . DIRECTORY_SEPARATOR . $file;
 
-        $mysql_path = rtrim(setting('backup_mysql_execute_path', env('BACKUP_MYSQL_EXECUTE_PATH', '')), '/');
-        if (!empty($mysql_path)) {
-            $mysql_path = $mysql_path . '/';
+        $mysqlPath = rtrim(setting('backup_mysql_execute_path', config('plugins.backup.general.backup_mysql_execute_path')), '/');
+
+        if (!empty($mysqlPath)) {
+            $mysqlPath = $mysqlPath . '/';
         }
 
-        $sql = $mysql_path . 'mysqldump --user=' . env('DB_USERNAME') . ' --password=' . env('DB_PASSWORD') . ' --host=' . env('DB_HOST') . ' ' . env('DB_DATABASE') . ' > ' . $path . '.sql';
+        $sql = $mysqlPath . 'mysqldump --user=' . config('database.connections.mysql.username') . ' --password=' .
+            config('database.connections.mysql.password');
+
+        if (!in_array(config('database.connections.mysql.host'), ['localhost', '127.0.0.1'])) {
+            $sql .= ' --host=' . config('database.connections.mysql.host');
+        }
+
+        $sql .=' --port=' . config('database.connections.mysql.port') . ' ' . config('database.connections.mysql.database') . ' > ' . $path . '.sql';
 
         system($sql);
         $this->compressFileToZip($path, $file);
@@ -125,7 +133,7 @@ class Backup
     /**
      * @param string $source
      * @return bool
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function backupFolder($source)
@@ -162,7 +170,7 @@ class Backup
      * @param string $path
      * @param string $file
      * @return bool
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
     public function restoreDb($file, $path)
@@ -175,8 +183,8 @@ class Backup
         }
         // Force the new login to be used
         DB::purge();
-        DB::unprepared('USE `' . env('DB_DATABASE') . '`');
-        DB::connection()->setDatabaseName(env('DB_DATABASE'));
+        DB::unprepared('USE `' . config('database.connections.mysql.database')  . '`');
+        DB::connection()->setDatabaseName(config('database.connections.mysql.database') );
         DB::unprepared(file_get_contents($file));
 
         $this->deleteFile($file);
@@ -188,7 +196,7 @@ class Backup
      * @param string $fileName
      * @param string $pathTo
      * @return bool
-     * @author Sang Nguyen
+     *
      */
     public function restore($fileName, $pathTo)
     {
@@ -212,7 +220,7 @@ class Backup
      * @param string $src
      * @param ZipArchive $zip
      * @param string $pathLength
-     * @author Sang Nguyen
+     *
      */
     public function recurseZip($src, &$zip, $pathLength)
     {
@@ -238,7 +246,7 @@ class Backup
     /**
      * @param string $path
      * @param string $name
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
     public function compressFileToZip($path, $name)
@@ -261,7 +269,7 @@ class Backup
     /**
      * @param string $file
      * @throws Exception
-     * @author Sang Nguyen
+     *
      */
     public function deleteFile($file)
     {
@@ -272,7 +280,7 @@ class Backup
 
     /**
      * @param string $path
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function deleteFolderBackup($path)

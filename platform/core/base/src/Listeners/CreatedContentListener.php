@@ -13,7 +13,6 @@ class CreatedContentListener
      *
      * @param CreatedContentEvent $event
      * @return void
-     * @author Sang Nguyen
      */
     public function handle(CreatedContentEvent $event)
     {

@@ -4,10 +4,10 @@ namespace Botble\Revision;
 
 use Botble\ACL\Models\User;
 use Exception;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Botble\Base\Models\BaseModel;
 use Illuminate\Support\Str;
 
-class Revision extends Eloquent
+class Revision extends BaseModel
 {
     /**
      * @var string
@@ -233,20 +233,20 @@ class Revision extends Eloquent
         if (empty($this->user_id)) {
             return false;
         }
-        $user_model = app('config')->get('auth.model');
+        $userModel = app('config')->get('auth.model');
 
-        if (empty($user_model)) {
-            $user_model = app('config')->get('auth.providers.users.model');
-            if (empty($user_model)) {
+        if (empty($userModel)) {
+            $userModel = app('config')->get('auth.providers.users.model');
+            if (empty($userModel)) {
                 return false;
             }
         }
 
-        if (!class_exists($user_model)) {
+        if (!class_exists($userModel)) {
             return false;
         }
 
-        return $user_model::find($this->user_id);
+        return $userModel::find($this->user_id);
     }
 
     /*

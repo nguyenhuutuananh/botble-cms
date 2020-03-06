@@ -2,7 +2,6 @@
 
 namespace Botble\Support\Repositories\Eloquent;
 
-use Botble\Support\Criteria\Contracts\CriteriaContract;
 use Botble\Support\Repositories\Interfaces\RepositoryInterface;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,16 +22,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     protected $originalModel;
 
     /**
-     * @var array
-     */
-    protected $criteria = [];
-
-    /**
-     * @var bool
-     */
-    protected $skipCriteria = false;
-
-    /**
      * @var string
      */
     protected $screen = '';
@@ -40,7 +29,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     /**
      * RepositoriesAbstract constructor.
      * @param Model|Eloquent $model
-     * @author Sang Nguyen
      */
     public function __construct(Model $model)
     {
@@ -54,6 +42,58 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function getScreen(): string
     {
         return $this->screen;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTable()
+    {
+        return $this->model->getTable();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findById($id, array $with = [])
+    {
+        $data = $this->make($with)->where('id', $id);
+        $data = $this->applyBeforeExecuteQuery($data, $this->screen, true);
+        $data = $data->first();
+
+        $this->resetModel();
+
+        return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function make(array $with = [])
+    {
+        if (!empty($with)) {
+            $this->model = $this->model->with($with);
+        }
+
+        return $this->model;
     }
 
     /**
@@ -79,142 +119,11 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function setModel($model)
+    public function resetModel()
     {
-        $this->model = $model;
+        $this->model = new $this->originalModel;
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTable()
-    {
-        return $this->model->getTable();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCriteria()
-    {
-        return $this->criteria;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function pushCriteria(CriteriaContract $criteria)
-    {
-        $this->criteria[get_class($criteria)] = $criteria;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function dropCriteria($criteria)
-    {
-        $className = $criteria;
-        if (is_object($className)) {
-            $className = get_class($criteria);
-        }
-
-        if (isset($this->criteria[$className])) {
-            unset($this->criteria[$className]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function skipCriteria($bool = true)
-    {
-        $this->skipCriteria = $bool;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function applyCriteria()
-    {
-        if ($this->skipCriteria === true) {
-            return $this;
-        }
-        $criteria = $this->getCriteria();
-        if ($criteria) {
-            foreach ($criteria as $cr) {
-                $this->model = $cr->apply($this->model, $this);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getByCriteria(CriteriaContract $criteria)
-    {
-        return $criteria->apply($this->originalModel, $this);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFirstBy(array $condition = [], array $select = ['*'], array $with = [])
-    {
-        $this->applyCriteria();
-
-        $this->make($with);
-
-        if (!empty($select)) {
-            $data = $this->model->where($condition)->select($select);
-        } else {
-            $data = $this->model->where($condition);
-        }
-
-        return $this->applyBeforeExecuteQuery($data, $this->screen, true)->first();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function make(array $with = [])
-    {
-        if (!empty($with)) {
-            $this->model = $this->model->with($with);
-        }
-
-        return $this->model;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findById($id, array $with = [])
-    {
-        $this->applyCriteria();
-
-        $data = $this->make($with)->where('id', $id);
-        $data = $this->applyBeforeExecuteQuery($data, $this->screen, true);
-        $data = $data->first();
-
-        $this->resetModel();
-
-        return $data;
     }
 
     /**
@@ -222,8 +131,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findOrFail($id, array $with = [])
     {
-        $this->applyCriteria();
-
         $data = $this->make($with)->where('id', $id);
         $data = $this->applyBeforeExecuteQuery($data, $this->screen, true);
         $result = $data->first();
@@ -243,8 +150,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function all(array $with = [])
     {
-        $this->applyCriteria();
-
         $data = $this->make($with);
 
         return $this->applyBeforeExecuteQuery($data, $this->screen)->get();
@@ -255,8 +160,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function pluck($column, $key = null)
     {
-        $this->applyCriteria();
-
         $select = [$column];
         if (!empty($key)) {
             $select = [$column, $key];
@@ -272,8 +175,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function allBy(array $condition, array $with = [], array $select = ['*'])
     {
-        $this->applyCriteria();
-
         if (!empty($condition)) {
             $this->applyConditions($condition);
         }
@@ -281,6 +182,42 @@ abstract class RepositoriesAbstract implements RepositoryInterface
         $data = $this->make($with)->select($select);
 
         return $this->applyBeforeExecuteQuery($data, $this->screen)->get();
+    }
+
+    /**
+     * @param array $where
+     * @param null|Eloquent|Builder $model
+     */
+    protected function applyConditions(array $where, &$model = null)
+    {
+        if (!$model) {
+            $newModel = $this->model;
+        } else {
+            $newModel = $model;
+        }
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+                switch (strtoupper($condition)) {
+                    case 'IN':
+                        $newModel = $newModel->whereIn($field, $val);
+                        break;
+                    case 'NOT_IN':
+                        $newModel = $newModel->whereNotIn($field, $val);
+                        break;
+                    default:
+                        $newModel = $newModel->where($field, $condition, $val);
+                        break;
+                }
+            } else {
+                $newModel = $newModel->where($field, '=', $value);
+            }
+        }
+        if (!$model) {
+            $this->model = $newModel;
+        } else {
+            $model = $newModel;
+        }
     }
 
     /**
@@ -333,6 +270,22 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     /**
      * {@inheritdoc}
      */
+    public function getFirstBy(array $condition = [], array $select = ['*'], array $with = [])
+    {
+        $this->make($with);
+
+        if (!empty($select)) {
+            $data = $this->model->where($condition)->select($select);
+        } else {
+            $data = $this->model->where($condition);
+        }
+
+        return $this->applyBeforeExecuteQuery($data, $this->screen, true)->first();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function delete(Model $model)
     {
         return $model->delete();
@@ -343,8 +296,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function firstOrCreate(array $data, array $with = [])
     {
-        $this->applyCriteria();
-
         $data = $this->model->firstOrCreate($data, $with);
 
         $this->resetModel();
@@ -401,7 +352,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function count(array $condition = [])
     {
         $this->applyConditions($condition);
-        $this->applyCriteria();
         $data = $this->model->count();
 
         $this->resetModel();
@@ -420,63 +370,15 @@ abstract class RepositoriesAbstract implements RepositoryInterface
             $this->applyConditions($args['where']);
         }
 
+        $data = $this->applyBeforeExecuteQuery($data, $this->screen);
+
         if (!empty(Arr::get($args, 'paginate'))) {
-            $data = $this->applyBeforeExecuteQuery($data, $this->screen)->paginate($args['paginate']);
+            return $data->paginate($args['paginate']);
         } elseif (!empty(Arr::get($args, 'limit'))) {
-            $data = $this->applyBeforeExecuteQuery($data, $this->screen)->limit($args['limit']);
-        } else {
-            $data = $this->applyBeforeExecuteQuery($data, $this->screen)->get();
+            return $data->limit($args['limit']);
         }
 
-        return $data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetModel()
-    {
-        $this->model = new $this->originalModel;
-        $this->skipCriteria = false;
-        $this->criteria = [];
-
-        return $this;
-    }
-
-    /**
-     * @param array $where
-     * @param null|Eloquent|Builder $model
-     */
-    protected function applyConditions(array $where, &$model = null)
-    {
-        if (!$model) {
-            $newModel = $this->model;
-        } else {
-            $newModel = $model;
-        }
-        foreach ($where as $field => $value) {
-            if (is_array($value)) {
-                list($field, $condition, $val) = $value;
-                switch (strtoupper($condition)) {
-                    case 'IN':
-                        $newModel = $newModel->whereIn($field, $val);
-                        break;
-                    case 'NOT_IN':
-                        $newModel = $newModel->whereNotIn($field, $val);
-                        break;
-                    default:
-                        $newModel = $newModel->where($field, $condition, $val);
-                        break;
-                }
-            } else {
-                $newModel = $newModel->where($field, '=', $value);
-            }
-        }
-        if (!$model) {
-            $this->model = $newModel;
-        } else {
-            $model = $newModel;
-        }
+        return $data->get();
     }
 
     /**
@@ -484,8 +386,6 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function advancedGet(array $params = [])
     {
-        $this->applyCriteria();
-
         $params = array_merge([
             'condition' => [],
             'order_by'  => [],

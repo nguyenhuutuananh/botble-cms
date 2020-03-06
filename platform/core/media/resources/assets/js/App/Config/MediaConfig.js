@@ -1,7 +1,7 @@
 let MediaConfig = $.parseJSON(localStorage.getItem('MediaConfig')) || {};
 
 let defaultConfig = {
-    app_key: '483a0xyzytz1242c0d520426e8ba366c530c3d9d3xd',
+    app_key: '483a0xyzytz1242c0d520426e8ba366c530c3d9d3xs',
     request_params: {
         view_type: 'tiles',
         filter: 'everything',

@@ -2,14 +2,9 @@
 
 namespace Botble\Dashboard\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Class DashboardWidget
- * @package Botble\Dashboard\Models
- * @mixin \Eloquent
- */
-class DashboardWidget extends Model
+class DashboardWidget extends BaseModel
 {
 
     /**
@@ -38,16 +33,12 @@ class DashboardWidget extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
-     * @author Sang Nguyen
      */
     public function settings()
     {
         return $this->hasMany(DashboardWidgetSetting::class, 'widget_id', 'id');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     protected static function boot()
     {
         parent::boot();

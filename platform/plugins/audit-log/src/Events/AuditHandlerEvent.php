@@ -2,7 +2,7 @@
 
 namespace Botble\AuditLog\Events;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 
 class AuditHandlerEvent extends \Event
@@ -47,7 +47,6 @@ class AuditHandlerEvent extends \Event
      * @param null $reference_name
      * @param string $type
      * @param int $reference_user
-     * @author Sang Nguyen
      */
     public function __construct($module, $action, $reference_id, $reference_name, $type, $reference_user = 0)
     {
@@ -60,16 +59,5 @@ class AuditHandlerEvent extends \Event
         $this->referenceId = $reference_id;
         $this->referenceName = $reference_name;
         $this->type = $type;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function broadcastOn()
-    {
-        return [];
     }
 }

@@ -7,14 +7,6 @@
       "Botble\\Shortcode\\": "src"
     }
   },
-  "authors": [
-    {
-      "name": "Sang Nguyen",
-      "email": "sangnguyenplus@gmail.com"
-    }
-  ],
-  "require": {
-  },
   "extra": {
     "laravel": {
       "providers": [

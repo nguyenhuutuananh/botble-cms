@@ -6,19 +6,22 @@ use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Blog\Forms\TagForm;
 use Botble\Blog\Tables\TagTable;
 use Botble\Blog\Http\Requests\TagRequest;
 use Botble\Blog\Repositories\Interfaces\TagInterface;
 use Exception;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Events\UpdatedContentEvent;
 
 class TagController extends BaseController
 {
+
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var TagInterface
@@ -36,10 +39,10 @@ class TagController extends BaseController
     /**
      * @param TagTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(TagTable $dataTable)
+    public function index(TagTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/blog::tags.menu'));
 
@@ -48,9 +51,9 @@ class TagController extends BaseController
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/blog::tags.create'));
 
@@ -61,16 +64,16 @@ class TagController extends BaseController
      * @param TagRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postCreate(TagRequest $request, BaseHttpResponse $response)
+    public function store(TagRequest $request, BaseHttpResponse $response)
     {
         $tag = $this->tagRepository->createOrUpdate(array_merge($request->input(),
             ['author_id' => Auth::user()->getKey()]));
         event(new CreatedContentEvent(TAG_MODULE_SCREEN_NAME, $request, $tag));
 
         return $response
-            ->setPreviousUrl(route('tags.list'))
+            ->setPreviousUrl(route('tags.index'))
             ->setNextUrl(route('tags.edit', $tag->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -80,15 +83,15 @@ class TagController extends BaseController
      * @param Request $request
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getEdit($id, Request $request, FormBuilder $formBuilder)
+    public function edit($id, Request $request, FormBuilder $formBuilder)
     {
         $tag = $this->tagRepository->findOrFail($id);
 
         event(new BeforeEditContentEvent(TAG_MODULE_SCREEN_NAME, $request, $tag));
 
-        page_title()->setTitle(trans('plugins/blog::tags.edit') . ' #' . $id);
+        page_title()->setTitle(trans('plugins/blog::tags.edit') . ' "' . $tag->name . '"');
 
         return $formBuilder->create(TagForm::class, ['model' => $tag])->renderForm();
     }
@@ -98,9 +101,9 @@ class TagController extends BaseController
      * @param TagRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postEdit($id, TagRequest $request, BaseHttpResponse $response)
+    public function update($id, TagRequest $request, BaseHttpResponse $response)
     {
         $tag = $this->tagRepository->findOrFail($id);
         $tag->fill($request->input());
@@ -109,7 +112,7 @@ class TagController extends BaseController
         event(new UpdatedContentEvent(TAG_MODULE_SCREEN_NAME, $request, $tag));
 
         return $response
-            ->setPreviousUrl(route('tags.list'))
+            ->setPreviousUrl(route('tags.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -118,9 +121,9 @@ class TagController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $tag = $this->tagRepository->findOrFail($id);
@@ -140,34 +143,19 @@ class TagController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('plugins/blog::tags.notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $tag = $this->tagRepository->findOrFail($id);
-            $this->tagRepository->delete($tag);
-
-            event(new DeletedContentEvent(TAG_MODULE_SCREEN_NAME, $request, $tag));
-        }
-
-        return $response
-            ->setMessage(trans('plugins/blog::tags.deleted'));
+        return $this->executeDeleteItems($request, $response, $this->tagRepository, TAG_MODULE_SCREEN_NAME);
     }
 
     /**
      * Get list tags in db
      *
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getAllTags()
     {

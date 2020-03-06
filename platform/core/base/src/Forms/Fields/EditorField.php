@@ -13,7 +13,7 @@ class EditorField extends FormField
      */
     protected function getTemplate()
     {
-        return 'core.base::forms.fields.editor';
+        return 'core/base::forms.fields.editor';
     }
 
     /**

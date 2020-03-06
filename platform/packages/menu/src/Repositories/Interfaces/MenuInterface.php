@@ -12,14 +12,14 @@ interface MenuInterface extends RepositoryInterface
      * @param $active
      * @param $selects
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function findBySlug($slug, $active, $selects = []);
 
     /**
      * @param $name
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function createSlug($name);
 }

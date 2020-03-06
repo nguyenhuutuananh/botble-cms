@@ -25,7 +25,6 @@ class TableController extends Controller
     /**
      * TableController constructor.
      * @param TableBuilder $tableBuilder
-     * @author Sang Nguyen
      */
     public function __construct(TableBuilder $tableBuilder)
     {
@@ -37,7 +36,6 @@ class TableController extends Controller
      * @param TableBuilder $tableBuilder
      * @return array|mixed
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function getDataForBulkChanges(BulkChangeRequest $request, TableBuilder $tableBuilder)
     {
@@ -83,7 +81,6 @@ class TableController extends Controller
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postSaveBulkChange(Request $request, BaseHttpResponse $response)
     {
@@ -127,7 +124,6 @@ class TableController extends Controller
      * @param FilterRequest $request
      * @return array|mixed
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function getFilterInput(FilterRequest $request, TableBuilder $tableBuilder)
     {

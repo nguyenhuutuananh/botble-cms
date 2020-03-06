@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'filter_enabled'          => 'Advanced search filters enabled.',
     'id'                      => 'ID',
     'name'                    => 'Name',
     'slug'                    => 'Slug',
@@ -13,7 +12,6 @@ return [
     'updated_at'              => 'Updated At',
     'description'             => 'Description',
     'operations'              => 'Operations',
-    'loading_data'            => 'Loading data from server',
     'url'                     => 'URL',
     'author'                  => 'Author',
     'notes'                   => 'Notes',
@@ -31,7 +29,6 @@ return [
     'restore'                 => 'Restore',
     'activate'                => 'Activate',
     'deactivate'              => 'Deactivate',
-    'filter'                  => 'Type to filter...',
     'excel'                   => 'Excel',
     'export'                  => 'Export',
     'csv'                     => 'CSV',
@@ -43,7 +40,7 @@ return [
     'all'                     => 'All',
     'add_new'                 => 'Add New',
     'action'                  => 'Actions',
-    'delete_entry'            => 'Delete Entry',
+    'delete_entry'            => 'Delete',
     'view'                    => 'View Detail',
     'save'                    => 'Save',
     'show_from'               => 'Show from',
@@ -52,8 +49,6 @@ return [
     'records'                 => 'records',
     'no_data'                 => 'No data to display',
     'no_record'               => 'No record',
-    'filtered_from'           => 'filtered from',
-    'loading'                 => 'Loading data from server',
     'confirm_delete'          => 'Confirm delete',
     'confirm_delete_msg'      => 'Do you really want to delete this record?',
     'confirm_delete_many_msg' => 'Do you really want to delete selected record(s)?',

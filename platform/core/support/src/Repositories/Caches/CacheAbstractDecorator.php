@@ -2,12 +2,12 @@
 
 namespace Botble\Support\Repositories\Caches;
 
-use Botble\Support\Criteria\Contracts\CriteriaContract;
 use Botble\Support\Repositories\Interfaces\RepositoryInterface;
 use Botble\Support\Services\Cache\Cache;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
+use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class CacheAbstractDecorator implements RepositoryInterface
 {
@@ -25,7 +25,6 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      * PageCacheDecorator constructor.
      * @param RepositoryInterface $repository
      * @param string|null $cacheGroup
-     * @author Sang Nguyen
      */
     public function __construct(RepositoryInterface $repository, string $cacheGroup = null)
     {
@@ -73,6 +72,9 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
         } catch (Exception $ex) {
             info($ex->getMessage());
             return call_user_func_array([$this->repository, $function], $args);
+        } catch (InvalidArgumentException $ex) {
+            info($ex->getMessage());
+            return call_user_func_array([$this->repository, $function], $args);
         }
     }
 
@@ -80,7 +82,6 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      * @param $function
      * @param array $args
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getDataWithoutCache($function, array $args)
     {
@@ -92,7 +93,6 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      * @param $args
      * @param boolean $flushCache
      * @return mixed
-     * @author Sang Nguyen
      */
     public function flushCacheAndUpdateData($function, $args, $flushCache = true)
     {
@@ -105,58 +105,6 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
         }
 
         return call_user_func_array([$this->repository, $function], $args);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCriteria()
-    {
-        return $this->getDataWithoutCache(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function pushCriteria(CriteriaContract $criteria)
-    {
-        $this->getDataWithoutCache(__FUNCTION__, func_get_args());
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function dropCriteria($criteria)
-    {
-        $this->getDataWithoutCache(__FUNCTION__, func_get_args());
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function skipCriteria($bool = true)
-    {
-        $this->getDataWithoutCache(__FUNCTION__, func_get_args());
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function applyCriteria()
-    {
-        $this->getDataWithoutCache(__FUNCTION__, func_get_args());
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getByCriteria(CriteriaContract $criteria)
-    {
-        return $this->getDataIfExistCache(__FUNCTION__, func_get_args());
     }
 
     /**

@@ -81,7 +81,7 @@
                         {!!
                              Menu::generateMenu([
                                 'slug' => $menu->slug,
-                                'view' => 'packages.menu::partials.menu',
+                                'view' => 'packages/menu::partials.menu',
                                 'theme' => false,
                                 'active' => false,
                              ])

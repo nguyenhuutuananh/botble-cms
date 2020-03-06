@@ -101,7 +101,7 @@ export class ContextMenuService {
                 items.restore = undefined;
             }
 
-            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'folders.delete')) {
+            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'folders.destroy')) {
                 items.delete = undefined;
             }
 
@@ -127,7 +127,7 @@ export class ContextMenuService {
                 items.restore = undefined;
             }
 
-            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'files.delete')) {
+            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'files.destroy')) {
                 items.delete = undefined;
             }
 

@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     <div class="widget meta-boxes">
         <div class="widget-title">

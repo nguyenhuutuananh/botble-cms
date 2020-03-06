@@ -12,11 +12,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Concerns\InteractsWithContentTypes;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Request;
-use Monolog\Handler\SlackHandler;
-use Monolog\Logger;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Log;
 use RvMedia;
-use Symfony\Component\Debug\Exception\FlattenException;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use URL;
@@ -28,7 +26,7 @@ class Handler extends ExceptionHandler
      * @param \Illuminate\Http\Request $request
      * @param Exception $ex
      * @return BaseHttpResponse|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Response
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function render($request, Exception $ex)
@@ -37,6 +35,14 @@ class Handler extends ExceptionHandler
             return RvMedia::responseError(trans('media::media.upload_failed', [
                 'size' => human_file_size(RvMedia::getServerConfigMaxUploadFileSize()),
             ]));
+        }
+
+        if ($ex instanceof ModelNotFoundException && $request->expectsJson()) {
+            return (new BaseHttpResponse)
+                ->setError()
+                ->setMessage('Not found')
+                ->setCode(404)
+                ->toResponse($request);
         }
 
         if ($ex instanceof ModelNotFoundException || $ex instanceof MethodNotAllowedHttpException) {
@@ -77,11 +83,22 @@ class Handler extends ExceptionHandler
     protected function handleResponseData($code, $request)
     {
         if ($request->expectsJson()) {
-            admin_bar()->setIsDisplay(false);
+            if (function_exists('admin_bar')) {
+                admin_bar()->setIsDisplay(false);
+            }
+
             if ($code == 401) {
-                return (new BaseHttpResponse())
+                return (new BaseHttpResponse)
                     ->setError()
                     ->setMessage(trans('core/acl::permissions.access_denied_message'))
+                    ->setCode($code)
+                    ->toResponse($request);
+            }
+
+            if ($code == 403) {
+                return (new BaseHttpResponse)
+                    ->setError()
+                    ->setMessage(__('This action is unauthorized.'))
                     ->setCode($code)
                     ->toResponse($request);
             }
@@ -92,7 +109,7 @@ class Handler extends ExceptionHandler
         $code = $code == '503' ? '500' : $code;
 
         if ($request->is(config('core.base.general.admin_dir') . '/*') || $request->is(config('core.base.general.admin_dir'))) {
-            return response()->view('core.base::errors.' . $code, [], $code);
+            return response()->view('core/base::errors.' . $code, [], $code);
         }
 
         if (view()->exists('theme.' . setting('theme') . '::views.' . $code)) {
@@ -115,25 +132,20 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         if ($this->shouldReport($exception) && !$this->isExceptionFromBot()) {
-            if (!app()->isLocal() &&
-                !app()->runningInConsole() &&
-                setting('enable_send_error_reporting_via_email', false) &&
-                setting('email_driver', config('mail.driver'))
-            ) {
-                EmailHandler::sendErrorException($exception);
-            }
+            if (!app()->isLocal() && !app()->runningInConsole()) {
+                if (setting('enable_send_error_reporting_via_email', false) && setting('email_driver', config('mail.driver'))) {
+                    EmailHandler::sendErrorException($exception);
+                }
 
-            if (config('core.base.general.error_reporting.via_slack', false) == true) {
-                $ex = FlattenException::create($exception);
+                if (config('core.base.general.error_reporting.via_slack', false) == true && !$exception instanceof OAuthServerException) {
+                    config()->set([
+                        'logging.channels.slack.username' => 'Botble BOT',
+                        'logging.channels.slack.emoji'    => ':helmet_with_white_cross:',
+                    ]);
 
-                $handler = new SymfonyExceptionHandler;
-
-                $logger = new Logger('general');
-
-                $logger->pushHandler(new SlackHandler(env('SLACK_TOKEN'), env('SLACK_CHANEL'), 'Botble BOT', true,
-                    ':helmet_with_white_cross:'));
-
-                $logger->addCritical(URL::full() . "\n" . $exception->getFile() . ':' . $exception->getLine() . "\n" . $handler->getContent($ex));
+                    Log::channel('slack')
+                        ->critical(URL::full() . "\n" . $exception->getFile() . ':' . $exception->getLine() . "\n" . $exception->getMessage());
+                }
             }
         }
 
@@ -144,7 +156,6 @@ class Handler extends ExceptionHandler
      * Determine if the exception is from the bot.
      *
      * @return boolean
-     * @author Sang Nguyen
      */
     protected function isExceptionFromBot()
     {

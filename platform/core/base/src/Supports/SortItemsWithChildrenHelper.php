@@ -4,7 +4,7 @@ namespace Botble\Base\Supports;
 
 use Exception;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection as LaravelCollection;
+use Illuminate\Support\Collection;
 
 class SortItemsWithChildrenHelper
 {
@@ -43,7 +43,7 @@ class SortItemsWithChildrenHelper
         if (is_array($items)) {
             $this->items = collect($items);
             return $this;
-        } elseif ($items instanceof LaravelCollection) {
+        } elseif ($items instanceof Collection) {
             $this->items = $items;
             return $this;
         }

@@ -1,0 +1,10 @@
+<?php
+
+namespace Theme\{Theme}\Http\Controllers;
+
+use Illuminate\Routing\Controller;
+use Theme;
+
+class {Theme}Controller extends Controller
+{
+}

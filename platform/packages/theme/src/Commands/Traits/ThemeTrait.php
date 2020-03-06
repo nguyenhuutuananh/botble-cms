@@ -2,11 +2,6 @@
 
 namespace Botble\Theme\Commands\Traits;
 
-/**
- * Trait ThemeTrait
- * @package Botble\Theme\Commands\Traits
- * @mixin \Illuminate\Console\Command
- */
 trait ThemeTrait
 {
     /**

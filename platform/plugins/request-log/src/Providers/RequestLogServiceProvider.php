@@ -13,9 +13,6 @@ use Illuminate\Support\ServiceProvider;
 use Botble\RequestLog\Models\RequestLog as RequestLogModel;
 
 /**
- * Class RequestLogServiceProvider
- * @package Botble\RequestLog
- * @author Sang Nguyen
  * @since 02/07/2016 09:50 AM
  */
 class RequestLogServiceProvider extends ServiceProvider
@@ -27,29 +24,22 @@ class RequestLogServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(RequestLogInterface::class, function () {
+        $this->app->bind(RequestLogInterface::class, function () {
             return new RequestLogCacheDecorator(new RequestLogRepository(new RequestLogModel));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(CommandServiceProvider::class);
 
         $this->setNamespace('plugins/request-log')
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadAndPublishConfigurations(['permissions'])
@@ -67,8 +57,8 @@ class RequestLogServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-core-platform-administration',
                     'name'        => 'plugins/request-log::request-log.name',
                     'icon'        => null,
-                    'url'         => route('request-log.list'),
-                    'permissions' => ['request-log.list'],
+                    'url'         => route('request-log.index'),
+                    'permissions' => ['request-log.index'],
                 ]);
         });
     }

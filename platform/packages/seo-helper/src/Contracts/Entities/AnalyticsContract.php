@@ -12,7 +12,6 @@ interface AnalyticsContract extends RenderableContract
      * @param  string $code
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setGoogle($code);
 }

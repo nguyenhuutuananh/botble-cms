@@ -83,6 +83,15 @@ class FieldGroupRepository extends RepositoriesAbstract implements FieldGroupInt
                         $item['items'],
                         $this->getFieldItemValue($row, $morphClass, $morphId)
                     );
+
+                    foreach ($item['value'] as $key => $child) {
+                        foreach ($child as $childKey => $sub) {
+                            if ($sub['type'] == 'image') {
+                                $item['value'][$key][$childKey]['thumb'] = get_image_url($sub['value'], 'thumb', true);
+                            }
+                        }
+                    }
+
                 } else {
                     $item['value'] = $this->getFieldItemValue($row, $morphClass, $morphId);
                 }
@@ -243,13 +252,14 @@ class FieldGroupRepository extends RepositoriesAbstract implements FieldGroupInt
                 'type'           => $row['type'],
                 'options'        => json_encode($row['options']),
                 'instructions'   => $row['instructions'],
-                'slug'           => (Str::slug($row['slug'], '_')) ?: Str::slug($row['title'], '_'),
+                'slug'           => Str::slug($row['slug'], '_') ?: Str::slug($row['title'], '_'),
                 'position'       => $position,
             ];
 
             $result = $this->fieldItemRepository->updateWithUniqueSlug($id, $data);
 
             if ($result) {
+
                 $this->editGroupItems($row['items'], $groupId, $result->id);
             }
         }

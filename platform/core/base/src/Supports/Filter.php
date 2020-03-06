@@ -10,7 +10,6 @@ class Filter extends ActionHookEvent
      * @param  string $action Name of filter
      * @param  array $args Arguments passed to the filter
      * @return string Always returns the value
-     * @author Tor Morten Jensen <tormorten@tormorten.no>
      */
     public function fire($action, $args)
     {

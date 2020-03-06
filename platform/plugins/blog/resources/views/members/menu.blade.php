@@ -1,5 +1,5 @@
 <li>
-    <a class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db mr2" style="text-decoration: none; line-height: 32px;" href="{{ route('public.member.posts.list') }}" title="{{ trans('plugins/blog::member.posts') }}">
+    <a class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db mr2" style="text-decoration: none; line-height: 32px;" href="{{ route('public.member.posts.index') }}" title="{{ trans('plugins/blog::member.posts') }}">
         <i class="far fa-newspaper mr1"></i>{{ trans('plugins/blog::member.posts') }}
     </a>
 </li>

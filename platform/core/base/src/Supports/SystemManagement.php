@@ -181,6 +181,7 @@ class SystemManagement
             'ssl_installed'            => self::checkSslIsInstalled(),
             'cache_driver'             => config('cache.default'),
             'session_driver'           => config('session.driver'),
+            'queue_connection'         => config('queue.default'),
             'mbstring'                 => extension_loaded('mbstring'),
             'openssl'                  => extension_loaded('openssl'),
             'curl'                     => extension_loaded('curl'),

@@ -12,9 +12,6 @@ class CommandServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         if ($this->app->runningInConsole()) {

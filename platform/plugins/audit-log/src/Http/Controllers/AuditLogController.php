@@ -7,11 +7,14 @@ use Botble\AuditLog\Tables\AuditLogTable;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Exception;
 use Illuminate\Http\Request;
 
 class AuditLogController extends BaseController
 {
+
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var AuditLogInterface
@@ -30,7 +33,7 @@ class AuditLogController extends BaseController
     /**
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function getWidgetActivities(BaseHttpResponse $response)
@@ -43,16 +46,16 @@ class AuditLogController extends BaseController
             ->paginate($limit);
 
         return $response
-            ->setData(view('plugins.audit-log::widgets.activities', compact('histories', 'limit'))->render());
+            ->setData(view('plugins/audit-log::widgets.activities', compact('histories', 'limit'))->render());
     }
 
     /**
      * @param AuditLogTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(AuditLogTable $dataTable)
+    public function index(AuditLogTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/audit-log::history.name'));
 
@@ -64,9 +67,8 @@ class AuditLogController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $log = $this->auditLogRepository->findById($id);
@@ -86,23 +88,21 @@ class AuditLogController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
+        return $this->executeDeleteItems($request, $response, $this->auditLogRepository, AUDIT_LOG_MODULE_SCREEN_NAME);
+    }
 
-        foreach ($ids as $id) {
-            $log = $this->auditLogRepository->findOrFail($id);
-            $this->auditLogRepository->delete($log);
-            event(new DeletedContentEvent(AUDIT_LOG_MODULE_SCREEN_NAME, $request, $log));
-        }
+    /**
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
+     */
+    public function deleteAll(BaseHttpResponse $response)
+    {
+        $this->auditLogRepository->getModel()->truncate();
 
         return $response->setMessage(trans('core/base::notices.delete_success_message'));
     }

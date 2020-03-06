@@ -2,12 +2,13 @@
 
 namespace Botble\Language;
 
-use Artisan;
+use Botble\Base\Supports\Helper;
 use Botble\Language\Models\Language;
 use Botble\Language\Repositories\Interfaces\LanguageInterface;
 use Botble\Language\Repositories\Interfaces\LanguageMetaInterface;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Request;
@@ -113,16 +114,15 @@ class LanguageManager
      * Language constructor.
      * @param LanguageInterface $languageRepository
      * @param LanguageMetaInterface $languageMetaRepository
-     * @param \Illuminate\Http\Request $request
-     * @author Sang Nguyen
+     * @param HttpRequest $request
+     *
      * @since 2.0
      */
     public function __construct(
         LanguageInterface $languageRepository,
         LanguageMetaInterface $languageMetaRepository,
-        \Illuminate\Http\Request $request
-    )
-    {
+        HttpRequest $request
+    ) {
         $this->languageRepository = $languageRepository;
 
         $this->app = app();
@@ -149,7 +149,7 @@ class LanguageManager
      * Return an array of all supported Locales
      *
      * @return array
-     * @author Sang Nguyen
+     *
      */
     public function getSupportedLocales()
     {
@@ -180,7 +180,7 @@ class LanguageManager
     /**
      * Set and return supported locales
      *
-     * @param  array $locales Locales that the App supports
+     * @param array $locales Locales that the App supports
      */
     public function setSupportedLocales($locales)
     {
@@ -189,8 +189,8 @@ class LanguageManager
 
     /**
      * @param array $select
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
+     *
      * @since 2.0
      */
     public function getActiveLanguage($select = ['*'])
@@ -201,6 +201,7 @@ class LanguageManager
 
         $this->activeLanguages = $this->languageRepository->getActiveLanguage($select);
         $this->activeLanguageSelect = $select;
+
         return $this->activeLanguages;
     }
 
@@ -208,7 +209,6 @@ class LanguageManager
      * Returns default locale
      *
      * @return string
-     * @author Sang Nguyen
      */
     public function getDefaultLocale()
     {
@@ -217,7 +217,6 @@ class LanguageManager
 
     /**
      * @return void
-     * @author Sang Nguyen
      */
     public function setDefaultLocale()
     {
@@ -232,17 +231,8 @@ class LanguageManager
     }
 
     /**
-     * @author Sang Nguyen
-     * @since 2.0
-     */
-    public function screenUsingMultiLanguage()
-    {
-        return apply_filters(LANGUAGE_FILTER_MODEL_USING_MULTI_LANGUAGE, config('plugins.language.general.supported', []));
-    }
-
-    /**
      * @return string
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function getHiddenLanguageText()
@@ -270,15 +260,15 @@ class LanguageManager
      * @param $id
      * @param $unique_key
      * @return mixed
-     * @author Sang Nguyen
+     *
      * @since 2.0
      */
-    public function getRelatedLanguageItem($id, $unique_key)
+    public function getRelatedLanguageItem($id, $uniqueKey)
     {
         /**
          * @var Builder $meta
          */
-        $meta = $this->languageMetaRepository->getModel()->where('lang_meta_origin', '=', $unique_key);
+        $meta = $this->languageMetaRepository->getModel()->where('lang_meta_origin', '=', $uniqueKey);
         if ($id != Request::input('ref_from')) {
             $meta = $meta->where('lang_meta_content_id', '!=', $id);
         }
@@ -288,8 +278,9 @@ class LanguageManager
     /**
      * Set and return current locale
      *
-     * @param  string $locale Locale to set the App to (optional)
+     * @param string $locale Locale to set the App to (optional)
      * @return string Returns locale (if route has any) or null (if route does not have a locale)
+     * @throws \Exception
      */
     public function setLocale($locale = null)
     {
@@ -304,7 +295,7 @@ class LanguageManager
 
         if (array_key_exists($locale, $this->supportedLocales)) {
             if ($locale != $this->currentLocale) {
-                Artisan::call('cache:clear');
+                Helper::executeCommand('cache:clear');
             }
             $this->currentLocale = $locale;
         } else {
@@ -364,20 +355,10 @@ class LanguageManager
     }
 
     /**
-     * Returns the translation key for a given path
-     *
-     * @return boolean Returns value of useAcceptLanguageHeader in config.
-     */
-    protected function useAcceptLanguageHeader()
-    {
-        return config('plugins.language.general.useAcceptLanguageHeader');
-    }
-
-    /**
      * Returns an URL adapted to $locale or current locale
      *
-     * @param  string $url URL to adapt. If not passed, the current url would be taken.
-     * @param  string|boolean $locale Locale to adapt, false to remove locale
+     * @param string $url URL to adapt. If not passed, the current url would be taken.
+     * @param string|boolean $locale Locale to adapt, false to remove locale
      *
      * @return string URL translated
      */
@@ -389,9 +370,9 @@ class LanguageManager
     /**
      * Returns an URL adapted to $locale
      *
-     * @param  string|boolean $locale Locale to adapt, false to remove locale
-     * @param  string|false $url URL to adapt in the current language. If not passed, the current url would be taken.
-     * @param  array $attributes Attributes to add to the route,
+     * @param string|boolean $locale Locale to adapt, false to remove locale
+     * @param string|false $url URL to adapt in the current language. If not passed, the current url would be taken.
+     * @param array $attributes Attributes to add to the route,
      * if empty, the system would try to extract them from the url.
      *
      * @return string|false URL translated, False if url does not exist
@@ -568,11 +549,27 @@ class LanguageManager
     }
 
     /**
+     * Normalize attributes gotten from request parameters.
+     *
+     * @param array $attributes The attributes
+     * @return     array  The normalized attributes
+     */
+    protected function normalizeAttributes($attributes)
+    {
+        if (array_key_exists('data', $attributes) && is_array($attributes['data']) && !count($attributes['data'])) {
+            $attributes['data'] = null;
+            return $attributes;
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Returns an URL adapted to the route name and the locale given
      *
-     * @param  string|boolean $locale Locale to adapt
-     * @param  string $transKeyName Translation key name of the url to adapt
-     * @param  array $attributes Attributes for the route (only needed if transKeyName needs them)
+     * @param string|boolean $locale Locale to adapt
+     * @param string $transKeyName Translation key name of the url to adapt
+     * @param array $attributes Attributes for the route (only needed if transKeyName needs them)
      *
      * @return string|false URL translated
      */
@@ -627,7 +624,7 @@ class LanguageManager
 
     /**
      * Create an url from the uri
-     * @param    string $uri Uri
+     * @param string $uri Uri
      *
      * @return  string Url for the given uri
      */
@@ -645,9 +642,9 @@ class LanguageManager
     /**
      * Returns the translated route for an url and the attributes given and a locale
      *
-     * @param  string|false|null $url Url to check if it is a translated route
-     * @param  array $attributes Attributes to check if the url exists in the translated routes array
-     * @param  string $locale Language to check if the url exists
+     * @param string|false|null $url Url to check if it is a translated route
+     * @param array $attributes Attributes to check if the url exists in the translated routes array
+     * @param string $locale Language to check if the url exists
      *
      * @return string|false Key for translation, false if not exist
      */
@@ -672,7 +669,7 @@ class LanguageManager
      * It returns an URL without locale (if it has it)
      * Convenience function wrapping getLocalizedURL(false)
      *
-     * @param  string|false $url URL to clean, if false, current url would be taken
+     * @param string|false $url URL to clean, if false, current url would be taken
      *
      * @return string URL with no locale in path
      */
@@ -684,16 +681,16 @@ class LanguageManager
     /**
      * Returns the translated route for the path and the url given
      *
-     * @param  string $path Path to check if it is a translated route
-     * @param  string $url_locale Language to check if the path exists
+     * @param string $path Path to check if it is a translated route
+     * @param string $urlLocale Language to check if the path exists
      *
      * @return string|false Key for translation, false if not exist
      */
-    protected function findTranslatedRouteByPath($path, $url_locale)
+    protected function findTranslatedRouteByPath($path, $urlLocale)
     {
         // check if this url is a translated url
         foreach ($this->translatedRoutes as $translatedRoute) {
-            if ($this->translator->trans($translatedRoute, [], '', $url_locale) == rawurldecode($path)) {
+            if ($this->translator->trans($translatedRoute, [], $urlLocale) == rawurldecode($path)) {
                 return $translatedRoute;
             }
         }
@@ -736,7 +733,7 @@ class LanguageManager
     /**
      * Returns true if the string given is a valid url
      *
-     * @param  string $url String to check if it is a valid url
+     * @param string $url String to check if it is a valid url
      *
      * @return boolean Is the string given a valid url?
      */
@@ -762,7 +759,7 @@ class LanguageManager
      * Returns current text direction
      *
      * @return string current locale name
-     * @author Sang Nguyen
+     *
      */
     public function getCurrentLocaleRTL()
     {
@@ -788,7 +785,7 @@ class LanguageManager
 
     /**
      * @param $code
-     * @author Sang Nguyen
+     *
      */
     public function setCurrentAdminLocale($code)
     {
@@ -799,7 +796,7 @@ class LanguageManager
      * Returns current admin locale code
      *
      * @return string current locale code
-     * @author Sang Nguyen
+     *
      */
     public function getCurrentAdminLocaleCode()
     {
@@ -881,7 +878,7 @@ class LanguageManager
     /**
      * Translate routes and save them to the translated routes array (used in the localize route filter)
      *
-     * @param  string $routeName Key of the translated string
+     * @param string $routeName Key of the translated string
      *
      * @return string Translated string
      */
@@ -897,7 +894,7 @@ class LanguageManager
     /**
      * Returns the translation key for a given path
      *
-     * @param  string $path Path to get the key translated
+     * @param string $path Path to get the key translated
      *
      * @return string|false Key for translation, false if not exist
      */
@@ -935,34 +932,8 @@ class LanguageManager
     }
 
     /**
-     * Returns translated routes
-     *
-     * @return array translated routes
-     */
-    protected function getTranslatedRoutes()
-    {
-        return $this->translatedRoutes;
-    }
-
-    /**
-     * @param array $select
-     * @return Language
-     * @since 2.2
-     */
-    public function getDefaultLanguage($select = ['*'])
-    {
-        if ($this->defaultLanguage && $this->defaultLanguageSelect === $select) {
-            return $this->defaultLanguage;
-        }
-        $this->defaultLanguage = $this->languageRepository->getDefaultLanguage($select);
-        $this->defaultLanguageSelect = $select;
-
-        return $this->defaultLanguage;
-    }
-
-    /**
      * @param string $screen
-     * @param \Illuminate\Http\Request $request
+     * @param HttpRequest $request
      * @param \Eloquent|false $data
      * @return bool
      */
@@ -1009,6 +980,31 @@ class LanguageManager
     }
 
     /**
+     * @param array $select
+     * @return Language
+     * @since 2.2
+     */
+    public function getDefaultLanguage($select = ['*'])
+    {
+        if ($this->defaultLanguage && $this->defaultLanguageSelect === $select) {
+            return $this->defaultLanguage;
+        }
+        $this->defaultLanguage = $this->languageRepository->getDefaultLanguage($select);
+        $this->defaultLanguageSelect = $select;
+
+        return $this->defaultLanguage;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public function screenUsingMultiLanguage()
+    {
+        return apply_filters(LANGUAGE_FILTER_MODEL_USING_MULTI_LANGUAGE,
+            config('plugins.language.general.supported', []));
+    }
+
+    /**
      * @param string $screen
      * @param \Eloquent|false $data
      */
@@ -1029,25 +1025,9 @@ class LanguageManager
     }
 
     /**
-     * Normalize attributes gotten from request parameters.
-     *
-     * @param      array $attributes The attributes
-     * @return     array  The normalized attributes
-     */
-    protected function normalizeAttributes($attributes)
-    {
-        if (array_key_exists('data', $attributes) && is_array($attributes['data']) && !count($attributes['data'])) {
-            $attributes['data'] = null;
-            return $attributes;
-        }
-
-        return $attributes;
-    }
-
-    /**
      * @param string | array $screen
      * @return LanguageManager
-     * @author Sang Nguyen
+     *
      */
     public function registerModule($screen)
     {
@@ -1059,5 +1039,25 @@ class LanguageManager
         ]);
 
         return $this;
+    }
+
+    /**
+     * Returns the translation key for a given path
+     *
+     * @return boolean Returns value of useAcceptLanguageHeader in config.
+     */
+    protected function useAcceptLanguageHeader()
+    {
+        return config('plugins.language.general.useAcceptLanguageHeader');
+    }
+
+    /**
+     * Returns translated routes
+     *
+     * @return array translated routes
+     */
+    protected function getTranslatedRoutes()
+    {
+        return $this->translatedRoutes;
     }
 }

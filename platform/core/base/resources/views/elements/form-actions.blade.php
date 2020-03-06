@@ -24,7 +24,7 @@
 </div>
 <div id="waypoint"></div>
 <div class="form-actions form-actions-fixed-top hidden">
-    {!! AdminBreadcrumb::render() !!}
+    {!! Breadcrumbs::render('main', page_title()->getTitle(false)) !!}
     <div class="btn-set">
         @php do_action(BASE_ACTION_FORM_ACTIONS, 'fixed-top') @endphp
         <button type="submit" name="submit" value="save" class="btn btn-info">

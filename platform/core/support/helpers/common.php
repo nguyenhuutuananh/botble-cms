@@ -7,7 +7,6 @@ if (!function_exists('format_time')) {
      * @param Carbon $timestamp
      * @param $format
      * @return mixed
-     * @author Sang Nguyen
      */
     function format_time(Carbon $timestamp, $format = 'j M Y H:i')
     {
@@ -25,7 +24,6 @@ if (!function_exists('date_from_database')) {
      * @param $time
      * @param string $format
      * @return mixed
-     * @author Sang Nguyen
      */
     function date_from_database($time, $format = 'Y-m-d')
     {
@@ -41,7 +39,6 @@ if (!function_exists('human_file_size')) {
      * @param $bytes
      * @param int $precision
      * @return string
-     * @author Sang Nguyen
      */
     function human_file_size($bytes, $precision = 2)
     {
@@ -62,7 +59,6 @@ if (!function_exists('get_file_data')) {
      * @param $file
      * @param $convert_to_array
      * @return bool|mixed
-     * @author Sang Nguyen
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     function get_file_data($file, $convert_to_array = true)
@@ -99,7 +95,6 @@ if (!function_exists('save_file_data')) {
      * @param $data
      * @param $json
      * @return bool|mixed
-     * @author Sang Nguyen
      */
     function save_file_data($path, $data, $json = true)
     {
@@ -125,7 +120,6 @@ if (!function_exists('scan_folder')) {
      * @param $path
      * @param array $ignore_files
      * @return array
-     * @author Sang Nguyen
      */
     function scan_folder($path, $ignore_files = [])
     {

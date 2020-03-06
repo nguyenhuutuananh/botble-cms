@@ -30,7 +30,6 @@ class AuditLog
      * @param string $screen
      * @param \stdClass|User|Eloquent $data
      * @return string
-     * @author Sang Nguyen
      */
     public function getReferenceName($screen, $data)
     {

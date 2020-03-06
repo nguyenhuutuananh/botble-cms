@@ -2,23 +2,20 @@
 
 namespace Botble\Theme\Providers;
 
+use Botble\Base\Supports\Helper;
 use Botble\Theme\Commands\ThemeAssetsPublishCommand;
 use Botble\Theme\Commands\ThemeAssetsRemoveCommand;
-use Botble\Theme\Commands\ThemeInstallSampleDataCommand;
-use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Botble\Theme\Commands\ThemeActivateCommand;
-use Botble\Theme\Commands\ThemeCreateCommand;
 use Botble\Theme\Commands\ThemeRemoveCommand;
 use Botble\Theme\Contracts\Theme as ThemeContract;
-use Botble\Theme\Facades\ManagerFacade;
 use Botble\Theme\Facades\ThemeFacade;
-use Botble\Theme\Facades\ThemeOptionFacade;
+use Botble\Theme\Http\Middleware\AdminBarMiddleware;
 use Botble\Theme\Theme;
 use Event;
 use File;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Schema;
@@ -32,44 +29,33 @@ class ThemeServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        AliasLoader::getInstance()->alias('Theme', ThemeFacade::class);
-        AliasLoader::getInstance()->alias('ThemeOption', ThemeOptionFacade::class);
-        AliasLoader::getInstance()->alias('ThemeManager', ManagerFacade::class);
+        /**
+         * @var Router $router
+         */
+        $router = $this->app['router'];
+        $router->pushMiddlewareToGroup('web', AdminBarMiddleware::class);
+
+        Helper::autoload(__DIR__ . '/../../helpers');
 
         $this->app->bind(ThemeContract::class, Theme::class);
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                ThemeCreateCommand::class,
-            ]);
-        }
 
         $this->commands([
             ThemeActivateCommand::class,
             ThemeRemoveCommand::class,
-            ThemeInstallSampleDataCommand::class,
             ThemeAssetsPublishCommand::class,
             ThemeAssetsRemoveCommand::class,
         ]);
-
-        Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('packages/theme')
             ->loadAndPublishConfigurations(['general', 'permissions'])
-            ->loadRoutes()
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
+            ->loadMigrations()
             ->publishAssetsFolder()
             ->publishPublicFolder();
 
@@ -92,8 +78,8 @@ class ThemeServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-core-appearance',
                     'name'        => 'core/base::layouts.theme',
                     'icon'        => null,
-                    'url'         => route('theme.list'),
-                    'permissions' => ['theme.list'],
+                    'url'         => route('theme.index'),
+                    'permissions' => ['theme.index'],
                 ])
                 ->registerItem([
                     'id'          => 'cms-core-theme-option',
@@ -114,7 +100,7 @@ class ThemeServiceProvider extends ServiceProvider
                     'permissions' => ['theme.custom-css'],
                 ]);
 
-            admin_bar()->registerLink('Theme', route('theme.list'), 'appearance');
+            admin_bar()->registerLink('Theme', route('theme.index'), 'appearance');
         });
 
         $this->app->booted(function () {
@@ -123,17 +109,19 @@ class ThemeServiceProvider extends ServiceProvider
                 ThemeFacade::getFacadeRoot()
                     ->asset()
                     ->container('after_header')
-                    ->add('theme-style-integration-css', config('packages.theme.general.themeDir') . '/' . setting('theme') . '/css/style.integration.css');
+                    ->add('theme-style-integration-css',
+                        config('packages.theme.general.themeDir') . '/' . setting('theme') . '/css/style.integration.css');
             }
 
             if (check_database_connection() && Schema::hasTable('settings')) {
-                $theme = setting('theme');
-                if (!$theme) {
+                if (!setting('theme')) {
                     setting()->set('theme', Arr::first(scan_folder(theme_path())));
                 }
             }
         });
 
-        $this->app->register(ThemeManagementServiceProvider::class);
+        if (check_database_connection()) {
+            $this->app->register(ThemeManagementServiceProvider::class);
+        }
     }
 }

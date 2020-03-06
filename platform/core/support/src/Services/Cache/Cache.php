@@ -9,35 +9,46 @@ use Illuminate\Support\Arr;
 class Cache implements CacheInterface
 {
     /**
+     * @var string
+     */
+    public $cacheGroup;
+    /**
      * @var CacheManager
      */
     protected $cache;
-
     /**
      * @var array
      */
     protected $config;
 
     /**
-     * @var string
-     */
-    public $cacheGroup;
-
-    /**
      * Cache constructor.
      * @param \Illuminate\Cache\Repository|CacheManager $cache
      * @param null $cacheGroup
      * @param array $config
-     * @author Sang Nguyen
      */
     public function __construct(CacheManager $cache, $cacheGroup, $config = [])
     {
         $this->cache = $cache;
         $this->cacheGroup = $cacheGroup;
         $this->config = !empty($config) ? $config : [
-            'cache_time'  => 10,
+            'cache_time'  => 600,
             'stored_keys' => storage_path('cache_keys.json'),
         ];
+    }
+
+    /**
+     * Retrieve data from cache.
+     *
+     * @param string $key Cache item key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        if (!file_exists($this->config['stored_keys'])) {
+            return null;
+        }
+        return $this->cache->get($this->generateCacheKey($key));
     }
 
     /**
@@ -50,28 +61,12 @@ class Cache implements CacheInterface
     }
 
     /**
-     * Retrieve data from cache.
-     *
-     * @param string $key Cache item key
-     * @return mixed
-     * @author Sang Nguyen
-     */
-    public function get($key)
-    {
-        if (!file_exists($this->config['stored_keys'])) {
-            return null;
-        }
-        return $this->cache->get($this->generateCacheKey($key));
-    }
-
-    /**
      * Add data to the cache.
      *
      * @param string $key Cache item key
      * @param mixed $value The data to store
      * @param boolean $minutes The number of minutes to store the item
      * @return bool
-     * @author Sang Nguyen
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function put($key, $value, $minutes = false)
@@ -90,29 +85,10 @@ class Cache implements CacheInterface
     }
 
     /**
-     * Test if item exists in cache
-     * Only returns true if exists && is not expired.
-     *
-     * @param string $key Cache item key
-     * @return bool If cache item exists
-     * @author Sang Nguyen
-     */
-    public function has($key)
-    {
-        if (!file_exists($this->config['stored_keys'])) {
-            return false;
-        }
-        $key = $this->generateCacheKey($key);
-
-        return $this->cache->has($key);
-    }
-
-    /**
      * Store cache key to file
      *
      * @param $key
-     * @return void
-     * @author Sang Nguyen, Tedozi Manson
+     * @return bool
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function storeCacheKey($key)
@@ -127,12 +103,33 @@ class Cache implements CacheInterface
             $cacheKeys[$this->cacheGroup][] = $key;
         }
         save_file_data($this->config['stored_keys'], $cacheKeys);
+
+        return true;
+    }
+
+    /**
+     * Test if item exists in cache
+     * Only returns true if exists && is not expired.
+     *
+     * @param string $key Cache item key
+     * @return bool If cache item exists
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function has($key)
+    {
+        if (!file_exists($this->config['stored_keys'])) {
+            return false;
+        }
+        $key = $this->generateCacheKey($key);
+
+        return $this->cache->has($key);
     }
 
     /**
      * Clear cache of an object
      *
-     * @author Sang Nguyen, Tedozi Manson
+     * @return bool
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function flush()
@@ -155,5 +152,7 @@ class Cache implements CacheInterface
         } else {
             File::delete($this->config['stored_keys']);
         }
+
+        return true;
     }
 }

@@ -5,6 +5,7 @@ namespace Botble\RequestLog\Http\Controllers;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\RequestLog\Repositories\Interfaces\RequestLogInterface;
 use Botble\RequestLog\Tables\RequestLogTable;
 use Exception;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class RequestLogController extends BaseController
 {
+
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var RequestLogInterface
@@ -30,24 +33,25 @@ class RequestLogController extends BaseController
     /**
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function getWidgetRequestErrors(Request $request, BaseHttpResponse $response)
     {
         $limit = $request->input('paginate', 10);
         $requests = $this->requestLogRepository->getModel()->paginate($limit);
+
         return $response
-            ->setData(view('plugins.request-log::widgets.request-errors', compact('requests', 'limit'))->render());
+            ->setData(view('plugins/request-log::widgets.request-errors', compact('requests', 'limit'))->render());
     }
 
     /**
      * @param RequestLogTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(RequestLogTable $dataTable)
+    public function index(RequestLogTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/request-log::request-log.name'));
 
@@ -59,9 +63,9 @@ class RequestLogController extends BaseController
      * @param $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $log = $this->requestLogRepository->findById($id);
@@ -81,22 +85,20 @@ class RequestLogController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
+        return $this->executeDeleteItems($request, $response, $this->requestLogRepository, REQUEST_LOG_MODULE_SCREEN_NAME);
+    }
 
-        foreach ($ids as $id) {
-            $log = $this->requestLogRepository->findOrFail($id);
-            $this->requestLogRepository->delete($log);
-            event(new DeletedContentEvent(REQUEST_LOG_MODULE_SCREEN_NAME, $request, $log));
-        }
+    /**
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
+     */
+    public function deleteAll(BaseHttpResponse $response)
+    {
+        $this->requestLogRepository->getModel()->truncate();
 
         return $response->setMessage(trans('core/base::notices.delete_success_message'));
     }

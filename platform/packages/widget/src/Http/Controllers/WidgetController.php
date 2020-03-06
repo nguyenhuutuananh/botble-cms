@@ -31,7 +31,6 @@ class WidgetController extends BaseController
      * @param WidgetInterface $widgetRepository
      * @param SettingStore $setting
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
      */
     public function __construct(WidgetInterface $widgetRepository, SettingStore $setting)
     {
@@ -41,16 +40,16 @@ class WidgetController extends BaseController
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @since 24/09/2016 2:10 PM
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function getList()
+    public function index()
     {
         page_title()->setTitle(trans('core/base::layouts.widgets'));
 
         Assets::addScripts(['sortable'])
-            ->addAppModule(['widget']);
+            ->addScriptsDirectly('vendor/core/packages/widget/js/widget.js');
 
         $widgets = $this->widgetRepository->getByTheme($this->theme);
         foreach ($widgets as $widget) {
@@ -59,14 +58,13 @@ class WidgetController extends BaseController
                 ->addWidget($widget->widget_id, $widget->data);
         }
 
-        return view('packages.widget::list');
+        return view('packages/widget::list');
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      * @since 24/09/2016 3:14 PM
      * @throws \Throwable
      */
@@ -95,7 +93,7 @@ class WidgetController extends BaseController
                 'theme'      => $this->theme,
             ]);
             return $response
-                ->setData(view('packages.widget::item', compact('widget_areas'))->render())
+                ->setData(view('packages/widget::item', compact('widget_areas'))->render())
                 ->setMessage(trans('packages/widget::global.save_success'));
         } catch (Exception $ex) {
             return $response
@@ -108,7 +106,6 @@ class WidgetController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postDelete(Request $request, BaseHttpResponse $response)
     {
@@ -134,6 +131,7 @@ class WidgetController extends BaseController
      *
      * @param Application $application
      * @return mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function showWidget(Request $request, Application $application)
     {
@@ -160,7 +158,6 @@ class WidgetController extends BaseController
     /**
      * @return null|string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
      */
     protected function getCurrentLocaleCode()
     {

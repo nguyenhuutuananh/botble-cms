@@ -33,11 +33,11 @@ class SettingServiceProvider extends ServiceProvider
      */
     protected $defer = true;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
+        $this->setNamespace('core/setting')
+            ->loadAndPublishConfigurations(['general']);
+
         $this->app->singleton(SettingsManager::class, function (Application $app) {
             return new SettingsManager($app);
         });
@@ -48,7 +48,7 @@ class SettingServiceProvider extends ServiceProvider
 
         AliasLoader::getInstance()->alias('Setting', SettingFacade::class);
 
-        $this->app->singleton(SettingInterface::class, function () {
+        $this->app->bind(SettingInterface::class, function () {
             return new SettingCacheDecorator(
                 new SettingRepository(new SettingModel)
             );
@@ -57,13 +57,10 @@ class SettingServiceProvider extends ServiceProvider
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
-        $this->setNamespace('core/setting')
-            ->loadRoutes()
+        $this
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadAndPublishConfigurations(['permissions'])
@@ -109,8 +106,6 @@ class SettingServiceProvider extends ServiceProvider
                     'url'         => route('settings.media'),
                     'permissions' => ['settings.media'],
                 ]);
-
-            admin_bar()->registerLink('Setting', route('settings.options'), 'appearance');
         });
     }
 

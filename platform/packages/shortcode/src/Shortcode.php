@@ -17,7 +17,6 @@ class Shortcode
      * Constructor
      *
      * @param \Botble\Shortcode\Compilers\ShortcodeCompiler $compiler
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function __construct(ShortcodeCompiler $compiler)
@@ -33,7 +32,6 @@ class Shortcode
      * @param null $description
      * @param  callable|string $callback
      * @return Shortcode
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function register($key, $name, $description = null, $callback)
@@ -47,7 +45,6 @@ class Shortcode
      * Enable the shortcode
      *
      * @return \Botble\Shortcode\Shortcode
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function enable()
@@ -61,7 +58,6 @@ class Shortcode
      * Disable the shortcode
      *
      * @return \Botble\Shortcode\Shortcode
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function disable()
@@ -76,7 +72,6 @@ class Shortcode
      *
      * @param  string $value
      * @return string
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function compile($value)
@@ -91,7 +86,6 @@ class Shortcode
     /**
      * @param $value
      * @return string
-     * @author Asif Iqbal
      * @since 2.1
      */
     public function strip($value)
@@ -101,7 +95,7 @@ class Shortcode
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      */
     public function getAll()
     {

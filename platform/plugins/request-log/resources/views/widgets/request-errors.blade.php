@@ -19,11 +19,11 @@
         </tbody>
     </table>
 </div>
-@if ($request->total() > $limit)
+@if ($requests->total() > $limit)
     <div class="widget_footer">
-        @include('core.dashboard::partials.paginate', ['data' => $requests, 'limit' => $limit])
+        @include('core/dashboard::partials.paginate', ['data' => $requests, 'limit' => $limit])
     </div>
 @endif
 @else
-    @include('core.dashboard::partials.no-data', ['message' => trans('plugins/request-log::request-log.no_request_error')])
+    @include('core/dashboard::partials.no-data', ['message' => trans('plugins/request-log::request-log.no_request_error')])
 @endif

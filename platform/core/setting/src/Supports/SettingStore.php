@@ -2,6 +2,8 @@
 
 namespace Botble\Setting\Supports;
 
+use Illuminate\Support\Arr;
+
 abstract class SettingStore
 {
     /**
@@ -37,7 +39,7 @@ abstract class SettingStore
     {
         $this->load();
 
-        return ArrayUtil::get($this->data, $key, $default);
+        return Arr::get($this->data, $key, $default);
     }
 
     /**
@@ -51,7 +53,7 @@ abstract class SettingStore
     {
         $this->load();
 
-        return ArrayUtil::has($this->data, $key);
+        return Arr::has($this->data, $key);
     }
 
     /**
@@ -68,10 +70,10 @@ abstract class SettingStore
 
         if (is_array($key)) {
             foreach ($key as $k => $v) {
-                ArrayUtil::set($this->data, $k, $v);
+                Arr::set($this->data, $k, $v);
             }
         } else {
-            ArrayUtil::set($this->data, $key, $value);
+            Arr::set($this->data, $key, $value);
         }
         return $this;
     }
@@ -87,7 +89,7 @@ abstract class SettingStore
         $this->unsaved = true;
 
         if ($this->has($key)) {
-            ArrayUtil::forget($this->data, $key);
+            Arr::forget($this->data, $key);
         }
 
         return $this;

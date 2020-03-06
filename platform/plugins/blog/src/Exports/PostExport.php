@@ -3,7 +3,6 @@
 namespace Botble\Blog\Exports;
 
 use Botble\Table\Supports\TableExportHandler;
-use Curl;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
@@ -76,12 +75,6 @@ class PostExport extends TableExportHandler
      */
     protected function getImageResourceFromURL($imageUrl)
     {
-        $curl = Curl::to($imageUrl)->returnResponseObject()->get();
-
-        if ($curl->status != 200) {
-            return null;
-        }
-
-        return imagecreatefromstring($curl->content);
+        return imagecreatefromstring(file_get_contents($imageUrl));
     }
 }

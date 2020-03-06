@@ -12,17 +12,20 @@
         "ext-zip": "*",
         "botble/api": "*@dev",
         "botble/menu": "*@dev",
-        "botble/revision": "*@dev",
         "botble/optimize": "*@dev",
         "botble/page": "*@dev",
         "botble/platform": "*@dev",
+        "botble/revision": "*@dev",
         "botble/seo-helper": "*@dev",
         "botble/shortcode": "*@dev",
         "botble/slug": "*@dev",
         "botble/theme": "*@dev",
         "botble/widget": "*@dev",
+        "botble/plugin-management": "*@dev",
         "fideloper/proxy": "^4.0",
-        "laravel/framework": "5.8.*"
+        "laravel/framework": "5.8.*",
+        "wikimedia/composer-merge-plugin": "^1.4",
+        "league/flysystem-aws-s3-v3": "^1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -31,11 +34,7 @@
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
         "phpunit/phpunit": "^7.5",
-        "barryvdh/laravel-debugbar": "^3.1",
-        "barryvdh/laravel-ide-helper": "2.*",
-        "jakub-onderka/php-parallel-lint": "dev-master",
-        "laravel/tinker": "^1.0",
-        "squizlabs/php_codesniffer": "^3.3"
+        "botble/dev-tool": "*@dev"
     },
     "autoload": {
         "classmap": [
@@ -55,6 +54,18 @@
         "laravel": {
             "dont-discover": [
             ]
+        },
+        "merge-plugin": {
+            "include": [
+                "./platform/plugins/*/composer.json"
+            ],
+            "recurse": true,
+            "replace": false,
+            "ignore-duplicates": false,
+            "merge-dev": true,
+            "merge-extra": false,
+            "merge-extra-deep": false,
+            "merge-scripts": false
         }
     },
     "scripts": {

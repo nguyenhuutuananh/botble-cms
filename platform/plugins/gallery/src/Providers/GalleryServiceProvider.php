@@ -29,18 +29,15 @@ class GalleryServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(GalleryInterface::class, function () {
+        $this->app->bind(GalleryInterface::class, function () {
             return new GalleryCacheDecorator(
                 new GalleryRepository(new Gallery)
             );
         });
 
-        $this->app->singleton(GalleryMetaInterface::class, function () {
+        $this->app->bind(GalleryMetaInterface::class, function () {
             return new GalleryMetaCacheDecorator(
                 new GalleryMetaRepository(new GalleryMeta)
             );
@@ -51,14 +48,11 @@ class GalleryServiceProvider extends ServiceProvider
         AliasLoader::getInstance()->alias('Gallery', GalleryFacade::class);
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/gallery')
             ->loadAndPublishConfigurations(['general', 'permissions'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadMigrations()
@@ -75,8 +69,8 @@ class GalleryServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'plugins/gallery::gallery.menu_name', // menu name, if you don't need translation, you can use the name in plain text
                 'icon'        => 'fa fa-camera',
-                'url'         => route('galleries.list'),
-                'permissions' => ['galleries.list'], // permission should same with route name, you can see that flag in Plugin.php
+                'url'         => route('galleries.index'),
+                'permissions' => ['galleries.index'], // permission should same with route name, you can see that flag in Plugin.php
             ]);
         });
 

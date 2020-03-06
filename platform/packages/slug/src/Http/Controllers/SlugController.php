@@ -23,7 +23,7 @@ class SlugController extends BaseController
      * SlugController constructor.
      * @param SlugInterface $slugRepository
      * @param SlugService $slugService
-     * @author Sang Nguyen
+     *
      */
     public function __construct(SlugInterface $slugRepository, SlugService $slugService)
     {
@@ -35,7 +35,7 @@ class SlugController extends BaseController
      * @param SlugRequest $request
      * @return int|string
      */
-    public function postCreate(SlugRequest $request)
+    public function store(SlugRequest $request)
     {
         return $this->slugService->create($request->input('name'), $request->input('slug_id'), $request->input('screen'));
     }

@@ -9,7 +9,7 @@ interface LanguageInterface extends RepositoryInterface
     /**
      * @param array $select
      * @return mixed
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function getActiveLanguage($select = ['*']);
@@ -17,7 +17,7 @@ interface LanguageInterface extends RepositoryInterface
     /**
      * @param array $select
      * @return mixed
-     * @author Sang Nguyen
+     *
      * @since 2.2
      */
     public function getDefaultLanguage($select = ['*']);

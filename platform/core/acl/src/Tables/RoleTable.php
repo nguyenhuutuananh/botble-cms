@@ -2,6 +2,7 @@
 
 namespace Botble\ACL\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Repositories\Interfaces\RoleInterface;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -27,7 +28,7 @@ class RoleTable extends TableAbstract
     protected $userRepository;
 
     /**
-     * TagTable constructor.
+     * RoleTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param RoleInterface $roleRepository
@@ -43,6 +44,11 @@ class RoleTable extends TableAbstract
         $this->userRepository = $userRepository;
         $this->setOption('id', 'table-roles');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['roles.edit', 'roles.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
 
@@ -50,7 +56,7 @@ class RoleTable extends TableAbstract
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -58,6 +64,10 @@ class RoleTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('roles.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('roles.edit', $item->id), $item->name);
             })
             ->editColumn('checkbox', function ($item) {
@@ -72,7 +82,7 @@ class RoleTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, ROLE_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('roles.edit', 'roles.delete', $item);
+                return table_actions('roles.edit', 'roles.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -82,7 +92,7 @@ class RoleTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -102,7 +112,7 @@ class RoleTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -137,18 +147,13 @@ class RoleTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('roles.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('roles.create'), 'roles.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, ROLE_MODULE_SCREEN_NAME);
     }
@@ -159,18 +164,11 @@ class RoleTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('roles.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('roles.deletes'), 'roles.destroy', parent::bulkActions());
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getBulkChanges(): array
     {
@@ -179,16 +177,7 @@ class RoleTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getRoles',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getRoles()
-    {
-        return $this->repository->pluck('roles.name', 'roles.id');
     }
 }

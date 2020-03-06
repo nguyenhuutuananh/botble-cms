@@ -60,6 +60,7 @@ class CustomFieldSupport
 
     /**
      * CustomFieldSupport constructor.
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct()
     {
@@ -262,7 +263,7 @@ class CustomFieldSupport
     public function exportCustomFieldsData($morphClass, $morphId)
     {
         $fieldGroups = $this->fieldGroupRepository->getFieldGroups([
-            'status' => BaseStatusEnum::PUBLISH,
+            'status' => BaseStatusEnum::PUBLISHED,
         ]);
 
         $result = [];
@@ -287,7 +288,7 @@ class CustomFieldSupport
      */
     public function renderRules()
     {
-        return view('plugins.custom-field::_script-templates.rules', [
+        return view('plugins/custom-field::_script-templates.rules', [
             'ruleGroups' => $this->resolveGroups(),
         ])->render();
     }
@@ -299,7 +300,7 @@ class CustomFieldSupport
      */
     public function renderCustomFieldBoxes(array $boxes)
     {
-        return view('plugins.custom-field::custom-fields-boxes-renderer', [
+        return view('plugins/custom-field::custom-fields-boxes-renderer', [
             'customFieldBoxes' => json_encode($boxes),
         ])->render();
     }
@@ -311,10 +312,9 @@ class CustomFieldSupport
     public function renderAssets()
     {
         if (!$this->isRenderedAssets) {
-            echo view('plugins.custom-field::_script-templates.render-custom-fields')->render();
+            echo view('plugins/custom-field::_script-templates.render-custom-fields')->render();
             $this->isRenderedAssets = true;
         }
-        return;
     }
 
     /**

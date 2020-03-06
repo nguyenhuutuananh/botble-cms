@@ -12,7 +12,6 @@ interface WebmastersContract extends RenderableContract
      * @param  array $webmasters
      *
      * @return self
-     * @author ARCANEDEV
      */
     public static function make(array $webmasters = []);
 
@@ -23,7 +22,6 @@ interface WebmastersContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function add($webmaster, $content);
 
@@ -31,7 +29,6 @@ interface WebmastersContract extends RenderableContract
      * Reset the webmaster collection.
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function reset();
 }

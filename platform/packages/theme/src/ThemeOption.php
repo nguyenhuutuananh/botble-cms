@@ -43,27 +43,26 @@ class ThemeOption
     /**
      * @var string
      */
-    public $opt_name = 'theme';
+    public $optName = 'theme';
 
     /**
      * Prepare args of theme options
      *
-     * @return array|mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function constructArgs()
     {
-        $args = isset($this->args[$this->opt_name]) ? $this->args[$this->opt_name] : [];
+        $args = isset($this->args[$this->optName]) ? $this->args[$this->optName] : [];
 
-        $args['opt_name'] = $this->opt_name;
+        $args['opt_name'] = $this->optName;
         if (!isset($args['menu_title'])) {
-            $args['menu_title'] = ucfirst($this->opt_name) . ' Options';
+            $args['menu_title'] = ucfirst($this->optName) . ' Options';
         }
         if (!isset($args['page_title'])) {
-            $args['page_title'] = ucfirst($this->opt_name) . ' Options';
+            $args['page_title'] = ucfirst($this->optName) . ' Options';
         }
         if (!isset($args['page_slug'])) {
-            $args['page_slug'] = $this->opt_name . '_options';
+            $args['page_slug'] = $this->optName . '_options';
         }
 
         return $args;
@@ -73,16 +72,15 @@ class ThemeOption
      * Prepare sections to display theme options page
      *
      * @return array
-     * @author Sang Nguyen
      */
     public function constructSections()
     {
         $sections = [];
-        if (!isset($this->sections[$this->opt_name])) {
+        if (!isset($this->sections[$this->optName])) {
             return $sections;
         }
-        foreach ($this->sections[$this->opt_name] as $section_id => $section) {
-            $section['fields'] = $this->constructFields($section_id);
+        foreach ($this->sections[$this->optName] as $sectionId => $section) {
+            $section['fields'] = $this->constructFields($sectionId);
             $priority = $section['priority'];
             while (isset($sections[$priority])) {
                 $priority++;
@@ -97,16 +95,15 @@ class ThemeOption
     /**
      * Prepare fields to display theme options page
      *
-     * @param string $section_id
+     * @param string $sectionId
      * @return array
-     * @author Sang Nguyen
      */
-    public function constructFields($section_id = '')
+    public function constructFields($sectionId = '')
     {
         $fields = [];
-        if (!empty($this->fields[$this->opt_name])) {
-            foreach ($this->fields[$this->opt_name] as $field) {
-                if ($field['section_id'] == $section_id) {
+        if (!empty($this->fields[$this->optName])) {
+            foreach ($this->fields[$this->optName] as $field) {
+                if ($field['section_id'] == $sectionId) {
                     $priority = $field['priority'];
                     while (isset($fields[$priority])) {
                         echo $priority++;
@@ -123,60 +120,55 @@ class ThemeOption
     /**
      * @param string $id
      * @return bool
-     * @author Sang Nguyen
      */
     public function getSection($id = '')
     {
         $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($id)) {
-            if (!isset($this->sections[$this->opt_name][$id])) {
+        if (!empty($this->optName) && !empty($id)) {
+            if (!isset($this->sections[$this->optName][$id])) {
                 $id = strtolower(sanitize_html_class($id));
             }
 
-            return isset($this->sections[$this->opt_name][$id]) ? $this->sections[$this->opt_name][$id] : false;
+            return isset($this->sections[$this->optName][$id]) ? $this->sections[$this->optName][$id] : false;
         }
 
         return false;
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function checkOptName()
     {
-        if (empty($this->opt_name) || is_array($this->opt_name)) {
+        if (empty($this->optName) || is_array($this->optName)) {
             return;
         }
-        if (!isset($this->sections[$this->opt_name])) {
-            $this->sections[$this->opt_name] = [];
-            $this->priority[$this->opt_name]['sections'] = 1;
+        if (!isset($this->sections[$this->optName])) {
+            $this->sections[$this->optName] = [];
+            $this->priority[$this->optName]['sections'] = 1;
         }
-        if (!isset($this->args[$this->opt_name])) {
-            $this->args[$this->opt_name] = [];
-            $this->priority[$this->opt_name]['args'] = 1;
+        if (!isset($this->args[$this->optName])) {
+            $this->args[$this->optName] = [];
+            $this->priority[$this->optName]['args'] = 1;
         }
-        if (!isset($this->fields[$this->opt_name])) {
-            $this->fields[$this->opt_name] = [];
-            $this->priority[$this->opt_name]['fields'] = 1;
+        if (!isset($this->fields[$this->optName])) {
+            $this->fields[$this->optName] = [];
+            $this->priority[$this->optName]['fields'] = 1;
         }
-        if (!isset($this->help[$this->opt_name])) {
-            $this->help[$this->opt_name] = [];
-            $this->priority[$this->opt_name]['help'] = 1;
+        if (!isset($this->help[$this->optName])) {
+            $this->help[$this->optName] = [];
+            $this->priority[$this->optName]['help'] = 1;
         }
-        if (!isset($this->errors[$this->opt_name])) {
-            $this->errors[$this->opt_name] = [];
+        if (!isset($this->errors[$this->optName])) {
+            $this->errors[$this->optName] = [];
         }
     }
 
     /**
-     * @return array|mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getSections()
     {
         $this->checkOptName();
-        if (!empty($this->sections[$this->opt_name])) {
-            return $this->sections[$this->opt_name];
+        if (!empty($this->sections[$this->optName])) {
+            return $this->sections[$this->optName];
         }
 
         return [];
@@ -184,7 +176,7 @@ class ThemeOption
 
     /**
      * @param array $sections
-     * @author Sang Nguyen
+     *
      * @return $this
      */
     public function setSections($sections = []): self
@@ -200,7 +192,7 @@ class ThemeOption
 
     /**
      * @param array $section
-     * @author Sang Nguyen
+     *
      * @return $this
      */
     public function setSection($section = []): self
@@ -220,18 +212,18 @@ class ThemeOption
                 }
             }
 
-            if (isset($this->sections[$this->opt_name][$section['id']])) {
+            if (isset($this->sections[$this->optName][$section['id']])) {
                 $orig = $section['id'];
                 $index = 0;
-                while (isset($this->sections[$this->opt_name][$section['id']])) {
+                while (isset($this->sections[$this->optName][$section['id']])) {
                     $section['id'] = $orig . '_' . $index;
                 }
             }
         }
 
-        if (!empty($this->opt_name) && is_array($section) && !empty($section)) {
+        if (!empty($this->optName) && is_array($section) && !empty($section)) {
             if (!isset($section['id']) && !isset($section['title'])) {
-                $this->errors[$this->opt_name]['section']['missing_title'] = 'Unable to create a section due to missing id and title.';
+                $this->errors[$this->optName]['section']['missing_title'] = 'Unable to create a section due to missing id and title.';
 
                 return $this;
             }
@@ -244,9 +236,9 @@ class ThemeOption
                 }
                 unset($section['fields']);
             }
-            $this->sections[$this->opt_name][$section['id']] = $section;
+            $this->sections[$this->optName][$section['id']] = $section;
         } else {
-            $this->errors[$this->opt_name]['section']['empty'] = 'Unable to create a section due an empty section array or the section variable passed was not an array.';
+            $this->errors[$this->optName]['section']['empty'] = 'Unable to create a section due an empty section array or the section variable passed was not an array.';
 
             return $this;
         }
@@ -256,30 +248,28 @@ class ThemeOption
 
     /**
      * @param $type
-     * @return mixed
-     * @author Sang Nguyen
+     * @return int
      */
     public function getPriority($type)
     {
-        $priority = $this->priority[$this->opt_name][$type];
-        $this->priority[$this->opt_name][$type] += 1;
+        $priority = $this->priority[$this->optName][$type];
+        $this->priority[$this->optName][$type] += 1;
 
         return $priority;
     }
 
     /**
-     * @param string $section_id
+     * @param string $sectionId
      * @param array $fields
-     * @author Sang Nguyen
      */
-    public function processFieldsArray($section_id = '', $fields = [])
+    public function processFieldsArray($sectionId = '', $fields = [])
     {
-        if (!empty($this->opt_name) && !empty($section_id) && is_array($fields) && !empty($fields)) {
+        if (!empty($this->optName) && !empty($sectionId) && is_array($fields) && !empty($fields)) {
             foreach ($fields as $field) {
                 if (!is_array($field)) {
                     continue;
                 }
-                $field['section_id'] = $section_id;
+                $field['section_id'] = $sectionId;
                 $this->setField($field);
             }
         }
@@ -287,19 +277,19 @@ class ThemeOption
 
     /**
      * @param array $field
-     * @author Sang Nguyen
+     *
      * @return $this
      */
     public function setField($field = []): self
     {
         $this->checkOptName();
 
-        if (!empty($this->opt_name) && is_array($field) && !empty($field)) {
+        if (!empty($this->optName) && is_array($field) && !empty($field)) {
             if (!isset($field['priority'])) {
                 $field['priority'] = $this->getPriority('fields');
             }
             if (isset($field['id'])) {
-                $this->fields[$this->opt_name][$field['id']] = $field;
+                $this->fields[$this->optName][$field['id']] = $field;
             }
         }
         return $this;
@@ -308,33 +298,32 @@ class ThemeOption
     /**
      * @param string $id
      * @param bool $fields
-     * @author Sang Nguyen
      */
     public function removeSection($id = '', $fields = false)
     {
-        if (!empty($this->opt_name) && !empty($id)) {
-            if (isset($this->sections[$this->opt_name][$id])) {
+        if (!empty($this->optName) && !empty($id)) {
+            if (isset($this->sections[$this->optName][$id])) {
                 $priority = '';
 
-                foreach ($this->sections[$this->opt_name] as $key => $section) {
+                foreach ($this->sections[$this->optName] as $key => $section) {
                     if ($key == $id) {
                         $priority = $section['priority'];
-                        $this->priority[$this->opt_name]['sections']--;
-                        unset($this->sections[$this->opt_name][$id]);
+                        $this->priority[$this->optName]['sections']--;
+                        unset($this->sections[$this->optName][$id]);
                         continue;
                     }
                     if ($priority != '') {
                         $newPriority = $section['priority'];
                         $section['priority'] = $priority;
-                        $this->sections[$this->opt_name][$key] = $section;
+                        $this->sections[$this->optName][$key] = $section;
                         $priority = $newPriority;
                     }
                 }
 
-                if (isset($this->fields[$this->opt_name]) && !empty($this->fields[$this->opt_name]) && $fields == true) {
-                    foreach ($this->fields[$this->opt_name] as $key => $field) {
+                if (isset($this->fields[$this->optName]) && !empty($this->fields[$this->optName]) && $fields == true) {
+                    foreach ($this->fields[$this->optName] as $key => $field) {
                         if ($field['section_id'] == $id) {
-                            unset($this->fields[$this->opt_name][$key]);
+                            unset($this->fields[$this->optName][$key]);
                         }
                     }
                 }
@@ -345,15 +334,14 @@ class ThemeOption
     /**
      * @param string $id
      * @param bool $hide
-     * @author Sang Nguyen
      */
     public function hideSection($id = '', $hide = true)
     {
         $this->checkOptName();
 
-        if (!empty($this->opt_name) && !empty($id)) {
-            if (isset($this->sections[$this->opt_name][$id])) {
-                $this->sections[$this->opt_name][$id]['hidden'] = $hide;
+        if (!empty($this->optName) && !empty($id)) {
+            if (isset($this->sections[$this->optName][$id])) {
+                $this->sections[$this->optName][$id]['hidden'] = $hide;
             }
         }
     }
@@ -361,13 +349,12 @@ class ThemeOption
     /**
      * @param string $id
      * @return bool
-     * @author Sang Nguyen
      */
     public function getField($id = '')
     {
         $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($id)) {
-            return isset($this->fields[$this->opt_name][$id]) ? $this->fields[$this->opt_name][$id] : false;
+        if (!empty($this->optName) && !empty($id)) {
+            return isset($this->fields[$this->optName][$id]) ? $this->fields[$this->optName][$id] : false;
         }
 
         return false;
@@ -376,18 +363,18 @@ class ThemeOption
     /**
      * @param string $id
      * @param bool $hide
-     * @author Sang Nguyen
      */
     public function hideField($id = '', $hide = true)
     {
         $this->checkOptName();
 
-        if (!empty($this->opt_name) && !empty($id)) {
-            if (isset($this->fields[$this->opt_name][$id])) {
+        if (!empty($this->optName) && !empty($id)) {
+            if (isset($this->fields[$this->optName][$id])) {
                 if (!$hide) {
-                    $this->fields[$this->opt_name][$id]['class'] = str_replace('hidden', '', $this->fields[$this->opt_name][$id]['class']);
+                    $this->fields[$this->optName][$id]['class'] = str_replace('hidden', '',
+                        $this->fields[$this->optName][$id]['class']);
                 } else {
-                    $this->fields[$this->opt_name][$id]['class'] .= 'hidden';
+                    $this->fields[$this->optName][$id]['class'] .= 'hidden';
                 }
             }
         }
@@ -396,25 +383,24 @@ class ThemeOption
     /**
      * @param string $id
      * @return bool
-     * @author Sang Nguyen
      */
     public function removeField($id = '')
     {
         $this->checkOptName();
 
-        if (!empty($this->opt_name) && !empty($id)) {
-            if (isset($this->fields[$this->opt_name][$id])) {
-                foreach ($this->fields[$this->opt_name] as $key => $field) {
+        if (!empty($this->optName) && !empty($id)) {
+            if (isset($this->fields[$this->optName][$id])) {
+                foreach ($this->fields[$this->optName] as $key => $field) {
                     if ($key == $id) {
                         $priority = $field['priority'];
-                        $this->priority[$this->opt_name]['fields']--;
-                        unset($this->fields[$this->opt_name][$id]);
+                        $this->priority[$this->optName]['fields']--;
+                        unset($this->fields[$this->optName][$id]);
                         continue;
                     }
                     if (isset($priority) && $priority != '') {
                         $newPriority = $field['priority'];
                         $field['priority'] = $priority;
-                        $this->fields[$this->opt_name][$key] = $field;
+                        $this->fields[$this->optName][$key] = $field;
                         $priority = $newPriority;
                     }
                 }
@@ -425,64 +411,30 @@ class ThemeOption
     }
 
     /**
-     * @param array $tab
-     * @author Sang Nguyen
-     */
-    public function setHelpTab($tab = [])
-    {
-        $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($tab)) {
-            if (!isset($this->args[$this->opt_name]['help_tabs'])) {
-                $this->args[$this->opt_name]['help_tabs'] = [];
-            }
-            if (isset($tab['id'])) {
-                $this->args[$this->opt_name]['help_tabs'][] = $tab;
-            } elseif (is_array(end($tab))) {
-                foreach ($tab as $tab_item) {
-                    $this->args[$this->opt_name]['help_tabs'][] = $tab_item;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param string $content
-     * @author Sang Nguyen
-     */
-    public function setHelpSidebar($content = '')
-    {
-        $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($content)) {
-            $this->args[$this->opt_name]['help_sidebar'] = $content;
-        }
-    }
-
-    /**
-     * @return array|mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getArgs()
     {
         $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($this->args[$this->opt_name])) {
-            return $this->args[$this->opt_name];
+        if (!empty($this->optName) && !empty($this->args[$this->optName])) {
+            return $this->args[$this->optName];
         }
         return [];
     }
 
     /**
      * @param array $args
-     * @author Sang Nguyen
+     *
      * @return $this
      */
     public function setArgs($args = []): self
     {
         $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($args) && is_array($args)) {
-            if (isset($this->args[$this->opt_name]) && isset($this->args[$this->opt_name]['clearArgs'])) {
-                $this->args[$this->opt_name] = [];
+        if (!empty($this->optName) && !empty($args) && is_array($args)) {
+            if (isset($this->args[$this->optName]) && isset($this->args[$this->optName]['clearArgs'])) {
+                $this->args[$this->optName] = [];
             }
-            $this->args[$this->opt_name] = parse_args($args, $this->args[$this->opt_name]);
+            $this->args[$this->optName] = parse_args($args, $this->args[$this->optName]);
         }
         return $this;
     }
@@ -490,13 +442,12 @@ class ThemeOption
     /**
      * @param string $key
      * @return null
-     * @author Sang Nguyen
      */
     public function getArg($key = '')
     {
         $this->checkOptName();
-        if (!empty($this->opt_name) && !empty($key) && !empty($this->args[$this->opt_name])) {
-            return Arr::get($this->args[$this->opt_name], $key);
+        if (!empty($this->optName) && !empty($key) && !empty($this->args[$this->optName])) {
+            return Arr::get($this->args[$this->optName], $key);
         }
 
         return null;
@@ -505,19 +456,45 @@ class ThemeOption
     /**
      * @param string $key
      * @param string $value
-     * @return void
-     * @author Sang Nguyen
+     * @return ThemeOption
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function setOption($key, $value = '')
     {
-        Setting::set($this->opt_name . '-' . setting()->get('theme') . $this->getCurrentLocaleCode() . '-' . $key, $value);
+        Setting::set($this->getOptionKey($key, $this->getCurrentLocaleCode()), $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $key
+     * @param $locale
+     * @return string
+     */
+    protected function getOptionKey($key, $locale)
+    {
+        return $this->optName . '-' . setting()->get('theme') . $locale . '-' . $key;
+    }
+
+    /**
+     * @return null|string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    protected function getCurrentLocaleCode()
+    {
+        if (!defined('LANGUAGE_MODULE_SCREEN_NAME')) {
+            return null;
+        }
+
+        $currentLocale = is_in_admin() ? Language::getCurrentAdminLocaleCode() : Language::getCurrentLocaleCode();
+
+        return $currentLocale && $currentLocale != Language::getDefaultLocaleCode() ? '-' . $currentLocale : null;
     }
 
     /**
      * @param $field
      * @return mixed|string
-     * @author Sang Nguyen
      */
     public function renderField($field)
     {
@@ -542,43 +519,26 @@ class ThemeOption
     /**
      * @param string $key
      * @return bool
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function hasOption($key)
     {
-        return setting()->has($this->opt_name . '-' . setting()->get('theme') . $this->getCurrentLocaleCode() . '-' . $key);
+        return setting()->has($this->getOptionKey($key, $this->getCurrentLocaleCode()));
     }
 
     /**
      * @param string $key
      * @param string $default
      * @return string
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getOption($key = '', $default = '')
     {
-        $data = setting($this->opt_name . '-' . setting()->get('theme') . $this->getCurrentLocaleCode() . '-' . $key);
-        if (!empty($data)) {
-            return $data;
-        }
-        return $default;
-    }
+        $value = setting($this->getOptionKey($key, $this->getCurrentLocaleCode()),
+            setting($this->optName . '-' . setting()->get('theme') . '-' . $key, $default));
 
-    /**
-     * @return null|string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
-     */
-    protected function getCurrentLocaleCode()
-    {
-        $language_code = null;
-        if (is_plugin_active('language')) {
-            $current_locale = is_in_admin() ? Language::getCurrentAdminLocaleCode() : Language::getCurrentLocaleCode();
-            $language_code = $current_locale && $current_locale != Language::getDefaultLocaleCode() ? '-' . $current_locale : null;
-        }
-
-        return $language_code;
+        return $value ? $value : $default;
     }
 }

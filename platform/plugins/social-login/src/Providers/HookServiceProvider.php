@@ -11,9 +11,6 @@ class HookServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         if (setting('social_login_enable', false)) {
@@ -26,13 +23,13 @@ class HookServiceProvider extends ServiceProvider
      * @param $module
      * @return null|string
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addLoginOptions($html, $module)
     {
         if ($module === 'core/acl') {
-            return $html . view('plugins.social-login::login-options')->render();
+            return $html . view('plugins/social-login::login-options')->render();
         }
+
         return $html;
     }
 }

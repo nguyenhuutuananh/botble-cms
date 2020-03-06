@@ -19,21 +19,9 @@ class RoleUpdateEvent extends Event
      * RoleUpdateEvent constructor.
      *
      * @param Role $role
-     * @author Sang Nguyen
      */
     public function __construct(Role $role)
     {
         $this->role = $role;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function broadcastOn()
-    {
-        return [];
     }
 }

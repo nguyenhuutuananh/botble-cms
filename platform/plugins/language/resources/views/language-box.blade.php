@@ -3,14 +3,14 @@
         <tbody>
             <tr>
                 <td class="active-language">
-                    {!! language_flag($current_language->lang_flag, $current_language->lang_name) !!}
+                    {!! language_flag($currentLanguage->lang_flag, $currentLanguage->lang_name) !!}
                 </td>
                 <td class="translation-column">
                     <div class="ui-select-wrapper">
                         <select name="language" id="post_lang_choice" class="ui-select">
                             @foreach($languages as $language)
                                 @if (!array_key_exists(json_encode([$language->lang_code]), $related))
-                                    <option value="{{ $language->lang_code }}" @if ($language->lang_code == $current_language->lang_code) selected="selected" @endif data-flag="{{ $language->lang_flag }}">{{ $language->lang_name }}</option>
+                                    <option value="{{ $language->lang_code }}" @if ($language->lang_code == $currentLanguage->lang_code) selected="selected" @endif data-flag="{{ $language->lang_flag }}">{{ $language->lang_name }}</option>
                                 @endif
                             @endforeach
                         </select>
@@ -28,20 +28,20 @@
     <div><strong>{{ trans('plugins/language::language.translations') }}</strong>
         <div id="list-others-language">
             @foreach($languages as $language)
-                @if ($language->lang_code != $current_language->lang_code)
+                @if ($language->lang_code != $currentLanguage->lang_code)
                     {!! language_flag($language->lang_flag, $language->lang_name) !!}
                     @if (array_key_exists($language->lang_code, $related))
                         <a href="{{ Route::has($route['edit']) ? route($route['edit'], $related[$language->lang_code]) : '#' }}"> {{ $language->lang_name }} <i class="fa fa-edit"></i></a>
                         <br>
                     @else
                         @php
-                            $query_string ='ref_from=' . (!empty($args[0]) ? $args[0]->id : 0) . '&ref_lang=' . $language->lang_code;
-                            $current_query_string = remove_query_string_var(Request::getQueryString(), ['ref_from', 'ref_lang']);
-                            if (!empty($current_query_string)) {
-                                $query_string = $current_query_string . '&' . $query_string;
+                            $queryString ='ref_from=' . (!empty($args[0]) ? $args[0]->id : 0) . '&ref_lang=' . $language->lang_code;
+                            $currentQueryString = remove_query_string_var(Request::getQueryString(), ['ref_from', 'ref_lang']);
+                            if (!empty($currentQueryString)) {
+                                $queryString = $currentQueryString . '&' . $queryString;
                             }
                         @endphp
-                        <a href="{{ Route::has($route['create']) ? route($route['create']) : '#' }}?{{ $query_string }}"> {{ $language->lang_name }} <i class="fa fa-plus"></i></a>
+                        <a href="{{ Route::has($route['create']) ? route($route['create']) : '#' }}?{{ $queryString }}"> {{ $language->lang_name }} <i class="fa fa-plus"></i></a>
                         <br>
                     @endif
                 @endif

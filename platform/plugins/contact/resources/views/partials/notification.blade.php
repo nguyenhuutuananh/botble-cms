@@ -6,7 +6,7 @@
     <ul class="dropdown-menu dropdown-menu-right">
         <li class="external">
             <h3>{!! trans('plugins/contact::contact.new_msg_notice', ['count' => count($contacts)]) !!}</h3>
-            <a href="{{ route('contacts.list') }}">{{ trans('plugins/contact::contact.view_all') }}</a>
+            <a href="{{ route('contacts.index') }}">{{ trans('plugins/contact::contact.view_all') }}</a>
         </li>
         <li>
             <ul class="dropdown-menu-list scroller" style="height: {{ count($contacts) * 70 }}px;" data-handle-color="#637283">
@@ -14,7 +14,7 @@
                     <li>
                         <a href="{{ route('contacts.edit', $contact->id) }}">
                             <span class="photo">
-                                <img src="{{ url(config('core.acl.general.avatar.default')) }}" class="rounded-circle" alt="{{ $contact->name }}">
+                                <img src="{{ \Botble\Base\Supports\Gravatar::image($contact->email) }}" class="rounded-circle" alt="{{ $contact->name }}">
                             </span>
                             <span class="subject"><span class="from"> {{ $contact->name }} </span><span class="time">{{ Carbon\Carbon::parse($contact->created_at)->toDateTimeString() }} </span></span>
                             <span class="message"> {{ $contact->phone }} - {{ $contact->email }} </span>

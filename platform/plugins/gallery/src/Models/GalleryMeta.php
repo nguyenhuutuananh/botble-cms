@@ -2,9 +2,9 @@
 
 namespace Botble\Gallery\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class GalleryMeta extends Eloquent
+class GalleryMeta extends BaseModel
 {
     /**
      * The database table used by the model.
@@ -26,7 +26,7 @@ class GalleryMeta extends Eloquent
     /**
      * @param string $value
      * @return array
-     * @author Sang Nguyen
+     *
      */
     public function getImagesAttribute($value)
     {

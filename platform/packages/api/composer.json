@@ -7,12 +7,6 @@
       "Botble\\Api\\": "src"
     }
   },
-  "authors": [
-    {
-      "name": "Sang Nguyen",
-      "email": "sangnguyenplus@gmail.com"
-    }
-  ],
   "require": {
     "laravel/passport": "^7.0",
     "mpociot/laravel-apidoc-generator": "^3.0",

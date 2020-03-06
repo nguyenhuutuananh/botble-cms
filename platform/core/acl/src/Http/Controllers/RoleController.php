@@ -5,8 +5,6 @@ namespace Botble\ACL\Http\Controllers;
 use Botble\ACL\Forms\RoleForm;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Responses\BaseHttpResponse;
-use Assets;
-use Auth;
 use Botble\ACL\Events\RoleAssignmentEvent;
 use Botble\ACL\Events\RoleUpdateEvent;
 use Botble\ACL\Tables\RoleTable;
@@ -14,8 +12,8 @@ use Botble\ACL\Http\Requests\RoleCreateRequest;
 use Botble\ACL\Repositories\Interfaces\RoleInterface;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Base\Http\Controllers\BaseController;
+use Botble\Base\Supports\Helper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class RoleController extends BaseController
 {
@@ -34,25 +32,20 @@ class RoleController extends BaseController
      * @param RoleInterface $roleRepository
      * @param UserInterface $userRepository
      */
-    public function __construct(
-        RoleInterface $roleRepository,
-        UserInterface $userRepository
-    )
+    public function __construct(RoleInterface $roleRepository, UserInterface $userRepository)
     {
         $this->roleRepository = $roleRepository;
         $this->userRepository = $userRepository;
     }
-
 
     /**
      * Show list roles
      *
      * @param RoleTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      * @throws \Throwable
      */
-    public function getList(RoleTable $dataTable)
+    public function index(RoleTable $dataTable)
     {
         page_title()->setTitle(trans('core/acl::permissions.role_permission'));
 
@@ -64,13 +57,15 @@ class RoleController extends BaseController
      *
      * @param int $id
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws \Exception
      */
-    public function getDelete($id, BaseHttpResponse $response)
+    public function destroy($id, BaseHttpResponse $response)
     {
         $role = $this->roleRepository->findOrFail($id);
 
         $role->delete();
+
+        Helper::executeCommand('cache:clear');
 
         return $response->setMessage(trans('core/acl::permissions.delete_success'));
     }
@@ -81,9 +76,9 @@ class RoleController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws \Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
         $ids = $request->input('ids');
         if (empty($ids)) {
@@ -97,6 +92,8 @@ class RoleController extends BaseController
             $role->delete();
         }
 
+        Helper::executeCommand('cache:clear');
+
         return $response->setMessage(trans('core/base::notices.delete_success_message'));
     }
 
@@ -104,15 +101,10 @@ class RoleController extends BaseController
      * @param int $id
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
      */
-    public function getEdit($id, FormBuilder $formBuilder)
+    public function edit($id, FormBuilder $formBuilder)
     {
         $role = $this->roleRepository->findOrFail($id);
-
-        Assets::addStyles(['jquery-ui', 'jqueryTree']);
-        Assets::addScripts(['jquery-ui', 'jqueryTree']);
-        Assets::addAppModule(['role']);
 
         page_title()->setTitle(trans('core/acl::permissions.details') . ' - ' . e($role->name));
 
@@ -124,38 +116,54 @@ class RoleController extends BaseController
      * @param RoleCreateRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws \Exception
      */
-    public function postEdit($id, RoleCreateRequest $request, BaseHttpResponse $response)
+    public function update($id, RoleCreateRequest $request, BaseHttpResponse $response)
     {
         $role = $this->roleRepository->findOrFail($id);
 
         $role->name = $request->input('name');
         $role->permissions = $this->cleanPermission($request->input('flags'));
         $role->description = $request->input('description');
-        $role->updated_by = Auth::user()->getKey();
+        $role->updated_by = $request->user()->getKey();
         $role->is_default = $request->input('is_default', 0);
         $this->roleRepository->createOrUpdate($role);
+
+        Helper::executeCommand('cache:clear');
 
         event(new RoleUpdateEvent($role));
 
         return $response
-            ->setPreviousUrl(route('roles.list'))
+            ->setPreviousUrl(route('roles.index'))
             ->setNextUrl(route('roles.edit', $id))
             ->setMessage(trans('core/acl::permissions.modified_success'));
     }
 
     /**
-     * @return string
-     * @author Sang Nguyen
+     * Return a correctly type casted permissions array
+     * @param array $permissions
+     * @return array
      */
-    public function getCreate(FormBuilder $formBuilder)
+    protected function cleanPermission($permissions)
+    {
+        if (!$permissions) {
+            return [];
+        }
+
+        $cleanedPermissions = [];
+        foreach ($permissions as $permissionName) {
+            $cleanedPermissions[$permissionName] = true;
+        }
+
+        return $cleanedPermissions;
+    }
+
+    /**
+     * @return string
+     */
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('core/acl::permissions.create_role'));
-
-        Assets::addStyles(['jquery-ui', 'jqueryTree']);
-        Assets::addScripts(['jquery-ui', 'jqueryTree']);
-        Assets::addAppModule(['role']);
 
         return $formBuilder->create(RoleForm::class)->renderForm();
     }
@@ -164,22 +172,21 @@ class RoleController extends BaseController
      * @param RoleCreateRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(RoleCreateRequest $request, BaseHttpResponse $response)
+    public function store(RoleCreateRequest $request, BaseHttpResponse $response)
     {
         $role = $this->roleRepository->createOrUpdate([
             'name'        => $request->input('name'),
-            'slug'        => Str::slug($request->input('name')),
+            'slug'        => $this->roleRepository->createSlug($request->input('name'), 0),
             'permissions' => $this->cleanPermission($request->input('flags')),
             'description' => $request->input('description'),
             'is_default'  => $request->input('is_default') !== null ? 1 : 0,
-            'created_by'  => Auth::user()->getKey(),
-            'updated_by'  => Auth::user()->getKey(),
+            'created_by'  => $request->user()->getKey(),
+            'updated_by'  => $request->user()->getKey(),
         ]);
 
         return $response
-            ->setPreviousUrl(route('roles.list'))
+            ->setPreviousUrl(route('roles.index'))
             ->setNextUrl(route('roles.edit', $role->id))
             ->setMessage(trans('core/acl::permissions.create_success'));
     }
@@ -188,7 +195,6 @@ class RoleController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function getDuplicate($id, BaseHttpResponse $response)
     {
@@ -211,7 +217,6 @@ class RoleController extends BaseController
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getJson()
     {
@@ -229,7 +234,6 @@ class RoleController extends BaseController
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @author Sang Nguyen
      */
     public function postAssignMember(Request $request, BaseHttpResponse $response)
     {
@@ -241,24 +245,5 @@ class RoleController extends BaseController
         event(new RoleAssignmentEvent($role, $user));
 
         return $response;
-    }
-
-    /**
-     * Return a correctly type casted permissions array
-     * @param array $permissions
-     * @return array
-     * @author Sang Nguyen
-     */
-    protected function cleanPermission($permissions)
-    {
-        if (!$permissions) {
-            return [];
-        }
-        $cleanedPermissions = [];
-        foreach ($permissions as $permissionName) {
-            $cleanedPermissions[$permissionName] = true;
-        }
-
-        return $cleanedPermissions;
     }
 }

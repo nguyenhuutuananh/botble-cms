@@ -52,7 +52,7 @@ class ResetPasswordController extends BaseController
 
         $email = $request->email;
         Assets::addScripts(['jquery-validation'])
-            ->addAppModule(['login'])
+            ->addScriptsDirectly('vendor/core/js/login.js')
             ->removeStyles([
                 'select2',
                 'fancybox',
@@ -67,6 +67,6 @@ class ResetPasswordController extends BaseController
                 'cookie',
             ]);
 
-        return view('core.acl::auth.reset', compact('email', 'token'));
+        return view('core/acl::auth.reset', compact('email', 'token'));
     }
 }

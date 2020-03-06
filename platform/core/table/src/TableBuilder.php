@@ -24,7 +24,7 @@ class TableBuilder
     /**
      * @param string $tableClass
      * @return \Botble\Table\Abstracts\TableAbstract
-     * @author Sang Nguyen
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function create($tableClass)
     {
@@ -34,8 +34,6 @@ class TableBuilder
             );
         }
 
-        $table = $this->container->make($tableClass);
-
-        return $table;
+        return $this->container->make($tableClass);
     }
 }

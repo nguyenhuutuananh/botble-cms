@@ -15,7 +15,6 @@ class EmailHandler
 
     /**
      * @param $view
-     * @author Sang Nguyen
      */
     public function setEmailTemplate($view)
     {
@@ -29,7 +28,6 @@ class EmailHandler
      * @param array $args
      * @param bool $debug
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function send($content, $title, $to = null, $args = [], $debug = false)
     {
@@ -41,7 +39,7 @@ class EmailHandler
             $content = MailVariable::prepareData($content);
             $title = MailVariable::prepareData($title);
 
-            if (env('SEND_MAIN_USING_JOB_QUEUE', false)) {
+            if (config('core.base.general.send_mail_using_job_queue')) {
                 dispatch(new SendMailJob($content, $title, $to, $args, $debug));
             } else {
                 event(new SendMailEvent($content, $title, $to, $args, $debug));
@@ -60,7 +58,7 @@ class EmailHandler
      *
      * @param  \Exception $exception
      * @return void
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function sendErrorException(Exception $exception)
@@ -71,10 +69,10 @@ class EmailHandler
             $handler = new SymfonyExceptionHandler;
 
             $url = URL::full();
-            $error = $handler->getContent($ex);
+            $error = $handler->getHtml($ex);
 
             $this->send(
-                view('core.base::emails.error-reporting', compact('url', 'ex', 'error'))->render(),
+                view('core/base::emails.error-reporting', compact('url', 'ex', 'error'))->render(),
                 $exception->getFile(),
                 !empty(config('core.base.general.error_reporting.to')) ?
                     config('core.base.general.error_reporting.to') :

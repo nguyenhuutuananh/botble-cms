@@ -2,11 +2,11 @@
 
 namespace Botble\Theme\Http\Controllers;
 
-use App\Console\Kernel;
 use Assets;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Supports\Helper;
 use Botble\Setting\Supports\SettingStore;
 use Botble\Theme\Commands\ThemeActivateCommand;
 use Botble\Theme\Commands\ThemeRemoveCommand;
@@ -21,9 +21,8 @@ class ThemeController extends BaseController
 {
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
-    public function getList()
+    public function index()
     {
         page_title()->setTitle(trans('packages/theme::theme.theme'));
 
@@ -31,14 +30,13 @@ class ThemeController extends BaseController
             File::delete(theme_path('.DS_Store'));
         }
 
-        Assets::addAppModule(['theme']);
+        Assets::addScriptsDirectly('vendor/core/packages/theme/js/theme.js');
 
-        return view('packages.theme::list');
+        return view('packages/theme::list');
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function getOptions()
     {
@@ -47,16 +45,16 @@ class ThemeController extends BaseController
         Assets::addScripts(['bootstrap-tagsinput', 'typeahead', 'are-you-sure', 'colorpicker'])
             ->addStyles(['bootstrap-tagsinput', 'colorpicker'])
             ->addStylesDirectly([
-                'vendor/core/packages/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css',
-                'vendor/core/packages/fontselect/fontselect-default.css',
+                'vendor/core/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css',
+                'vendor/core/libraries/fontselect/fontselect-default.css',
             ])
             ->addScriptsDirectly([
-                'vendor/core/packages/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js',
-                'vendor/core/packages/fontselect/jquery.fontselect.min.js',
-            ])
-            ->addAppModule(['theme-options']);
+                'vendor/core/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js',
+                'vendor/core/libraries/fontselect/jquery.fontselect.min.js',
+                'vendor/core/packages/theme/js/theme-options.js',
+            ]);
 
-        return view('packages.theme::options');
+        return view('packages/theme::options');
     }
 
     /**
@@ -65,7 +63,6 @@ class ThemeController extends BaseController
      * @param SettingStore $settingStore
      * @return BaseHttpResponse
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
      */
     public function postUpdate(Request $request, BaseHttpResponse $response, SettingStore $settingStore)
     {
@@ -84,19 +81,16 @@ class ThemeController extends BaseController
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param Kernel $kernel
      * @param ThemeActivateCommand $themeActivateCommand
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws Exception
      */
     public function postActivateTheme(
         Request $request,
         BaseHttpResponse $response,
-        Kernel $kernel,
         ThemeActivateCommand $themeActivateCommand
-    )
-    {
-        $kernel->call($themeActivateCommand->getName(), ['name' => $request->input('theme')]);
+    ) {
+        Helper::executeCommand($themeActivateCommand->getName(), ['name' => $request->input('theme')]);
 
         return $response
             ->setMessage(trans('packages/theme::theme.active_success'));
@@ -105,24 +99,23 @@ class ThemeController extends BaseController
     /**
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
      */
     public function getCustomCss(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('packages/theme::theme.custom_css'));
 
-        Assets::addAppModule(['custom-css'])
-            ->addStylesDirectly([
-                'vendor/core/packages/codemirror/lib/codemirror.css',
-                'vendor/core/packages/codemirror/addon/hint/show-hint.css',
-                'vendor/core/css/custom-css.css',
-            ])
+        Assets::addStylesDirectly([
+            'vendor/core/libraries/codemirror/lib/codemirror.css',
+            'vendor/core/libraries/codemirror/addon/hint/show-hint.css',
+            'vendor/core/packages/theme/css/custom-css.css',
+        ])
             ->addScriptsDirectly([
-                'vendor/core/packages/codemirror/lib/codemirror.js',
-                'vendor/core/packages/codemirror/lib/css.js',
-                'vendor/core/packages/codemirror/addon/hint/show-hint.js',
-                'vendor/core/packages/codemirror/addon/hint/anyword-hint.js',
-                'vendor/core/packages/codemirror/addon/hint/css-hint.js',
+                'vendor/core/libraries/codemirror/lib/codemirror.js',
+                'vendor/core/libraries/codemirror/lib/css.js',
+                'vendor/core/libraries/codemirror/addon/hint/show-hint.js',
+                'vendor/core/libraries/codemirror/addon/hint/anyword-hint.js',
+                'vendor/core/libraries/codemirror/addon/hint/css-hint.js',
+                'vendor/core/packages/theme/js/custom-css.js',
             ]);
 
         return $formBuilder->create(CustomCSSForm::class)->renderForm();
@@ -133,7 +126,6 @@ class ThemeController extends BaseController
      * @param BaseHttpResponse $response
      * @param SettingStore $setting
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postCustomCss(CustomCssRequest $request, BaseHttpResponse $response, SettingStore $setting)
     {
@@ -150,23 +142,19 @@ class ThemeController extends BaseController
      *
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param Kernel $kernel
      * @param ThemeRemoveCommand $themeRemoveCommand
      * @return mixed
-     * @author Sang Nguyen
      */
     public function postRemoveTheme(
         Request $request,
         BaseHttpResponse $response,
-        Kernel $kernel,
         ThemeRemoveCommand $themeRemoveCommand
-    )
-    {
+    ) {
         $theme = strtolower($request->input('theme'));
 
         if (in_array($theme, scan_folder(theme_path()))) {
             try {
-                $kernel->call($themeRemoveCommand->getName(), ['name' => $theme, '--force' => true]);
+                Helper::executeCommand($themeRemoveCommand->getName(), ['name' => $theme, '--force' => true]);
                 return $response->setMessage(trans('packages/theme::theme.remove_theme_success'));
             } catch (Exception $ex) {
                 info($ex->getMessage());

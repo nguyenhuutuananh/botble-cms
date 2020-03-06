@@ -2,27 +2,28 @@
 
 Route::group(['namespace' => 'Botble\RequestLog\Http\Controllers', 'middleware' => 'web'], function () {
     Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
-        Route::group(['prefix' => 'request-log'], function () {
+
+        Route::resource('request-logs', 'RequestLogController', ['names' => 'request-log'])
+            ->only(['index', 'destroy']);
+
+        Route::group(['prefix' => 'request-logs'], function () {
+
             Route::get('widgets/request-errors', [
                 'as'         => 'request-log.widget.request-errors',
                 'uses'       => 'RequestLogController@getWidgetRequestErrors',
-                'permission' => 'request-log.list',
+                'permission' => 'request-log.index',
             ]);
 
-            Route::get('', [
-                'as'   => 'request-log.list',
-                'uses' => 'RequestLogController@getList',
+            Route::delete('items/destroy', [
+                'as'         => 'request-log.deletes',
+                'uses'       => 'RequestLogController@deletes',
+                'permission' => 'request-log.destroy',
             ]);
 
-            Route::get('delete/{id}', [
-                'as'   => 'request-log.delete',
-                'uses' => 'RequestLogController@getDelete',
-            ]);
-
-            Route::post('delete-many', [
-                'as'         => 'request-log.delete.many',
-                'uses'       => 'RequestLogController@postDeleteMany',
-                'permission' => 'request-log.delete',
+            Route::get('items/empty', [
+                'as'         => 'request-log.empty',
+                'uses'       => 'RequestLogController@deleteAll',
+                'permission' => 'request-log.destroy',
             ]);
         });
     });

@@ -1,4 +1,4 @@
-@extends('core.acl::auth.master')
+@extends('core/acl::auth.master')
 
 @section('content')
 

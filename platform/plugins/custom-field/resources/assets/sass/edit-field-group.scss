@@ -1,3 +1,7 @@
+.widget-title {
+    cursor: initial !important;
+}
+
 /*Custom fields*/
 .line-group-container {
     width    : 100%;
@@ -74,8 +78,8 @@
         }
         .location-add-rule-and {
             margin-left : 5px;
-            height      : 38px;
-            line-height : 22px;
+            height      : 35px;
+            line-height : 20px;
         }
     }
     > .line-group:first-child > .rule-line:first-child .remove-rule-line {
@@ -93,7 +97,7 @@
         display       : inline-block;
         width         : 51px;
         text-align    : center;
-        line-height   : 40px;
+        line-height   : 39px;
         position      : absolute;
         border-left   : 1px solid #aaaaaa;
         border-top    : 1px solid #aaaaaa;
@@ -117,6 +121,7 @@
         border        : 1px solid #aaaaaa;
         border-radius : 0 !important;
         padding       : 10px 15px 9px;
+        margin-bottom: 0;
         &:not(:first-child) {
             border-left : 0 none;
         }

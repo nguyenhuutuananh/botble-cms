@@ -2,14 +2,9 @@
 
 namespace Botble\Slug\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Botble\Slug\Models\Slug
- *
- * @mixin \Eloquent
- */
-class Slug extends Eloquent
+class Slug extends BaseModel
 {
     /**
      * The database table used by the model.

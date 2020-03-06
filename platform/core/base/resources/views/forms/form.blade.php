@@ -1,30 +1,32 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     @if ($showStart)
         {!! Form::open(Arr::except($formOptions, ['template'])) !!}
     @endif
 
     @if ($form->getModuleName())
-        @php do_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, $form->getModuleName(), request(), $form->getModel()) @endphp
+        @php
+            do_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, $form->getModuleName(), request(), $form->getModel())
+        @endphp
     @endif
     <div class="row">
         <div class="col-md-9">
             @if ($showFields && $form->hasMainFields())
                 <div class="main-form">
                     <div class="{{ $form->getWrapperClass() }}">
-                            @foreach ($fields as $key => $field)
-                                @if ($field->getName() == $form->getBreakFieldPoint())
-                                    @break
-                                @else
-                                    @unset($fields[$key])
+                        @foreach ($fields as $key => $field)
+                            @if ($field->getName() == $form->getBreakFieldPoint())
+                                @break
+                            @else
+                                @unset($fields[$key])
+                            @endif
+                            @if (!in_array($field->getName(), $exclude))
+                                {!! $field->render() !!}
+                                @if ($field->getName() == 'name' && defined('BASE_FILTER_SLUG_AREA'))
+                                    {!! apply_filters(BASE_FILTER_SLUG_AREA, $form->getModuleName(), $form->getModel()) !!}
                                 @endif
-                                @if (!in_array($field->getName(), $exclude))
-                                    {!! $field->render() !!}
-                                    @if ($field->getName() == 'name' && defined('BASE_FILTER_SLUG_AREA'))
-                                        {!! apply_filters(BASE_FILTER_SLUG_AREA, $form->getModuleName(), $form->getModel()) !!}
-                                    @endif
-                                @endif
-                            @endforeach
+                            @endif
+                        @endforeach
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -66,12 +68,14 @@
     @if ($showEnd)
         {!! Form::close() !!}
     @endif
+
+    @yield('form_end')
 @stop
 
 @if ($form->getValidatorClass())
     @if ($form->isUseInlineJs())
         {!! Assets::scriptToHtml('jquery') !!}
-        {!! Assets::getAppModuleItemToHtml('form-validation') !!}
+        {!! Assets::scriptToHtml('form-validation') !!}
         {!! $form->renderValidatorJs() !!}
     @else
         @push('footer')

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white bb b--black-10">
   <div class="container">
     <div class="brand-container tc mr2 br2">
-      <a class="navbar-brand b white ma0 pa0 dib w-100" href="{{ route('public.member.dashboard') }}" title="{{ setting('site_title') }}">{{ ucfirst(mb_substr(setting('site_title'), 0, 1, 'utf-8')) }}</a>
+      <a class="navbar-brand b white ma0 pa0 dib w-100" href="{{ route('public.member.dashboard') }}" title="{{ theme_option('site_title') }}">{{ ucfirst(mb_substr(theme_option('site_title'), 0, 1, 'utf-8')) }}</a>
     </div>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -28,7 +28,7 @@
           <li>
             <a class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db mr2" style="text-decoration: none; line-height: 32px;" href="{{ route('public.member.dashboard') }}" title="{{ trans('plugins/member::dashboard.header_profile_link') }}">
               <span>
-                <img src="{{ auth()->guard('member')->user()->avatar }}" class="br-100 v-mid mr1" style="width: 30px;">
+                <img src="{{ auth()->guard('member')->user()->avatar_url }}" class="br-100 v-mid mr1" style="width: 30px;">
                 <span>{{ auth()->guard('member')->user()->getFullName() }}</span>
               </span>
             </a>

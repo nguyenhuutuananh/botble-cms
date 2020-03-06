@@ -2,7 +2,6 @@
 
 namespace Botble\ACL\Providers;
 
-use Botble\ACL\Facades\AclManagerFacade;
 use Botble\ACL\Http\Middleware\Authenticate;
 use Botble\ACL\Http\Middleware\RedirectIfAuthenticated;
 use Botble\ACL\Models\Activation;
@@ -19,15 +18,10 @@ use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Event;
 use Exception;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
-/**
- * Class AclServiceProvider
- * @package Botble\ACL
- */
 class AclServiceProvider extends ServiceProvider
 {
     use LoadAndPublishDataTrait;
@@ -47,24 +41,21 @@ class AclServiceProvider extends ServiceProvider
         $router->aliasMiddleware('auth', Authenticate::class);
         $router->aliasMiddleware('guest', RedirectIfAuthenticated::class);
 
-        $this->app->singleton(UserInterface::class, function () {
+        $this->app->bind(UserInterface::class, function () {
             return new UserRepository(new User);
         });
 
-        $this->app->singleton(ActivationInterface::class, function () {
+        $this->app->bind(ActivationInterface::class, function () {
             return new ActivationRepository(new Activation);
         });
 
-        $this->app->singleton(RoleInterface::class, function () {
+        $this->app->bind(RoleInterface::class, function () {
             return new RoleCacheDecorator(new RoleRepository(new Role));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->app->register(EventServiceProvider::class);
@@ -75,16 +66,12 @@ class AclServiceProvider extends ServiceProvider
             ->loadAndPublishTranslations()
             ->publishPublicFolder()
             ->publishAssetsFolder()
-            ->loadRoutes(['web', 'api'])
+            ->loadRoutes(['web'])
             ->loadMigrations();
 
         config()->set(['auth.providers.users.model' => User::class]);
 
         $this->app->register(HookServiceProvider::class);
-        $this->app->register(CommandServiceProvider::class);
-
-        $loader = AliasLoader::getInstance();
-        $loader->alias('AclManager', AclManagerFacade::class);
 
         $this->garbageCollect();
 
@@ -96,29 +83,18 @@ class AclServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-core-platform-administration',
                     'name'        => 'core/acl::permissions.role_permission',
                     'icon'        => null,
-                    'url'         => route('roles.list'),
-                    'permissions' => ['roles.list'],
+                    'url'         => route('roles.index'),
+                    'permissions' => ['roles.index'],
                 ])
                 ->registerItem([
                     'id'          => 'cms-core-user',
                     'priority'    => 3,
                     'parent_id'   => 'cms-core-platform-administration',
-                    'name'        => 'core/acl::permissions.user_management',
+                    'name'        => 'core/acl::users.users',
                     'icon'        => null,
-                    'url'         => route('users.list'),
-                    'permissions' => ['users.list'],
-                ])
-                ->registerItem([
-                    'id'          => 'cms-core-user-super',
-                    'priority'    => 4,
-                    'parent_id'   => 'cms-core-platform-administration',
-                    'name'        => 'core/acl::permissions.super_user_management',
-                    'icon'        => null,
-                    'url'         => route('users-supers.list'),
-                    'permissions' => ['users-supers.list'],
+                    'url'         => route('users.index'),
+                    'permissions' => ['users.index'],
                 ]);
-
-            admin_bar()->registerLink('User', route('users.create'), 'add-new');
         });
     }
 

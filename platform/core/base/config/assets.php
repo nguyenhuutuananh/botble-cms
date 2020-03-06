@@ -60,7 +60,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/modernizr/modernizr.min.js',
+                    'local' => '/vendor/core/libraries/modernizr/modernizr.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js',
                 ],
             ],
@@ -68,28 +68,28 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/respond.min.js',
+                    'local' => '/vendor/core/libraries/respond.min.js',
                 ],
             ],
             'excanvas'               => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/excanvas.min.js',
+                    'local' => '/vendor/core/libraries/excanvas.min.js',
                 ],
             ],
             'textarea-autosize'      => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery.textarea_autosize.js',
+                    'local' => '/vendor/core/libraries/jquery.textarea_autosize.js',
                 ],
             ],
             'ie8.fix'                => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/ie8.fix.min.js',
+                    'local' => '/vendor/core/libraries/ie8.fix.min.js',
                 ],
             ],
             'counterup'              => [
@@ -97,7 +97,7 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/counterup/jquery.counterup.min.js',
+                        '/vendor/core/libraries/counterup/jquery.counterup.min.js',
                     ],
                 ],
             ],
@@ -106,8 +106,8 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/jquery-validation/jquery.validate.min.js',
-                        '/vendor/core/packages/jquery-validation/additional-methods.min.js',
+                        '/vendor/core/libraries/jquery-validation/jquery.validate.min.js',
+                        '/vendor/core/libraries/jquery-validation/additional-methods.min.js',
                     ],
                 ],
             ],
@@ -115,7 +115,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-confirmation/bootstrap-confirmation.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-confirmation/bootstrap-confirmation.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js',
                 ],
             ],
@@ -123,14 +123,14 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery.blockui.min.js',
+                    'local' => '/vendor/core/libraries/jquery.blockui.min.js',
                 ],
             ],
             'jquery-ui'              => [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-ui/jquery-ui.min.js',
+                    'local' => '/vendor/core/libraries/jquery-ui/jquery-ui.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js',
                 ],
             ],
@@ -138,7 +138,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-cookie/jquery.cookie.js',
+                    'local' => '/vendor/core/libraries/jquery-cookie/jquery.cookie.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js',
                 ],
             ],
@@ -147,14 +147,14 @@ return [
                 'location'      => 'footer',
                 'include_style' => true,
                 'src'           => [
-                    'local' => '/vendor/core/packages/jquery-tree/jquery.tree.min.js',
+                    'local' => '/vendor/core/libraries/jquery-tree/jquery.tree.min.js',
                 ],
             ],
             'floatThead'             => [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/floatThead/floatThead.js',
+                    'local' => '/vendor/core/libraries/floatThead/floatThead.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/floatthead/1.4.0/jquery.floatThead.min.js',
                 ],
             ],
@@ -162,7 +162,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap3-editable/js/bootstrap-editable.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap3-editable/js/bootstrap-editable.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js',
                 ],
             ],
@@ -170,7 +170,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/toastr/toastr.min.js',
+                    'local' => '/vendor/core/libraries/toastr/toastr.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js',
                 ],
             ],
@@ -178,7 +178,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/pace/pace.min.js',
+                    'local' => '/vendor/core/libraries/pace/pace.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
                 ],
             ],
@@ -186,7 +186,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/fancybox/jquery.fancybox.min.js',
+                    'local' => '/vendor/core/libraries/fancybox/jquery.fancybox.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js',
                 ],
             ],
@@ -195,10 +195,10 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/datatables/media/js/jquery.dataTables.min.js',
-                        '/vendor/core/packages/datatables/media/js/dataTables.bootstrap.min.js',
-                        '/vendor/core/packages/datatables/extensions/Buttons/js/dataTables.buttons.min.js',
-                        '/vendor/core/packages/datatables/extensions/Buttons/js/buttons.bootstrap.min.js',
+                        '/vendor/core/libraries/datatables/media/js/jquery.dataTables.min.js',
+                        '/vendor/core/libraries/datatables/media/js/dataTables.bootstrap.min.js',
+                        '/vendor/core/libraries/datatables/extensions/Buttons/js/dataTables.buttons.min.js',
+                        '/vendor/core/libraries/datatables/extensions/Buttons/js/buttons.bootstrap.min.js',
                     ],
                 ],
             ],
@@ -206,7 +206,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js',
                 ],
             ],
@@ -214,7 +214,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/pwstrength-bootstrap/pwstrength-bootstrap.min.js',
+                    'local' => '/vendor/core/libraries/pwstrength-bootstrap/pwstrength-bootstrap.min.js',
                 ],
             ],
             'typeahead'              => [
@@ -222,8 +222,8 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/typeahead.js/typeahead.jquery.min.js',
-                        '/vendor/core/packages/typeahead.js/bloodhound.min.js',
+                        '/vendor/core/libraries/typeahead.js/typeahead.jquery.min.js',
+                        '/vendor/core/libraries/typeahead.js/bloodhound.min.js',
                     ],
                     'cdn'   => [
                         '//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js',
@@ -236,8 +236,8 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/jvectormap/jquery-jvectormap-1.2.2.min.js',
-                        '/vendor/core/packages/jvectormap/jquery-jvectormap-world-mill-en.js',
+                        '/vendor/core/libraries/jvectormap/jquery-jvectormap-1.2.2.min.js',
+                        '/vendor/core/libraries/jvectormap/jquery-jvectormap-world-mill-en.js',
                     ],
                 ],
             ],
@@ -246,7 +246,7 @@ return [
                 'location' => 'footer',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/raphael-min.js',
+                        '/vendor/core/libraries/raphael-min.js',
                     ],
                 ],
             ],
@@ -254,7 +254,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/morris/morris.min.js',
+                    'local' => '/vendor/core/libraries/morris/morris.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js',
                 ],
             ],
@@ -262,7 +262,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/select2/js/select2.min.js',
+                    'local' => '/vendor/core/libraries/select2/js/select2.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
                 ],
             ],
@@ -270,7 +270,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/cropper.min.js',
+                    'local' => '/vendor/core/libraries/cropper.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/cropper/0.7.9/cropper.min.js',
                 ],
             ],
@@ -278,56 +278,56 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
                 ],
             ],
             'sortable'               => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/sortable/sortable.min.js',
+                    'local' => '/vendor/core/libraries/sortable/sortable.min.js',
                 ],
             ],
             'custom-scrollbar'       => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/mcustom-scrollbar/jquery.mCustomScrollbar.js',
+                    'local' => '/vendor/core/libraries/mcustom-scrollbar/jquery.mCustomScrollbar.js',
                 ],
             ],
             'stickytableheaders'     => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/stickytableheaders/jquery.stickytableheaders.js',
+                    'local' => '/vendor/core/libraries/stickytableheaders/jquery.stickytableheaders.js',
                 ],
             ],
             'equal-height'           => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jQuery.equalHeights/jquery.equalheights.min.js',
+                    'local' => '/vendor/core/libraries/jQuery.equalHeights/jquery.equalheights.min.js',
                 ],
             ],
             'jquery-nestable'        => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-nestable/jquery.nestable.js',
+                    'local' => '/vendor/core/libraries/jquery-nestable/jquery.nestable.js',
                 ],
             ],
             'are-you-sure'           => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery.are-you-sure/jquery.are-you-sure.js',
+                    'local' => '/vendor/core/libraries/jquery.are-you-sure/jquery.are-you-sure.js',
                 ],
             ],
             'moment'                 => [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/moment-with-locales.min.js',
+                    'local' => '/vendor/core/libraries/moment-with-locales.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment-with-locales.min.js',
                 ],
             ],
@@ -335,7 +335,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js',
                 ],
             ],
@@ -343,35 +343,42 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-waypoints/jquery.waypoints.min.js',
+                    'local' => '/vendor/core/libraries/jquery-waypoints/jquery.waypoints.min.js',
                 ],
             ],
             'colorpicker'            => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js',
                 ],
             ],
             'timepicker'             => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
+                    'local' => '/vendor/core/libraries/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
                 ],
             ],
             'spectrum'               => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/spectrum/spectrum.js',
+                    'local' => '/vendor/core/libraries/spectrum/spectrum.js',
                 ],
             ],
             'input-mask'             => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-inputmask/jquery.inputmask.bundle.min.js',
+                    'local' => '/vendor/core/libraries/jquery-inputmask/jquery.inputmask.bundle.min.js',
+                ],
+            ],
+            'form-validation'        => [
+                'use_cdn'  => false,
+                'location' => 'footer',
+                'src'      => [
+                    'local' => '/vendor/core/js/form-validation.js',
                 ],
             ],
             // End JS
@@ -382,11 +389,11 @@ return [
                 'use_cdn'    => true,
                 'location'   => 'header',
                 'src'        => [
-                    'local' => '/vendor/core/packages/bootstrap/css/bootstrap.min.css',
-                    'cdn'   => '//stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css',
+                    'local' => '/vendor/core/libraries/bootstrap/css/bootstrap.min.css',
+                    'cdn'   => '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
                 ],
                 'attributes' => [
-                    'integrity'   => 'sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB',
+                    'integrity'   => 'sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T',
                     'crossorigin' => 'anonymous',
                 ],
             ],
@@ -394,7 +401,7 @@ return [
                 'use_cdn'    => true,
                 'location'   => 'header',
                 'src'        => [
-                    'local' => '/vendor/core/packages/font-awesome/css/fontawesome.min.css',
+                    'local' => '/vendor/core/libraries/font-awesome/css/fontawesome.min.css',
                     'cdn'   => '//use.fontawesome.com/releases/v5.0.13/css/all.css',
                 ],
                 'attributes' => [
@@ -406,7 +413,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/simple-line-icons/css/simple-line-icons.css',
+                    'local' => '/vendor/core/libraries/simple-line-icons/css/simple-line-icons.css',
                 ],
             ],
             'core'                => [
@@ -416,25 +423,18 @@ return [
                     'local' => '/vendor/core/css/core.css',
                 ],
             ],
-            'admin_bar'           => [
-                'use_cdn'  => false,
-                'location' => 'header',
-                'src'      => [
-                    'local' => '/vendor/core/css/admin-bar.css',
-                ],
-            ],
             'jqueryTree'          => [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-tree/jquery.tree.min.css',
+                    'local' => '/vendor/core/libraries/jquery-tree/jquery.tree.min.css',
                 ],
             ],
             'videojs'             => [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/videojs/video-js.min.css',
+                    'local' => '/vendor/core/libraries/videojs/video-js.min.css',
                     'cdn'   => '//vjs.zencdn.net/5.8/video-js.min.css',
                 ],
             ],
@@ -442,7 +442,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-ui/jquery-ui.min.css',
+                    'local' => '/vendor/core/libraries/jquery-ui/jquery-ui.min.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.theme.css',
                 ],
             ],
@@ -450,7 +450,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/toastr/toastr.min.css',
+                    'local' => '/vendor/core/libraries/toastr/toastr.min.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css',
                 ],
             ],
@@ -458,7 +458,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/pace/pace-theme-minimal.css',
+                    'local' => '/vendor/core/libraries/pace/pace-theme-minimal.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.css',
                 ],
             ],
@@ -466,7 +466,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/kendo/kendo.min.css',
+                    'local' => '/vendor/core/libraries/kendo/kendo.min.css',
                 ],
             ],
             'datatables'          => [
@@ -474,7 +474,7 @@ return [
                 'location' => 'header',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/datatables/media/css/dataTables.bootstrap.min.css',
+                        '/vendor/core/libraries/datatables/media/css/dataTables.bootstrap.min.css',
                     ],
                 ],
             ],
@@ -482,7 +482,7 @@ return [
                 'use_cdn'  => true,
                 'location' => 'footer',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap3-editable/css/bootstrap-editable.css',
+                    'local' => '/vendor/core/libraries/bootstrap3-editable/css/bootstrap-editable.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css',
                 ],
             ],
@@ -491,7 +491,7 @@ return [
                 'location' => 'header',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/bootstrap-tagsinput/bootstrap-tagsinput.css',
+                        '/vendor/core/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css',
                     ],
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css',
                 ],
@@ -500,14 +500,14 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jvectormap/jquery-jvectormap-1.2.2.css',
+                    'local' => '/vendor/core/libraries/jvectormap/jquery-jvectormap-1.2.2.css',
                 ],
             ],
             'morris'              => [
                 'use_cdn'  => true,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/morris/morris.css',
+                    'local' => '/vendor/core/libraries/morris/morris.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css',
                 ],
             ],
@@ -515,7 +515,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                    'local' => '/vendor/core/libraries/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
                 ],
             ],
             'select2'             => [
@@ -523,8 +523,8 @@ return [
                 'location' => 'header',
                 'src'      => [
                     'local' => [
-                        '/vendor/core/packages/select2/css/select2.min.css',
-                        '/vendor/core/packages/select2/css/select2-bootstrap.min.css',
+                        '/vendor/core/libraries/select2/css/select2.min.css',
+                        '/vendor/core/libraries/select2/css/select2-bootstrap.min.css',
                     ],
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css',
                 ],
@@ -533,7 +533,7 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/fancybox/jquery.fancybox.min.css',
+                    'local' => '/vendor/core/libraries/fancybox/jquery.fancybox.min.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css',
                 ],
             ],
@@ -541,21 +541,21 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/mcustom-scrollbar/jquery.mCustomScrollbar.css',
+                    'local' => '/vendor/core/libraries/mcustom-scrollbar/jquery.mCustomScrollbar.css',
                 ],
             ],
             'jquery-nestable'     => [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/jquery-nestable/jquery.nestable.css',
+                    'local' => '/vendor/core/libraries/jquery-nestable/jquery.nestable.css',
                 ],
             ],
             'datetimepicker'      => [
                 'use_cdn'  => true,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css',
+                    'local' => '/vendor/core/libraries/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css',
                     'cdn'   => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css',
                 ],
             ],
@@ -563,21 +563,21 @@ return [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css',
+                    'local' => '/vendor/core/libraries/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css',
                 ],
             ],
             'timepicker'          => [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                    'local' => '/vendor/core/libraries/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
                 ],
             ],
             'spectrum'            => [
                 'use_cdn'  => false,
                 'location' => 'header',
                 'src'      => [
-                    'local' => '/vendor/core/packages/spectrum/spectrum.css',
+                    'local' => '/vendor/core/libraries/spectrum/spectrum.css',
                 ],
             ],
         ],

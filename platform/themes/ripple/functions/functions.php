@@ -103,7 +103,18 @@ theme_option()
         'type'       => 'googleFonts',
         'label'      => __('Primary font'),
         'attributes' => [
-            'name'   => 'primary_font',
-            'value'  => 'Roboto',
+            'name'  => 'primary_font',
+            'value' => 'Roboto',
         ],
     ]);
+
+if (!function_exists('register_custom_image_size')) {
+    function register_custom_image_size()
+    {
+        config([
+            'media.sizes.featured' => '560x380',
+            'media.sizes.medium'   => '540x360',
+        ]);
+    }
+}
+add_action('init', 'register_custom_image_size', 178);

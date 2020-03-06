@@ -20,7 +20,7 @@ class TagRepository extends RepositoriesAbstract implements TagInterface
     public function getDataSiteMap()
     {
         $data = $this->model
-            ->where('tags.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('tags.status', '=', BaseStatusEnum::PUBLISHED)
             ->select('tags.*')
             ->orderBy('tags.created_at', 'desc');
 
@@ -47,7 +47,7 @@ class TagRepository extends RepositoriesAbstract implements TagInterface
     {
         $data = $this->model->select('tags.*');
         if ($active) {
-            $data = $data->where(['tags.status' => BaseStatusEnum::PUBLISH]);
+            $data = $data->where(['tags.status' => BaseStatusEnum::PUBLISHED]);
         }
 
         return $this->applyBeforeExecuteQuery($data, $this->screen)->get();

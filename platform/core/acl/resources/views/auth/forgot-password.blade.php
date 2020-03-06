@@ -1,4 +1,4 @@
-@extends('core.acl::auth.master')
+@extends('core/acl::auth.master')
 
 @section('content')
     <h3 class="form-title font-green">{{ trans('core/acl::auth.forgot_password.title') }}</h3>

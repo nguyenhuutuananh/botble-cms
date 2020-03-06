@@ -2,9 +2,9 @@
 
 namespace Botble\Menu\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class MenuLocation extends Eloquent
+class MenuLocation extends BaseModel
 {
 
     /**
@@ -24,7 +24,6 @@ class MenuLocation extends Eloquent
 
     /**
      * @return mixed
-     * @author Sang Nguyen
      */
     public function menu()
     {

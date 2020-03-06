@@ -17,22 +17,16 @@ class BackupServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/backup')
-            ->loadAndPublishConfigurations(['permissions'])
-            ->loadRoutes()
+            ->loadAndPublishConfigurations(['permissions', 'general'])
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->publishAssetsFolder()
@@ -47,8 +41,8 @@ class BackupServiceProvider extends ServiceProvider
                 'parent_id'   => 'cms-core-platform-administration',
                 'name'        => 'plugins/backup::backup.menu_name',
                 'icon'        => null,
-                'url'         => route('backups.list'),
-                'permissions' => ['backups.list'],
+                'url'         => route('backups.index'),
+                'permissions' => ['backups.index'],
             ]);
         });
     }

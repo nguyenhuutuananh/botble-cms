@@ -3,9 +3,9 @@
 namespace Botble\CustomField\Models;
 
 use Botble\CustomField\Repositories\Interfaces\CustomFieldInterface;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class FieldItem extends Eloquent
+class FieldItem extends BaseModel
 {
     /**
      * @var string

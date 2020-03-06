@@ -1,10 +1,10 @@
-@extends('core.base::layouts.base')
+@extends('core/base::layouts.base')
 
 @section('body-class') full-width page-condensed @stop
 
 @section('page')
 
-    @include('core.base::layouts.partials.top-header')
+    @include('core/base::layouts.partials.top-header')
 
     @yield('content')
 

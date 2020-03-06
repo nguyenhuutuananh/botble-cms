@@ -4,7 +4,6 @@ namespace Botble\Menu\Providers;
 
 use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
-use Botble\Menu\Facades\MenuFacade;
 use Botble\Menu\Models\Menu as MenuModel;
 use Botble\Menu\Models\MenuLocation;
 use Botble\Menu\Models\MenuNode;
@@ -18,7 +17,6 @@ use Botble\Menu\Repositories\Interfaces\MenuInterface;
 use Botble\Menu\Repositories\Interfaces\MenuLocationInterface;
 use Botble\Menu\Repositories\Interfaces\MenuNodeInterface;
 use Event;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,34 +33,27 @@ class MenuServiceProvider extends ServiceProvider
      * Register the service provider.
      *
      * @return void
-     * @author Sang Nguyen
      */
     public function register()
     {
-        AliasLoader::getInstance()->alias('Menu', MenuFacade::class);
-
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
-        $this->app->singleton(MenuInterface::class, function () {
+        $this->app->bind(MenuInterface::class, function () {
             return new MenuCacheDecorator(
                 new MenuRepository(new MenuModel)
             );
         });
 
-        $this->app->singleton(MenuNodeInterface::class, function () {
+        $this->app->bind(MenuNodeInterface::class, function () {
             return new MenuNodeCacheDecorator(
                 new MenuNodeRepository(new MenuNode)
             );
         });
 
-        $this->app->singleton(MenuLocationInterface::class, function () {
+        $this->app->bind(MenuLocationInterface::class, function () {
             return new MenuLocationCacheDecorator(
                 new MenuLocationRepository(new MenuLocation)
             );
@@ -70,7 +61,7 @@ class MenuServiceProvider extends ServiceProvider
 
         $this->setNamespace('packages/menu')
             ->loadAndPublishConfigurations(['permissions', 'general'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadMigrations()
@@ -85,11 +76,13 @@ class MenuServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-core-appearance',
                     'name'        => 'core/base::layouts.menu',
                     'icon'        => null,
-                    'url'         => route('menus.list'),
-                    'permissions' => ['menus.list'],
+                    'url'         => route('menus.index'),
+                    'permissions' => ['menus.index'],
                 ]);
 
-            admin_bar()->registerLink('Menu', route('menus.list'), 'appearance');
+            if (function_exists('admin_bar')) {
+                admin_bar()->registerLink('Menu', route('menus.index'), 'appearance');
+            }
         });
     }
 }

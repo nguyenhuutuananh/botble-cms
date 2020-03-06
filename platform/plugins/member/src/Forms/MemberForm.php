@@ -2,6 +2,7 @@
 
 namespace Botble\Member\Forms;
 
+use Assets;
 use Botble\Base\Forms\FormAbstract;
 use Botble\Member\Http\Requests\MemberCreateRequest;
 
@@ -14,6 +15,8 @@ class MemberForm extends FormAbstract
      */
     public function buildForm()
     {
+        Assets::addScriptsDirectly(['/vendor/core/plugins/member/js/member-admin.js']);
+
         $this
             ->setModuleName(MEMBER_MODULE_SCREEN_NAME)
             ->setValidatorClass(MemberCreateRequest::class)

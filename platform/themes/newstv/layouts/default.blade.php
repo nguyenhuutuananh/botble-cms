@@ -3,7 +3,7 @@
 
 <main class="main" id="main">
     <div class="container">
-        @if (Route::currentRouteName() == 'public.index' && is_plugin_active('blog'))
+        @if (Route::currentRouteName() == 'public.single' && is_plugin_active('blog'))
             @php
                 $featured = get_featured_posts(5);
             @endphp

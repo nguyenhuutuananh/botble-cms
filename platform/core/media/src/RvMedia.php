@@ -2,7 +2,7 @@
 
 namespace Botble\Media;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Media\Repositories\Interfaces\MediaFileInterface;
 use Botble\Media\Repositories\Interfaces\MediaFolderInterface;
 use Botble\Media\Services\UploadsManager;
@@ -47,7 +47,6 @@ class RvMedia
      * @param MediaFolderInterface $folderRepository
      * @param UploadsManager $uploadManager
      * @param ThumbnailService $thumbnailService
-     * @author Sang Nguyen
      */
     public function __construct(
         MediaFileInterface $fileRepository,
@@ -66,7 +65,6 @@ class RvMedia
 
     /**
      * @return string
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function renderHeader()
@@ -77,7 +75,6 @@ class RvMedia
 
     /**
      * @return string
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function renderFooter()
@@ -87,7 +84,6 @@ class RvMedia
 
     /**
      * @return string
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function renderContent()
@@ -97,15 +93,13 @@ class RvMedia
 
     /**
      * Get all urls
-     *
      * @return array
-     * @author Sang Nguyen
      */
     public function getUrls()
     {
         return [
             'base_url'                 => asset(''),
-            'base'                     => url(config('media.route.prefix')),
+            'base'                     => config('media.route.prefix') ? url(config('media.route.prefix')) : url(''),
             'get_media'                => route('media.list'),
             'create_folder'            => route('media.folders.create'),
             'get_quota'                => route('media.quota'),
@@ -123,7 +117,6 @@ class RvMedia
      * @param $data
      * @param null $message
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
      */
     public function responseSuccess($data, $message = null)
     {
@@ -140,7 +133,6 @@ class RvMedia
      * @param null $code
      * @param int $status
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
      */
     public function responseError($message, $data = [], $code = null, $status = 200)
     {
@@ -172,7 +164,6 @@ class RvMedia
      * @param int $folder_id
      * @param string $path
      * @return \Illuminate\Http\JsonResponse|array
-     * @author Sang Nguyen
      */
     public function handleUpload($fileUpload, $folder_id = 0, $path = '')
     {
@@ -260,7 +251,6 @@ class RvMedia
 
     /**
      * @param array $permissions
-     * @author Sang Nguyen
      */
     public function setPermissions(array $permissions)
     {
@@ -269,7 +259,6 @@ class RvMedia
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getPermissions()
     {
@@ -278,7 +267,6 @@ class RvMedia
 
     /**
      * @param $permission
-     * @author Sang Nguyen
      */
     public function removePermission($permission)
     {
@@ -287,7 +275,6 @@ class RvMedia
 
     /**
      * @param $permission
-     * @author Sang Nguyen
      */
     public function addPermission($permission)
     {
@@ -297,7 +284,6 @@ class RvMedia
     /**
      * @param $permission
      * @return bool
-     * @author Sang Nguyen
      */
     public function hasPermission($permission)
     {
@@ -307,24 +293,23 @@ class RvMedia
     /**
      * @param array $permissions
      * @return bool
-     * @author Sang Nguyen
      */
     public function hasAnyPermission(array $permissions)
     {
-        $has_permission = false;
+        $hasPermission = false;
         foreach ($permissions as $permission) {
             if (in_array($permission, $this->permissions)) {
-                $has_permission = true;
+                $hasPermission = true;
                 break;
             }
         }
-        return $has_permission;
+
+        return $hasPermission;
     }
 
     /**
      * Returns a file size limit in bytes based on the PHP upload_max_filesize and post_max_size
      * @return float|int
-     * @author Sang Nguyen
      */
     public function getServerConfigMaxUploadFileSize()
     {
@@ -344,7 +329,6 @@ class RvMedia
     /**
      * @param $size
      * @return float - bytes
-     * @author Sang Nguyen
      */
     public function parseSize($size)
     {
@@ -354,6 +338,7 @@ class RvMedia
             // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
             return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
         }
+
         return round($size);
     }
 }

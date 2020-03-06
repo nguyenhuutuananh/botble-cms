@@ -2,15 +2,10 @@
 
 namespace Botble\ACL\Models;
 
-use Auth;
-use Eloquent;
+use Illuminate\Support\Facades\Auth;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Class UserMeta
- * @package Botble\ACL\Models
- * @mixin Eloquent
- */
-class UserMeta extends Eloquent
+class UserMeta extends BaseModel
 {
 
     /**
@@ -44,7 +39,6 @@ class UserMeta extends Eloquent
      * @param null $value
      * @param int $user_id
      * @return bool
-     * @author Sang Nguyen
      */
     public static function setMeta($key, $value = null, $user_id = 0)
     {
@@ -65,7 +59,6 @@ class UserMeta extends Eloquent
      * @param null $default_value
      * @param int $user_id
      * @return string
-     * @author Sang Nguyen
      */
     public static function getMeta($key, $default_value = null, $user_id = 0)
     {

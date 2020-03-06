@@ -20,5 +20,5 @@
         </table>
     </div>
 @else
-    @include('core.dashboard::partials.no-data')
+    @include('core/dashboard::partials.no-data')
 @endif

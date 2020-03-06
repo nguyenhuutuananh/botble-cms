@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     {!! apply_filters(DASHBOARD_FILTER_ADMIN_NOTIFICATIONS, null) !!}
     <div class="row">
@@ -12,8 +12,9 @@
         <div class="clearfix"></div>
     </div>
 
-    <a href="#" class="manage-widget"><i class="fa fa-plus"></i> {{ trans('core/dashboard::dashboard.manage_widgets') }}</a>
-
-    @include('core.dashboard::partials.modals', compact('widgets'))
+    @if (count($user_widgets) > 0)
+        <a href="#" class="manage-widget"><i class="fa fa-plus"></i> {{ trans('core/dashboard::dashboard.manage_widgets') }}</a>
+        @include('core/dashboard::partials.modals', compact('widgets'))
+    @endif
 
 @stop

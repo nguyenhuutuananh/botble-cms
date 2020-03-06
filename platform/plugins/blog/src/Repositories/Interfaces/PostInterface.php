@@ -9,7 +9,7 @@ interface PostInterface extends RepositoryInterface
     /**
      * @param int $limit
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getFeatured($limit = 5);
 
@@ -17,7 +17,7 @@ interface PostInterface extends RepositoryInterface
      * @param array $selected
      * @param int $limit
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getListPostNonInList(array $selected = [], $limit = 7);
 
@@ -26,7 +26,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $paginate
      * @param int $limit
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getByCategory($category_id, $paginate = 12, $limit = 0);
 
@@ -34,13 +34,13 @@ interface PostInterface extends RepositoryInterface
      * @param int $author_id
      * @param int $limit
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getByUserId($author_id, $limit = 6);
 
     /**
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getDataSiteMap();
 
@@ -48,7 +48,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $tag
      * @param int $paginate
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getByTag($tag, $paginate = 12);
 
@@ -56,7 +56,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $id
      * @param int $limit
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getRelated($id, $limit = 3);
 
@@ -64,7 +64,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $limit
      * @param int $category_id
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getRecentPosts($limit = 5, $category_id = 0);
 
@@ -73,7 +73,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $limit
      * @param int $paginate
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getSearch($query, $limit = 10, $paginate = 10);
 
@@ -81,7 +81,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $perPage
      * @param bool $active
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getAllPosts($perPage = 12, $active = true);
 
@@ -89,7 +89,7 @@ interface PostInterface extends RepositoryInterface
      * @param int $limit
      * @param array $args
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getPopularPosts($limit, array $args = []);
 

@@ -24,6 +24,7 @@ class ChartBuilder
     /**
      * @param string $chartClass
      * @return \Botble\Base\Charts\Supports\Chart
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function create($chartClass)
     {

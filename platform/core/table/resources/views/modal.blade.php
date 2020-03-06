@@ -1,4 +1,4 @@
-@include('core.table::partials.modal-item', [
+@include('core/table::partials.modal-item', [
     'type' => 'danger',
     'name' => 'modal-confirm-delete',
     'title' => trans('core/base::tables.confirm_delete'),
@@ -9,7 +9,7 @@
     ],
 ])
 
-@include('core.table::partials.modal-item', [
+@include('core/table::partials.modal-item', [
     'type' => 'danger',
     'name' => 'delete-many-modal',
     'title' => trans('core/base::tables.confirm_delete'),
@@ -20,7 +20,7 @@
     ],
 ])
 
-@include('core.table::partials.modal-item', [
+@include('core/table::partials.modal-item', [
     'type' => 'info',
     'name' => 'modal-bulk-change-items',
     'title' => trans('core/base::tables.bulk_changes'),

@@ -8,15 +8,11 @@ use Botble\Page\Models\Page;
 use Botble\Page\Repositories\Caches\PageCacheDecorator;
 use Botble\Page\Repositories\Eloquent\PageRepository;
 use Botble\Page\Repositories\Interfaces\PageInterface;
-use Botble\Shortcode\View\View;
 use Event;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class PageServiceProvider
- * @package Botble\Page
- * @author Sang Nguyen
  * @since 02/07/2016 09:50 AM
  */
 class PageServiceProvider extends ServiceProvider
@@ -28,33 +24,25 @@ class PageServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
-        $this->app->singleton(PageInterface::class, function () {
+        $this->app->bind(PageInterface::class, function () {
             return new PageCacheDecorator(new PageRepository(new Page));
         });
 
         $this->setNamespace('packages/page')
             ->loadAndPublishConfigurations(['permissions', 'general'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadMigrations();
 
         $this->app->register(HookServiceProvider::class);
-        $this->app->register(EventServiceProvider::class);
 
         Event::listen(RouteMatched::class, function () {
             dashboard_menu()->registerItem([
@@ -63,15 +51,19 @@ class PageServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'packages/page::pages.menu_name',
                 'icon'        => 'fa fa-book',
-                'url'         => route('pages.list'),
-                'permissions' => ['pages.list'],
+                'url'         => route('pages.index'),
+                'permissions' => ['pages.index'],
             ]);
 
-            admin_bar()->registerLink('Page', route('pages.list'), 'add-new');
+            if (function_exists('admin_bar')) {
+                admin_bar()->registerLink('Page', route('pages.index'), 'add-new');
+            }
         });
 
-        view()->composer(['packages.page::themes.page'], function (View $view) {
-            $view->withShortcodes();
-        });
+        if (function_exists('shortcode')) {
+            view()->composer(['packages/page::themes.page'], function (\Botble\Shortcode\View\View $view) {
+                $view->withShortcodes();
+            });
+        }
     }
 }

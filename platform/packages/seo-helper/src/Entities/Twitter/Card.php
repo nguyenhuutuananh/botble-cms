@@ -32,7 +32,6 @@ class Card implements TwitterCardContract
 
     /**
      * Make the twitter card instance.
-     * @author ARCANEDEV
      */
     public function __construct()
     {
@@ -45,7 +44,6 @@ class Card implements TwitterCardContract
      * @param  string $type
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      * @throws InvalidTwitterCardException
      */
     public function setType($type)
@@ -66,7 +64,6 @@ class Card implements TwitterCardContract
      * @param  string $site
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function setSite($site)
     {
@@ -85,7 +82,6 @@ class Card implements TwitterCardContract
      * @param  string $title
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function setTitle($title)
     {
@@ -98,7 +94,6 @@ class Card implements TwitterCardContract
      * @param  string $description
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function setDescription($description)
     {
@@ -111,7 +106,6 @@ class Card implements TwitterCardContract
      * @param  string $url
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function addImage($url)
     {
@@ -128,7 +122,6 @@ class Card implements TwitterCardContract
      * @param  array $meta
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function addMetas(array $meta)
     {
@@ -144,7 +137,6 @@ class Card implements TwitterCardContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Entities\Twitter\Card
-     * @author ARCANEDEV
      */
     public function addMeta($name, $content)
     {
@@ -157,7 +149,6 @@ class Card implements TwitterCardContract
      * Get all supported card types.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function types()
     {
@@ -174,7 +165,6 @@ class Card implements TwitterCardContract
 
     /**
      * Render card images.
-     * @author ARCANEDEV
      */
     protected function loadImages()
     {
@@ -193,7 +183,6 @@ class Card implements TwitterCardContract
      * Reset the card.
      *
      * @return Card
-     * @author ARCANEDEV
      */
     public function reset()
     {
@@ -207,7 +196,6 @@ class Card implements TwitterCardContract
      * Render the twitter card.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -222,7 +210,6 @@ class Card implements TwitterCardContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -235,7 +222,6 @@ class Card implements TwitterCardContract
      * @param  string $type
      *
      * @throws \Botble\SeoHelper\Exceptions\InvalidTwitterCardException
-     * @author ARCANEDEV
      */
     protected function checkType(&$type)
     {
@@ -256,7 +242,6 @@ class Card implements TwitterCardContract
      * Check the card site.
      *
      * @param  string $site
-     * @author ARCANEDEV
      */
     protected function checkSite(&$site)
     {
@@ -269,7 +254,6 @@ class Card implements TwitterCardContract
      * @param  string $username
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function prepareUsername($username)
     {

@@ -53,7 +53,6 @@ class MenuController extends BaseController
      * @param MenuNodeInterface $menuNodeRepository
      * @param MenuLocationInterface $menuLocationRepository
      * @param CacheManager $cache
-     * @author Sang Nguyen
      */
     public function __construct(
         MenuInterface $menuRepository,
@@ -70,10 +69,9 @@ class MenuController extends BaseController
     /**
      * @param MenuTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      * @throws \Throwable
      */
-    public function getList(MenuTable $dataTable)
+    public function index(MenuTable $dataTable)
     {
         page_title()->setTitle(trans('core/base::layouts.menu'));
 
@@ -82,9 +80,8 @@ class MenuController extends BaseController
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('packages/menu::menu.create'));
 
@@ -95,10 +92,9 @@ class MenuController extends BaseController
      * @param MenuRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen, Tedozi Manson
      * @throws Exception
      */
-    public function postCreate(MenuRequest $request, BaseHttpResponse $response)
+    public function store(MenuRequest $request, BaseHttpResponse $response)
     {
         $menu = $this->menuRepository->getModel();
 
@@ -113,7 +109,7 @@ class MenuController extends BaseController
         $this->saveMenuLocations($menu, $request);
 
         return $response
-            ->setPreviousUrl(route('menus.list'))
+            ->setPreviousUrl(route('menus.index'))
             ->setNextUrl(route('menus.edit', $menu->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -151,15 +147,14 @@ class MenuController extends BaseController
      * @param Request $request
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen, Tedozi Manson
      */
-    public function getEdit($id, Request $request, FormBuilder $formBuilder)
+    public function edit($id, Request $request, FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('packages/menu::menu.edit'));
 
         Assets::addScripts(['jquery-nestable'])
             ->addStyles(['jquery-nestable'])
-            ->addAppModule(['menu']);
+            ->addScriptsDirectly('vendor/core/packages/menu/js/menu.js');
 
         $oldInputs = old();
         if ($oldInputs && $id == 0) {
@@ -185,10 +180,9 @@ class MenuController extends BaseController
      * @param $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen, Tedozi Manson
      * @throws Exception
      */
-    public function postEdit(MenuRequest $request, $id, BaseHttpResponse $response)
+    public function update(MenuRequest $request, $id, BaseHttpResponse $response)
     {
         $menu = $this->menuRepository->firstOrNew(compact('id'));
 
@@ -207,7 +201,7 @@ class MenuController extends BaseController
         $this->cache->flush();
 
         return $response
-            ->setPreviousUrl(route('menus.list'))
+            ->setPreviousUrl(route('menus.index'))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
 
@@ -216,9 +210,8 @@ class MenuController extends BaseController
      * @param $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $menu = $this->menuRepository->findOrFail($id);
@@ -239,10 +232,9 @@ class MenuController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
         $ids = $request->input('ids');
         if (empty($ids)) {

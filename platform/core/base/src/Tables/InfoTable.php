@@ -3,15 +3,16 @@
 namespace Botble\Base\Tables;
 
 use Botble\Base\Supports\SystemManagement;
+use Botble\Table\Abstracts\TableAbstract;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Yajra\DataTables\DataTables;
 
-class InfoTable extends \Botble\Table\Abstracts\TableAbstract
+class InfoTable extends TableAbstract
 {
     /**
      * @var string
      */
-    protected $view = 'core.base::elements.simple-table';
+    protected $view = 'core/base::elements.simple-table';
 
     /**
      * @var bool
@@ -38,7 +39,7 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @throws \Exception
      */
     public function ajax()
@@ -46,10 +47,10 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
         return $this->table
             ->of($this->query())
             ->editColumn('name', function ($item) {
-                return view('core.base::system.partials.info-package-line', compact('item'))->render();
+                return view('core/base::system.partials.info-package-line', compact('item'))->render();
             })
             ->editColumn('dependencies', function ($item) {
-                return view('core.base::system.partials.info-dependencies-line', compact('item'))->render();
+                return view('core/base::system.partials.info-dependencies-line', compact('item'))->render();
             })
             ->escapeColumns([])
             ->make(true);
@@ -68,8 +69,7 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
     }
 
     /**
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function columns()
     {
@@ -89,7 +89,7 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      */
     public function buttons()
     {
@@ -106,7 +106,7 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
@@ -119,7 +119,6 @@ class InfoTable extends \Botble\Table\Abstracts\TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function actions()
     {

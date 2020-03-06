@@ -3,21 +3,21 @@
 return [
     [
         'name' => 'Galleries',
-        'flag' => 'galleries.list',
+        'flag' => 'galleries.index',
     ],
     [
         'name'        => 'Create',
         'flag'        => 'galleries.create',
-        'parent_flag' => 'galleries.list',
+        'parent_flag' => 'galleries.index',
     ],
     [
         'name'        => 'Edit',
         'flag'        => 'galleries.edit',
-        'parent_flag' => 'galleries.list',
+        'parent_flag' => 'galleries.index',
     ],
     [
         'name'        => 'Delete',
-        'flag'        => 'galleries.delete',
-        'parent_flag' => 'galleries.list',
+        'flag'        => 'galleries.destroy',
+        'parent_flag' => 'galleries.index',
     ],
 ];

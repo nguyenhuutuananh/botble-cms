@@ -1,0 +1,17 @@
+{
+  "name": "botble/plugin-management",
+  "description": "Plugin management package for Botble CMS application",
+  "type": "package",
+  "autoload": {
+    "psr-4": {
+      "Botble\\PluginManagement\\": "src"
+    }
+  },
+  "extra":{
+    "laravel":{
+      "providers":[
+        "Botble\\PluginManagement\\Providers\\PluginManagementServiceProvider"
+      ]
+    }
+  }
+}

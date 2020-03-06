@@ -7,19 +7,22 @@
       "Botble\\Theme\\": "src"
     }
   },
-  "authors": [
-    {
-      "name": "Sang Nguyen",
-      "email": "sangnguyenplus@gmail.com"
-    }
-  ],
   "require": {
+    "laravelium/sitemap": "^3.1"
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Botble\\Theme\\Providers\\ThemeServiceProvider"
-      ]
+        "Botble\\Theme\\Providers\\ThemeServiceProvider",
+        "Botble\\Theme\\Providers\\RouteServiceProvider"
+      ],
+      "aliases": {
+        "Theme": "Botble\\Theme\\Facades\\ThemeFacade",
+        "ThemeOption": "Botble\\Theme\\Facades\\ThemeOptionFacade",
+        "ThemeManager": "Botble\\Theme\\Facades\\ManagerFacade",
+        "AdminBar": "Botble\\Theme\\Facades\\AdminBarFacade",
+        "SiteMapManager": "Botble\\Theme\\Facades\\SiteMapManagerFacade"
+      }
     }
   }
 }

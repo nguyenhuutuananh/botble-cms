@@ -5,9 +5,9 @@ namespace Botble\Blog\Models;
 use Botble\Base\Traits\EnumCastable;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Slug\Traits\SlugTrait;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class Tag extends Eloquent
+class Tag extends BaseModel
 {
     use SlugTrait;
     use EnumCastable;
@@ -55,7 +55,6 @@ class Tag extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     * @author Sang Nguyen
      */
     public function posts()
     {

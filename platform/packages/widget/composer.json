@@ -7,19 +7,15 @@
       "Botble\\Widget\\": "src"
     }
   },
-  "authors": [
-    {
-      "name": "Sang Nguyen",
-      "email": "sangnguyenplus@gmail.com"
-    }
-  ],
-  "require": {
-  },
   "extra": {
     "laravel": {
       "providers": [
         "Botble\\Widget\\Providers\\WidgetServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Widget": "Botble\\Widget\\Facades\\WidgetFacade",
+        "WidgetGroup": "Botble\\Widget\\Facades\\WidgetGroupFacade"
+      }
     }
   }
 }

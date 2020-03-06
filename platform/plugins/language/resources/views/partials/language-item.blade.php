@@ -1,6 +1,6 @@
 <tr data-id="{{ $item->lang_id }}">
     <td class="text-left">
-        <a data-original-title="{{ trans('plugins/language::language.edit_tooltip') }}" class="tip edit-language-button" data-id="{{ $item->lang_id }}" href="#">{{ $item->lang_name }}</a>
+        <a data-original-title="{{ trans('plugins/language::language.edit_tooltip') }}" class="edit-language-button" data-toggle="tooltip" data-id="{{ $item->lang_id }}" href="#">{{ $item->lang_name }}</a>
     </td>
     <td>{{ $item->lang_locale }}</td>
     <td>{{ $item->lang_code }}</td>
@@ -8,7 +8,7 @@
         @if ($item->lang_is_default)
             <i class="fa fa-star" data-id="{{ $item->lang_id }}" data-name="{{ $item->lang_name }}"></i>
         @else
-            <a data-section="{{ route('languages.set.default') }}?lang_id={{ $item->lang_id }}" class="set-language-default tip" data-original-title="{{ trans('plugins/language::language.choose_default_language', ['language' => $item->lang_name]) }}"><i class="fa fa-star" data-id="{{ $item->lang_id }}" data-name="{{ $item->lang_name }}"></i></a>
+            <a data-section="{{ route('languages.set.default') }}?lang_id={{ $item->lang_id }}" class="set-language-default" data-toggle="tooltip" data-original-title="{{ trans('plugins/language::language.choose_default_language', ['language' => $item->lang_name]) }}"><i class="fa fa-star" data-id="{{ $item->lang_id }}" data-name="{{ $item->lang_name }}"></i></a>
         @endif</td>
     <td>{{ $item->lang_order }}</td>
     <td>
@@ -16,10 +16,10 @@
     </td>
     <td>
         <span>
-            <a data-original-title="Edit this language" class="tip edit-language-button" data-id="{{ $item->lang_id }}" href="#">{{ trans('plugins/language::language.edit') }}</a> |
+            <a data-original-title="{{ trans('plugins/language::language.edit_tooltip') }}" class="edit-language-button" data-toggle="tooltip" data-id="{{ $item->lang_id }}" href="#">{{ trans('plugins/language::language.edit') }}</a> |
         </span>
         <span>
-            <a href="#" class="deleteDialog tip" data-toggle="modal" data-section="{{ route('languages.delete', $item->lang_id) }}" role="button" data-original-title="{{ trans('plugins/language::language.delete_tooltip') }}">{{ trans('plugins/language::language.delete') }}</a>
+            <a href="#" class="deleteDialog" data-toggle="tooltip" data-section="{{ route('languages.destroy', $item->lang_id) }}" role="button" data-original-title="{{ trans('plugins/language::language.delete_tooltip') }}">{{ trans('plugins/language::language.delete') }}</a>
         </span>
     </td>
 </tr>

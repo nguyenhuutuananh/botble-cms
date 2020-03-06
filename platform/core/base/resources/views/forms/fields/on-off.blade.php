@@ -10,10 +10,10 @@
 
 @if ($showField)
     {!! Form::onOff($name, $options['value'], $options['attr']) !!}
-    @include('core.base::forms.partials.help_block')
+    @include('core/base::forms.partials.help_block')
 @endif
 
-@include('core.base::forms.partials.errors')
+@include('core/base::forms.partials.errors')
 
 @if ($showLabel && $showField)
     @if ($options['wrapper'] !== false)

@@ -11,7 +11,6 @@ class PageTitle
 
     /**
      * @param $title
-     * @author Sang Nguyen
      */
     public function setTitle($title)
     {
@@ -21,7 +20,6 @@ class PageTitle
     /**
      * @param bool $full
      * @return string
-     * @author Sang Nguyen
      */
     public function getTitle($full = true)
     {

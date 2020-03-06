@@ -22,7 +22,7 @@ class MenuRepository extends RepositoriesAbstract implements MenuInterface
     {
         $data = $this->model->where('menus.slug', '=', $slug);
         if ($active) {
-            $data = $data->where('menus.status', '=', BaseStatusEnum::PUBLISH)->select($selects);
+            $data = $data->where('menus.status', '=', BaseStatusEnum::PUBLISHED)->select($selects);
         }
         $data = $this->applyBeforeExecuteQuery($data, $this->screen, true)->first();
 

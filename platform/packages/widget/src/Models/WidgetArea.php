@@ -2,14 +2,9 @@
 
 namespace Botble\Widget\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Botble\Widget\Models\WidgetArea
- *
- * @mixin \Eloquent
- */
-class WidgetArea extends Eloquent
+class WidgetArea extends BaseModel
 {
 
     /**
@@ -19,11 +14,13 @@ class WidgetArea extends Eloquent
      */
     protected $table = 'widget_areas';
 
+    /**
+     * @var array
+     */
     protected $fillable = ['belong_to', 'type', 'data'];
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setDataAttribute($value)
     {
@@ -33,7 +30,6 @@ class WidgetArea extends Eloquent
     /**
      * @param $value
      * @return mixed
-     * @author Sang Nguyen
      */
     public function getDataAttribute($value)
     {

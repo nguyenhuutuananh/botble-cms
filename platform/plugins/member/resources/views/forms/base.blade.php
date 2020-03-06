@@ -1,4 +1,4 @@
-@extends('plugins.member::layouts.skeleton')
+@extends('plugins/member::layouts.skeleton')
 @section('content')
     <div class="container">
         @if ($showStart)

@@ -30,7 +30,7 @@ class CreatedContentListener
      * @param CreatedContentEvent $event
      * @param SlugService $slugService
      * @return void
-     * @author Sang Nguyen
+     *
      */
     public function handle(CreatedContentEvent $event)
     {

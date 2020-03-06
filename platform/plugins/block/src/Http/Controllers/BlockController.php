@@ -6,19 +6,22 @@ use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Block\Forms\BlockForm;
 use Botble\Block\Http\Requests\BlockRequest;
 use Botble\Block\Repositories\Interfaces\BlockInterface;
 use Illuminate\Http\Request;
 use Exception;
 use Botble\Block\Tables\BlockTable;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Events\UpdatedContentEvent;
 
 class BlockController extends BaseController
 {
+    use HasDeleteManyItemsTrait;
+
     /**
      * @var BlockInterface
      */
@@ -27,7 +30,7 @@ class BlockController extends BaseController
     /**
      * BlockController constructor.
      * @param BlockInterface $blockRepository
-     * @author Sang Nguyen
+     *
      */
     public function __construct(BlockInterface $blockRepository)
     {
@@ -38,10 +41,10 @@ class BlockController extends BaseController
      * Display all block
      * @param BlockTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(BlockTable $dataTable)
+    public function index(BlockTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/block::block.menu'));
 
@@ -52,9 +55,9 @@ class BlockController extends BaseController
      * Show create form
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/block::block.create'));
 
@@ -66,9 +69,9 @@ class BlockController extends BaseController
      *
      * @param BlockRequest $request
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postCreate(BlockRequest $request, BaseHttpResponse $response)
+    public function store(BlockRequest $request, BaseHttpResponse $response)
     {
         $block = $this->blockRepository->getModel();
         $block->fill($request->input());
@@ -80,7 +83,7 @@ class BlockController extends BaseController
         event(new CreatedContentEvent(BLOCK_MODULE_SCREEN_NAME, $request, $block));
 
         return $response
-            ->setPreviousUrl(route('block.list'))
+            ->setPreviousUrl(route('block.index'))
             ->setNextUrl(route('block.edit', $block->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -92,9 +95,9 @@ class BlockController extends BaseController
      * @param FormBuilder $formBuilder
      * @param Request $request
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getEdit($id, FormBuilder $formBuilder, Request $request)
+    public function edit($id, FormBuilder $formBuilder, Request $request)
     {
         $block = $this->blockRepository->findOrFail($id);
 
@@ -109,9 +112,9 @@ class BlockController extends BaseController
      * @param int $id
      * @param BlockRequest $request
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postEdit($id, BlockRequest $request, BaseHttpResponse $response)
+    public function update($id, BlockRequest $request, BaseHttpResponse $response)
     {
         $block = $this->blockRepository->findOrFail($id);
         $block->fill($request->input());
@@ -122,7 +125,7 @@ class BlockController extends BaseController
         event(new UpdatedContentEvent(BLOCK_MODULE_SCREEN_NAME, $request, $block));
 
         return $response
-            ->setPreviousUrl(route('block.list'))
+            ->setPreviousUrl(route('block.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -131,9 +134,9 @@ class BlockController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $block = $this->blockRepository->findOrFail($id);
@@ -152,24 +155,11 @@ class BlockController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $block = $this->blockRepository->findOrFail($id);
-            $this->blockRepository->delete($block);
-            event(new DeletedContentEvent(BLOCK_MODULE_SCREEN_NAME, $request, $block));
-        }
-
-        return $response->setMessage(trans('core/base::notices.delete_success_message'));
+        return $this->executeDeleteItems($request, $response, $this->blockRepository, BLOCK_MODULE_SCREEN_NAME);
     }
 }

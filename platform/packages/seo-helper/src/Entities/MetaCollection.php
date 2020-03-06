@@ -14,7 +14,6 @@ class MetaCollection extends BaseMetaCollection
      */
     protected $ignored = [
         'description',
-        'keywords',
     ];
 
     /**
@@ -24,7 +23,6 @@ class MetaCollection extends BaseMetaCollection
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Entities\MetaCollection
-     * @author ARCANEDEV
      */
     public function add($item)
     {

@@ -17,17 +17,15 @@ class UploadsManager
     /**
      * @var MimeTypes
      */
-    protected $mime_type;
+    protected $mimeType;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function __construct()
     {
         config()->set('filesystems.disks.local.root', config('media.driver.local.root'));
+        config()->set('filesystems.disks.public.root', config('media.driver.public.root'));
 
         $this->disk = Storage::disk(config('filesystems.default'));
-        $this->mime_type = new MimeTypes;
+        $this->mimeType = new MimeTypes;
     }
 
     /**
@@ -35,7 +33,6 @@ class UploadsManager
      *
      * @param $folder
      * @return string
-     * @author Sang Nguyen
      */
     protected function cleanFolder($folder)
     {
@@ -47,7 +44,6 @@ class UploadsManager
      *
      * @param $path
      * @return array
-     * @author Sang Nguyen
      */
     public function fileDetails($path)
     {
@@ -63,11 +59,10 @@ class UploadsManager
     /**
      * Return the full web path to a file
      *
-     * @param $path
+     * @param string $path
      * @return string
-     * @author Sang Nguyen
      */
-    public function uploadPath($path)
+    public function uploadPath($path): string
     {
         return rtrim(config('media.driver.' . config('filesystems.default') . '.path'), '/') . '/' . ltrim($path, '/');
     }
@@ -77,11 +72,10 @@ class UploadsManager
      *
      * @param $path
      * @return mixed|null|string
-     * @author Sang Nguyen
      */
-    public function fileMimeType($path)
+    public function fileMimeType($path): ?string
     {
-        return $this->mime_type->getMimeType(File::extension($this->uploadPath($path)));
+        return $this->mimeType->getMimeType(File::extension($this->uploadPath($path)));
     }
 
     /**
@@ -89,7 +83,6 @@ class UploadsManager
      *
      * @param $path
      * @return int
-     * @author Sang Nguyen
      */
     public function fileSize($path)
     {
@@ -101,7 +94,6 @@ class UploadsManager
      *
      * @param $path
      * @return string
-     * @author Sang Nguyen
      */
     public function fileModified($path)
     {
@@ -113,7 +105,6 @@ class UploadsManager
      *
      * @param $folder
      * @return bool|string|\Symfony\Component\Translation\TranslatorInterface
-     * @author Sang Nguyen
      */
     public function createDirectory($folder)
     {
@@ -131,7 +122,6 @@ class UploadsManager
      *
      * @param $folder
      * @return bool|string|\Symfony\Component\Translation\TranslatorInterface
-     * @author Sang Nguyen
      */
     public function deleteDirectory($folder)
     {
@@ -153,7 +143,6 @@ class UploadsManager
      *
      * @param $path
      * @return bool|string|\Symfony\Component\Translation\TranslatorInterface
-     * @author Sang Nguyen
      */
     public function deleteFile($path)
     {
@@ -181,7 +170,6 @@ class UploadsManager
      * @param $path
      * @param $content
      * @return bool|string|\Symfony\Component\Translation\TranslatorInterface
-     * @author Sang Nguyen
      */
     public function saveFile($path, $content)
     {

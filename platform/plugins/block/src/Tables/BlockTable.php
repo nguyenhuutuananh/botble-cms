@@ -2,6 +2,7 @@
 
 namespace Botble\Block\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Block\Repositories\Interfaces\BlockInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -23,7 +24,7 @@ class BlockTable extends TableAbstract
     protected $hasFilter = true;
 
     /**
-     * TagTable constructor.
+     * BlockTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param BlockInterface $blockRepository
@@ -33,13 +34,18 @@ class BlockTable extends TableAbstract
         $this->repository = $blockRepository;
         $this->setOption('id', 'table-static-blocks');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['block.edit', 'block.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -47,10 +53,11 @@ class BlockTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('block.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('block.edit', $item->id), $item->name);
-            })
-            ->editColumn('alias', function ($item) {
-                return generate_shortcode('static-block', ['alias' => $item->alias]);
             })
             ->editColumn('checkbox', function ($item) {
                 return table_checkbox($item->id);
@@ -62,9 +69,15 @@ class BlockTable extends TableAbstract
                 return $item->status->toHtml();
             });
 
+        if (function_exists('shortcode')) {
+            $data = $data->editColumn('alias', function ($item) {
+                return generate_shortcode('static-block', ['alias' => $item->alias]);
+            });
+        }
+
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, BLOCK_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('block.edit', 'block.delete', $item);
+                return table_actions('block.edit', 'block.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -74,7 +87,7 @@ class BlockTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -94,7 +107,7 @@ class BlockTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -129,18 +142,13 @@ class BlockTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('block.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('block.create'), 'block.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, BLOCK_MODULE_SCREEN_NAME);
     }
@@ -151,14 +159,7 @@ class BlockTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('block.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('block.deletes'), 'block.destroy', parent::bulkActions());
     }
 
     /**
@@ -171,7 +172,6 @@ class BlockTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getBlocks',
             ],
             'blocks.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -184,13 +184,5 @@ class BlockTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getBlocks()
-    {
-        return $this->repository->pluck('blocks.name', 'blocks.id');
     }
 }

@@ -107,7 +107,7 @@ class LineChart extends Chart
 
     /**
      * A function that accepts Date objects and formats them for display as x-axis labels. Overrides the default formatter
-     * chosen by the automatic labeller or the xLabels option.
+     * chosen by the automatic labeler or the xLabels option.
      *
      * eg: function (x) { return x.toString(); }
      *

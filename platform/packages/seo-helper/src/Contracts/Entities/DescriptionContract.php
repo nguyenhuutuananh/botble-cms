@@ -10,7 +10,6 @@ interface DescriptionContract extends RenderableContract
      * Get raw description content.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getContent();
 
@@ -18,7 +17,6 @@ interface DescriptionContract extends RenderableContract
      * Get description content.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function get();
 
@@ -28,7 +26,6 @@ interface DescriptionContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function set($content);
 
@@ -36,7 +33,6 @@ interface DescriptionContract extends RenderableContract
      * Get description max length.
      *
      * @return int
-     * @author ARCANEDEV
      */
     public function getMax();
 
@@ -46,7 +42,6 @@ interface DescriptionContract extends RenderableContract
      * @param  int $max
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setMax($max);
 
@@ -57,7 +52,6 @@ interface DescriptionContract extends RenderableContract
      * @param  int $max
      *
      * @return self
-     * @author ARCANEDEV
      */
     public static function make($content, $max = 155);
 }

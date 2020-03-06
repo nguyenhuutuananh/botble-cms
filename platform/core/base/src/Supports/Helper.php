@@ -2,7 +2,8 @@
 
 namespace Botble\Base\Supports;
 
-use Auth;
+use Artisan;
+use Illuminate\Support\Facades\Auth;
 use Eloquent;
 use Exception;
 use File;
@@ -14,7 +15,7 @@ class Helper
     /**
      * Load module's helpers
      * @param $directory
-     * @author Sang Nguyen
+     *
      * @since 2.0
      */
     public static function autoload($directory)
@@ -27,17 +28,16 @@ class Helper
 
     /**
      * @param Eloquent | Model $object
-     * @param string $session_name
+     * @param string $sessionName
      * @return bool
-     * @author Sang Nguyen
      */
-    public static function handleViewCount(Eloquent $object, $session_name)
+    public static function handleViewCount(Eloquent $object, $sessionName)
     {
         $blank_array = [];
-        if (!array_key_exists($object->id, session()->get($session_name, $blank_array))) {
+        if (!array_key_exists($object->id, session()->get($sessionName, $blank_array))) {
             try {
                 $object->increment('views');
-                session()->put($session_name . '.' . $object->id, time());
+                session()->put($sessionName . '.' . $object->id, time());
                 return true;
             } catch (Exception $ex) {
                 return false;
@@ -55,7 +55,6 @@ class Helper
      * @param string $function
      * @param string $class
      * @return array
-     * @author Sang Nguyen
      */
     public static function formatLog($input, $line = '', $function = '', $class = '')
     {
@@ -71,7 +70,7 @@ class Helper
 
     /**
      * @param $plugin
-     * @author Sang Nguyen
+     *
      * @return boolean
      * @since 3.3
      */
@@ -80,9 +79,9 @@ class Helper
         $folders = [
             public_path('vendor/core/plugins/' . $plugin),
             resource_path('assets/plugins/' . $plugin),
-            resource_path('views/vendor/plugins.' . $plugin),
-            resource_path('lang/vendor/plugins.' . $plugin),
-            config_path('plugins.' . $plugin),
+            resource_path('views/vendor/plugins/' . $plugin),
+            resource_path('lang/vendor/plugins/' . $plugin),
+            config_path('plugins/' . $plugin),
         ];
 
         foreach ($folders as $folder) {
@@ -92,5 +91,24 @@ class Helper
         }
 
         return true;
+    }
+
+    /**
+     * @param string $command
+     * @param array $parameters
+     * @param null $outputBuffer
+     * @return bool|int
+     * @throws Exception
+     */
+    public static function executeCommand(string $command, array $parameters = [], $outputBuffer = null)
+    {
+        if (!function_exists('proc_open')) {
+            if (config('app.debug')) {
+                throw new Exception('Function proc_close() is disabled. Please contact your hosting provider to enable it.');
+            }
+            return false;
+        }
+
+        return Artisan::call($command, $parameters, $outputBuffer);
     }
 }

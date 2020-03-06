@@ -2,6 +2,13 @@ $bg-color : #364150;
 
 .login {
     background-color : $bg-color !important;
+    .login-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        height: 100vh;
+    }
     .content {
         background-color : lighten(#eceef1, 10%);
         width            : 450px;

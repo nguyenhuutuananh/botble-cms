@@ -10,18 +10,10 @@ use Illuminate\Config\Repository;
 use Illuminate\Support\Str;
 
 /**
- * Class Assets
- * @package Botble\Assets
- * @author Sang Nguyen
  * @since 22/07/2015 11:23 PM
  */
 class Assets extends BaseAssets
 {
-    /**
-     * @var array
-     */
-    protected $appModules = [];
-
     /**
      * Assets constructor.
      *
@@ -48,74 +40,9 @@ class Assets extends BaseAssets
     }
 
     /**
-     * Add Module to current module
-     *
-     * @param array $modules
-     * @return $this;
-     * @author Sang Nguyen
-     */
-    public function addAppModule($modules): self
-    {
-        if (!is_array($modules)) {
-            $modules = [$modules];
-        }
-        $this->appModules = array_merge($this->appModules, $modules);
-
-        return $this;
-    }
-
-    /**
-     * Get all modules in current module
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function getAppModules(): array
-    {
-        $modules = [];
-        if (!empty($this->appModules)) {
-            // get the final scripts need for page
-            $this->appModules = array_unique($this->appModules);
-            foreach ($this->appModules as $module) {
-                if (($module = $this->getModule($module)) !== null) {
-                    $modules[] = ['src' => $module, 'attributes' => []];
-                }
-            }
-        }
-
-        return $modules;
-    }
-
-    /**
-     * Get a modules
-     *
-     * @param string $module : module's name
-     * @return string
-     */
-    protected function getModule($module): ?string
-    {
-        $pathPrefix = public_path('vendor/core/js/app_modules/' . $module);
-
-        $file = null;
-
-        if (file_exists($pathPrefix . '.min.js')) {
-            $file = $module . '.min.js';
-        } elseif (file_exists($pathPrefix . '.js')) {
-            $file = $module . '.js';
-        }
-
-        if ($file) {
-            return '/vendor/core/js/app_modules/' . $file . $this->getBuildVersion();
-        }
-
-        return null;
-    }
-
-    /**
      * Get all admin themes
      *
      * @return array
-     * @author Sang Nguyen
      */
     public function getThemes(): array
     {
@@ -137,7 +64,6 @@ class Assets extends BaseAssets
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getAdminLocales(): array
     {
@@ -148,7 +74,7 @@ class Assets extends BaseAssets
         }
 
         foreach ($locales as $locale) {
-            if ($locale == 'vendor') {
+            if ($locale === 'vendor') {
                 continue;
             }
             foreach (Language::getListLanguages() as $key => $language) {
@@ -164,21 +90,6 @@ class Assets extends BaseAssets
         }
 
         return $languages;
-    }
-
-    /**
-     * @param $module
-     * @return null|string
-     */
-    public function getAppModuleItemToHtml($module): ?string
-    {
-        $src = $this->getModule($module);
-
-        if (!$src) {
-            return null;
-        }
-
-        return $this->htmlBuilder->script($src, ['class' => 'hidden'])->toHtml();
     }
 
     /**
@@ -199,7 +110,7 @@ class Assets extends BaseAssets
      */
     public function renderFooter()
     {
-        $bodyScripts = array_merge($this->getScripts(self::ASSETS_SCRIPT_POSITION_FOOTER), $this->getAppModules());
+        $bodyScripts = $this->getScripts(self::ASSETS_SCRIPT_POSITION_FOOTER);
 
         return view('assets::footer', compact('bodyScripts'))->render();
     }

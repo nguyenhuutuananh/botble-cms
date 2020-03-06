@@ -1,6 +1,6 @@
 <div class="custom-fields-rules">
     {!! $object ? $object->rules_template : $rules_template !!}
-    @include('plugins.custom-field::_script-templates.edit-field-group-items')
+    @include('plugins/custom-field::_script-templates.edit-field-group-items')
     <textarea name="rules"
               id="custom_fields_rules"
               class="form-control hidden"

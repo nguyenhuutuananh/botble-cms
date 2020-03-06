@@ -42,7 +42,7 @@ class MenuForm extends FormAbstract
             ->addMetaBoxes([
                 'structure' => [
                     'wrap'    => false,
-                    'content' => view('packages.menu::menu-structure', [
+                    'content' => view('packages/menu::menu-structure', [
                         'menu'      => $this->getModel(),
                         'locations' => $locations,
                     ])->render(),

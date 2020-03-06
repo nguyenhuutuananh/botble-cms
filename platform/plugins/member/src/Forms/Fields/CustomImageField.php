@@ -13,7 +13,7 @@ class CustomImageField extends FormField
      */
     protected function getTemplate()
     {
-        return 'plugins.member::forms.fields.custom-image';
+        return 'plugins/member::forms.fields.custom-image';
     }
 
     /**

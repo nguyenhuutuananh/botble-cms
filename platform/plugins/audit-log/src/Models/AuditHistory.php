@@ -3,16 +3,16 @@
 namespace Botble\AuditLog\Models;
 
 use Botble\ACL\Models\User;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class AuditHistory extends Eloquent
+class AuditHistory extends BaseModel
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'audit_history';
+    protected $table = 'audit_histories';
 
     /**
      * The date fields for the model.clear
@@ -42,7 +42,7 @@ class AuditHistory extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
+     *
      */
     public function user()
     {

@@ -54,7 +54,7 @@ export class Helpers {
                         Botble.unblockUI();
                     },
                     error: () => {
-                        Botble.showNotice('error', 'Some error occurred');
+                        Botble.showError('Some error occurred');
                     }
                 });
             };

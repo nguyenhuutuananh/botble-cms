@@ -14,10 +14,10 @@
         $emptyVal = $options['empty_value'] ? ['' => $options['empty_value']] : null;
     @endphp
     {!! Form::customSelect($name, (array)$emptyVal + $options['choices'], $options['selected'], $options['attr']) !!}
-    @include('core.base::forms.partials.help_block')
+    @include('core/base::forms.partials.help_block')
 @endif
 
-@include('core.base::forms.partials.errors')
+@include('core/base::forms.partials.errors')
 
 @if ($showLabel && $showField)
     @if ($options['wrapper'] !== false)

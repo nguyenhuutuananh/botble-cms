@@ -2,33 +2,18 @@
 
 namespace Botble\ACL\Listeners;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Events\RoleAssignmentEvent;
-use Botble\ACL\Repositories\Interfaces\UserInterface;
 
 class RoleAssignmentListener
 {
-    /**
-     * @var UserInterface
-     */
-    protected $userRepository;
-
-    /**
-     * RoleAssignmentListener constructor.
-     * @author Sang Nguyen
-     * @param UserInterface $userRepository
-     */
-    public function __construct(UserInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
 
     /**
      * Handle the event.
      *
      * @param  RoleAssignmentEvent $event
      * @return void
-     * @author Sang Nguyen
+     *
      * @throws \Exception
      */
     public function handle(RoleAssignmentEvent $event)
@@ -36,14 +21,11 @@ class RoleAssignmentListener
         info('Role ' . $event->role->name . ' assigned to user ' . $event->user->getFullName());
 
         $permissions = $event->role->permissions;
-        $permissions['superuser'] = $event->user->super_user;
-        $permissions['manage_supers'] = $event->user->manage_supers;
+        $permissions[ACL_ROLE_SUPER_USER] = $event->user->super_user;
+        $permissions[ACL_ROLE_MANAGE_SUPERS] = $event->user->manage_supers;
 
-        $this->userRepository->update([
-            'id' => $event->user->id,
-        ], [
-            'permissions' => json_encode($permissions),
-        ]);
+        $event->user->permissions = $permissions;
+        $event->user->save();
 
         cache()->forget(md5('cache-dashboard-menu-' . Auth::user()->getKey()));
     }

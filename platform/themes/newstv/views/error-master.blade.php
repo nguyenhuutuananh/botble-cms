@@ -366,7 +366,7 @@
                 @yield('message')
             </p>
 
-            <p>{!! __('Please try again in a few minutes, or alternatively return to the homepage by <a href=":link">clicking here</a>.', ['link' => url('/')]) !!}</p>
+            <p>{!! __('Please try again in a few minutes, or alternatively return to the homepage by <a href=":link">clicking here</a>.', ['link' => route('public.single')]) !!}</p>
         </div>
     </div>
 </div>

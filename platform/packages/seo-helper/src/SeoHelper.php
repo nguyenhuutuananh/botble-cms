@@ -37,7 +37,6 @@ class SeoHelper implements SeoHelperContract
      * @param  \Botble\SeoHelper\Contracts\SeoMetaContract $seoMeta
      * @param  \Botble\SeoHelper\Contracts\SeoOpenGraphContract $seoOpenGraph
      * @param  \Botble\SeoHelper\Contracts\SeoTwitterContract $seoTwitter
-     * @author ARCANEDEV
      */
     public function __construct(
         SeoMetaContract $seoMeta,
@@ -53,7 +52,6 @@ class SeoHelper implements SeoHelperContract
      * Get SeoMeta instance.
      *
      * @return \Botble\SeoHelper\Contracts\SeoMetaContract
-     * @author ARCANEDEV
      */
     public function meta()
     {
@@ -66,7 +64,6 @@ class SeoHelper implements SeoHelperContract
      * @param  \Botble\SeoHelper\Contracts\SeoMetaContract $seoMeta
      *
      * @return \Botble\SeoHelper\SeoHelper
-     * @author ARCANEDEV
      */
     public function setSeoMeta(SeoMetaContract $seoMeta)
     {
@@ -79,7 +76,6 @@ class SeoHelper implements SeoHelperContract
      * Get SeoOpenGraph instance.
      *
      * @return \Botble\SeoHelper\Contracts\SeoOpenGraphContract
-     * @author ARCANEDEV
      */
     public function openGraph()
     {
@@ -92,7 +88,6 @@ class SeoHelper implements SeoHelperContract
      * @param  \Botble\SeoHelper\Contracts\SeoOpenGraphContract $seoOpenGraph
      *
      * @return \Botble\SeoHelper\SeoHelper
-     * @author ARCANEDEV
      */
     public function setSeoOpenGraph(SeoOpenGraphContract $seoOpenGraph)
     {
@@ -105,7 +100,6 @@ class SeoHelper implements SeoHelperContract
      * Get SeoTwitter instance.
      *
      * @return \Botble\SeoHelper\Contracts\SeoTwitterContract
-     * @author ARCANEDEV
      */
     public function twitter()
     {
@@ -118,7 +112,6 @@ class SeoHelper implements SeoHelperContract
      * @param  \Botble\SeoHelper\Contracts\SeoTwitterContract $seoTwitter
      *
      * @return \Botble\SeoHelper\SeoHelper
-     * @author ARCANEDEV
      */
     public function setSeoTwitter(SeoTwitterContract $seoTwitter)
     {
@@ -135,7 +128,6 @@ class SeoHelper implements SeoHelperContract
      * @param  string|null $separator
      *
      * @return \Botble\SeoHelper\SeoHelper
-     * @author ARCANEDEV
      */
     public function setTitle($title, $siteName = null, $separator = null)
     {
@@ -153,7 +145,6 @@ class SeoHelper implements SeoHelperContract
      * @param  string $description
      *
      * @return \Botble\SeoHelper\Contracts\SeoHelperContract
-     * @author ARCANEDEV
      */
     public function setDescription($description)
     {
@@ -165,25 +156,9 @@ class SeoHelper implements SeoHelperContract
     }
 
     /**
-     * Set keywords.
-     *
-     * @param  array|string $keywords
-     *
-     * @return \Botble\SeoHelper\SeoHelper
-     * @author ARCANEDEV
-     */
-    public function setKeywords($keywords)
-    {
-        $this->meta()->setKeywords($keywords);
-
-        return $this;
-    }
-
-    /**
      * Render all seo tags.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -198,7 +173,6 @@ class SeoHelper implements SeoHelperContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -210,7 +184,7 @@ class SeoHelper implements SeoHelperContract
      * @param \Illuminate\Http\Request $request
      * @param $object
      * @return bool
-     * @author Sang Nguyen
+     *
      */
     public function saveMetaData($screen, $request, $object)
     {
@@ -233,7 +207,7 @@ class SeoHelper implements SeoHelperContract
      * @param $screen
      * @param $object
      * @return bool
-     * @author Sang Nguyen
+     *
      */
     public function deleteMetaData($screen, $object)
     {
@@ -250,7 +224,7 @@ class SeoHelper implements SeoHelperContract
     /**
      * @param string | array $screen
      * @return SeoHelper
-     * @author Sang Nguyen
+     *
      */
     public function registerModule($screen)
     {

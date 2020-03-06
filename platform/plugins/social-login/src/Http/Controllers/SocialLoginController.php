@@ -2,9 +2,9 @@
 
 namespace Botble\SocialLogin\Http\Controllers;
 
-use AclManager;
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Botble\ACL\Repositories\Interfaces\ActivationInterface;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
@@ -35,7 +35,6 @@ class SocialLoginController extends BaseController
      *
      * @param $provider
      * @return mixed
-     * @author Sang Nguyen
      */
     public function redirectToProvider($provider)
     {
@@ -47,7 +46,6 @@ class SocialLoginController extends BaseController
      * @param $provider
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function handleProviderCallback($provider, BaseHttpResponse $response)
     {
@@ -66,7 +64,7 @@ class SocialLoginController extends BaseController
         $user = $this->userRepository->getFirstBy(['email' => $oAuth->getEmail()]);
 
         if ($user) {
-            if (!AclManager::getActivationRepository()->completed($user)) {
+            if (!app(ActivationInterface::class)->completed($user)) {
                 return $response
                     ->setError()
                     ->setMessage(trans('core/acl::auth.login.not_active'));
@@ -85,7 +83,6 @@ class SocialLoginController extends BaseController
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function getSettings()
     {
@@ -93,7 +90,7 @@ class SocialLoginController extends BaseController
 
         Assets::addScriptsDirectly('vendor/core/plugins/social-login/js/social-login.js');
 
-        return view('plugins.social-login::settings');
+        return view('plugins/social-login::settings');
     }
 
     /**
@@ -101,7 +98,6 @@ class SocialLoginController extends BaseController
      * @param BaseHttpResponse $response
      * @param SettingStore $setting
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postSettings(SocialLoginRequest $request, BaseHttpResponse $response, SettingStore $setting)
     {

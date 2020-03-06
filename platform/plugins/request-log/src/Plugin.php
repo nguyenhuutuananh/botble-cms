@@ -2,29 +2,12 @@
 
 namespace Botble\RequestLog;
 
-use Botble\Base\Interfaces\PluginInterface;
+use Botble\PluginManagement\Abstracts\PluginOperationAbstract;
 use Botble\Dashboard\Repositories\Interfaces\DashboardWidgetInterface;
 use Schema;
 
-class Plugin implements PluginInterface
+class Plugin extends PluginOperationAbstract
 {
-    /**
-     * @author Sang Nguyen
-     */
-    public static function activate()
-    {
-    }
-
-    /**
-     * @author Sang Nguyen
-     */
-    public static function deactivate()
-    {
-    }
-
-    /**
-     * @author Sang Nguyen
-     */
     public static function remove()
     {
         Schema::dropIfExists('request_logs');

@@ -22,7 +22,7 @@ class MemberPostTable extends PostTable
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -51,9 +51,9 @@ class MemberPostTable extends PostTable
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, POST_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
                 $edit = 'public.member.posts.edit';
-                $delete = 'public.member.posts.delete';
+                $delete = 'public.member.posts.destroy';
 
-                return view('plugins.member::table.actions', compact('edit', 'delete', 'item'))->render();
+                return view('plugins/member::table.actions', compact('edit', 'delete', 'item'))->render();
             })
             ->escapeColumns([])
             ->make(true);
@@ -88,12 +88,7 @@ class MemberPostTable extends PostTable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('public.member.posts.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('public.member.posts.create'), null);
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, POST_MODULE_SCREEN_NAME);
     }
@@ -107,7 +102,7 @@ class MemberPostTable extends PostTable
     }
 
     /**
-     * @return array
+     * @return array|\Illuminate\Support\Collection
      */
     public function getPosts()
     {

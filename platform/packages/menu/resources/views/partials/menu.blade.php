@@ -58,7 +58,7 @@
                 {!!
                     Menu::generateMenu([
                         'slug' => $menu->slug,
-                        'view' => 'packages.menu::partials.menu',
+                        'view' => 'packages/menu::partials.menu',
                         'parent_id' => $row->id,
                         'theme' => false,
                         'active' => false

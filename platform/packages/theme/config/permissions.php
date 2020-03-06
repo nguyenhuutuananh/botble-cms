@@ -3,18 +3,18 @@
 return [
     [
         'name'        => 'Theme',
-        'flag'        => 'theme.list',
+        'flag'        => 'theme.index',
         'parent_flag' => 'core.appearance',
     ],
     [
         'name'        => 'Activate',
         'flag'        => 'theme.activate',
-        'parent_flag' => 'theme.list',
+        'parent_flag' => 'theme.index',
     ],
     [
         'name'        => 'Remove',
         'flag'        => 'theme.remove',
-        'parent_flag' => 'theme.list',
+        'parent_flag' => 'theme.index',
     ],
     [
         'name'        => 'Theme options',

@@ -2,6 +2,7 @@
 
 namespace Botble\RequestLog\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\RequestLog\Repositories\Interfaces\RequestLogInterface;
 use Botble\Table\Abstracts\TableAbstract;
 use Html;
@@ -32,18 +33,21 @@ class RequestLogTable extends TableAbstract
         DataTables $table,
         UrlGenerator $urlGenerator,
         RequestLogInterface $requestLogRepository
-    )
-    {
+    ) {
         $this->repository = $requestLogRepository;
         $this->setOption('id', 'table-request-histories');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasPermission('request-log.destroy')) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
      */
     public function ajax()
     {
@@ -58,7 +62,7 @@ class RequestLogTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, REQUEST_LOG_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions(null, 'request-log.delete', $item);
+                return table_actions(null, 'request-log.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -68,7 +72,7 @@ class RequestLogTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -81,12 +85,12 @@ class RequestLogTable extends TableAbstract
                 'request_logs.status_code',
                 'request_logs.count',
             ]);
-        return $this->applyScopes(apply_filters(BASE_FILTER_TABLE_QUERY, $query, $model, REQUEST_LOG_MODULE_SCREEN_NAME));
+        return $this->applyScopes(apply_filters(BASE_FILTER_TABLE_QUERY, $query, $model,
+            REQUEST_LOG_MODULE_SCREEN_NAME));
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function columns()
     {
@@ -114,12 +118,19 @@ class RequestLogTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function buttons()
     {
-        return apply_filters(BASE_FILTER_TABLE_BUTTONS, [], REQUEST_LOG_MODULE_SCREEN_NAME);
+        $buttons = [
+            'empty' => [
+                'link' => route('request-log.empty'),
+                'text' => Html::tag('i', '', ['class' => 'fa fa-trash'])->toHtml() . ' ' . __('Delete all records'),
+            ],
+        ];
+
+        return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, REQUEST_LOG_MODULE_SCREEN_NAME);
     }
 
     /**
@@ -128,13 +139,6 @@ class RequestLogTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = [];
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('request-log.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('request-log.deletes'), 'request-log.destroy', parent::bulkActions());
     }
 }

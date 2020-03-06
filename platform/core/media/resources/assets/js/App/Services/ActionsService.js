@@ -194,7 +194,7 @@ export class ActionsService {
                 });
             }
 
-            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'folders.delete')) {
+            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'folders.destroy')) {
                 actionsList.other = _.reject(actionsList.other, (item) => {
                     return _.includes(['delete'], item.action);
                 });
@@ -241,7 +241,7 @@ export class ActionsService {
                 });
             }
 
-            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'files.delete')) {
+            if (!_.includes(RV_MEDIA_CONFIG.permissions, 'files.destroy')) {
                 actionsList.other = _.reject(actionsList.other, (item) => {
                     return _.includes(['delete'], item.action);
                 });

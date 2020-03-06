@@ -5,9 +5,9 @@ namespace Botble\CustomField\Models;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Traits\EnumCastable;
 use Botble\CustomField\Repositories\Interfaces\FieldItemInterface;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class FieldGroup extends Eloquent
+class FieldGroup extends BaseModel
 {
     use EnumCastable;
 

@@ -22,7 +22,6 @@ class EventServiceProvider extends ServiceProvider
      * The event listener mappings for the application.
      *
      * @var array
-     * @author Sang Nguyen
      */
     protected $listen = [
         SendMailEvent::class          => [
@@ -42,17 +41,12 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
-    /** Boot the service provider.
-     * @return void
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         parent::boot();
 
         Event::listen(['cache:cleared'], function () {
-            File::delete(storage_path('cache_keys.json'));
-            File::delete(storage_path('settings.json'));
+            File::delete([storage_path('cache_keys.json'), storage_path('settings.json')]);
         });
     }
 }

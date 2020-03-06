@@ -40,7 +40,7 @@ class ContactPluginManagement {
                         } else if (CKEDITOR.instances['message'] && typeof CKEDITOR.instances['message'] !== 'undefined') {
                             CKEDITOR.instances['message'].setData('');
                         }
-                        Botble.showNotice('success', res.message);
+                        Botble.showSuccess(res.message);
                         $('#reply-wrapper').load(window.location.href + ' #reply-wrapper > *');
                     }
 

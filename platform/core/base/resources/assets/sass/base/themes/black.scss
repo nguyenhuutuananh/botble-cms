@@ -134,24 +134,6 @@ body#login {
     }
 }
 
-.login-wrapper {
-    left : 79%;
-    button {
-        background-color : $hover-background;
-        border-color     : $hover-background;
-        &:hover {
-            background-color : #ab0018;
-            border-color     : #ab0018;
-        }
-    }
-}
-
-@media (max-width : 767px) {
-    .login-wrapper {
-        left : 50%;
-    }
-}
-
 .btn-primary {
     background-color : $primary-background;
     &:hover {
@@ -465,9 +447,6 @@ body#login {
     .footer {
         border-top : none;
         color      : #ffffff;
-    }
-    .login-wrapper {
-        left : 50%;
     }
 }
 

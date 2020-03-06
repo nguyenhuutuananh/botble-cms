@@ -12,6 +12,6 @@ class OnOffField extends FormField
      */
     protected function getTemplate()
     {
-        return 'core.base::forms.fields.on-off';
+        return 'core/base::forms.fields.on-off';
     }
 }

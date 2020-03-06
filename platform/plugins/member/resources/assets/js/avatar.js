@@ -107,7 +107,7 @@ import Botble from './utils';
                     if (firstLoad) {
                         firstLoad = false;
                     } else {
-                        Botble.showNotice('error', 'Image upload failed!', 'Error!');
+                        Botble.showError('Image upload failed!');
                     }
                 }
 
@@ -256,8 +256,8 @@ import Botble from './utils';
             }
 
             if (data && !data.error) {
-                if (data.result) {
-                    this.url = data.result;
+                if (!data.error) {
+                    this.url = data.data.url;
 
                     if (this.support.datauri || this.uploaded) {
                         this.uploaded = false;
@@ -269,12 +269,12 @@ import Botble from './utils';
                     }
 
                     this.$avatarInput.val('');
-                    Botble.showNotice('success', data.message, 'Success!');
+                    Botble.showSuccess(data.message);
                 } else {
-                    Botble.showNotice('error', data.message, 'Error!');
+                    Botble.showError(data.message);
                 }
             } else {
-                Botble.showNotice('error', 'Fail to response', 'Error!');
+                Botble.showError(data.message);
             }
         },
 

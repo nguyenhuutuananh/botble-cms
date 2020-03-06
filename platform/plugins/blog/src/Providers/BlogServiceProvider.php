@@ -9,7 +9,6 @@ use Botble\Blog\Models\Post;
 use Botble\Blog\Repositories\Caches\PostCacheDecorator;
 use Botble\Blog\Repositories\Eloquent\PostRepository;
 use Botble\Blog\Repositories\Interfaces\PostInterface;
-use Botble\Shortcode\View\View;
 use Event;
 use Illuminate\Support\ServiceProvider;
 use Botble\Blog\Models\Category;
@@ -24,9 +23,6 @@ use Language;
 use SeoHelper;
 
 /**
- * Class BlogServiceProvider
- * @package Botble\Blog
- * @author Sang Nguyen
  * @since 02/07/2016 09:50 AM
  */
 class BlogServiceProvider extends ServiceProvider
@@ -38,30 +34,23 @@ class BlogServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(PostInterface::class, function () {
+        $this->app->bind(PostInterface::class, function () {
             return new PostCacheDecorator(new PostRepository(new Post));
         });
 
-        $this->app->singleton(CategoryInterface::class, function () {
+        $this->app->bind(CategoryInterface::class, function () {
             return new CategoryCacheDecorator(new CategoryRepository(new Category));
         });
 
-        $this->app->singleton(TagInterface::class, function () {
+        $this->app->bind(TagInterface::class, function () {
             return new TagCacheDecorator(new TagRepository(new Tag));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/blog')
@@ -88,8 +77,8 @@ class BlogServiceProvider extends ServiceProvider
                     'parent_id'   => null,
                     'name'        => 'plugins/blog::base.menu_name',
                     'icon'        => 'fa fa-edit',
-                    'url'         => route('posts.list'),
-                    'permissions' => ['posts.list'],
+                    'url'         => route('posts.index'),
+                    'permissions' => ['posts.index'],
                 ])
                 ->registerItem([
                     'id'          => 'cms-plugins-blog-post',
@@ -97,8 +86,8 @@ class BlogServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-plugins-blog',
                     'name'        => 'plugins/blog::posts.menu_name',
                     'icon'        => null,
-                    'url'         => route('posts.list'),
-                    'permissions' => ['posts.list'],
+                    'url'         => route('posts.index'),
+                    'permissions' => ['posts.index'],
                 ])
                 ->registerItem([
                     'id'          => 'cms-plugins-blog-categories',
@@ -106,8 +95,8 @@ class BlogServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-plugins-blog',
                     'name'        => 'plugins/blog::categories.menu_name',
                     'icon'        => null,
-                    'url'         => route('categories.list'),
-                    'permissions' => ['categories.list'],
+                    'url'         => route('categories.index'),
+                    'permissions' => ['categories.index'],
                 ])
                 ->registerItem([
                     'id'          => 'cms-plugins-blog-tags',
@@ -115,8 +104,8 @@ class BlogServiceProvider extends ServiceProvider
                     'parent_id'   => 'cms-plugins-blog',
                     'name'        => 'plugins/blog::tags.menu_name',
                     'icon'        => null,
-                    'url'         => route('tags.list'),
-                    'permissions' => ['tags.list'],
+                    'url'         => route('tags.index'),
+                    'permissions' => ['tags.index'],
                 ]);
         });
 
@@ -139,9 +128,14 @@ class BlogServiceProvider extends ServiceProvider
             SeoHelper::registerModule($screens);
         });
 
-        view()->composer(['core.blog::themes.post', 'core.blog::themes.category', 'core.blog::themes.tag'],
-            function (View $view) {
+        if (function_exists('shortcode')) {
+            view()->composer([
+                'plugins/blog::themes.post',
+                'plugins/blog::themes.category',
+                'plugins/blog::themes.tag',
+            ], function (\Botble\Shortcode\View\View $view) {
                 $view->withShortcodes();
             });
+        }
     }
 }

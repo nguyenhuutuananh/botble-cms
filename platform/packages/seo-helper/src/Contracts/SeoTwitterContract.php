@@ -12,7 +12,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  \Botble\SeoHelper\Contracts\Entities\TwitterCardContract $card
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setCard(TwitterCardContract $card);
 
@@ -22,7 +21,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $type
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setType($type);
 
@@ -32,7 +30,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $site
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setSite($site);
 
@@ -42,7 +39,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $title
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setTitle($title);
 
@@ -52,7 +48,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $description
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setDescription($description);
 
@@ -62,7 +57,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $url
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addImage($url);
 
@@ -72,7 +66,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  array $meta
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMetas(array $meta);
 
@@ -83,7 +76,6 @@ interface SeoTwitterContract extends RenderableContract
      * @param  string $content
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function addMeta($name, $content);
 }

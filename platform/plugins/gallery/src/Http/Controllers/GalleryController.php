@@ -6,19 +6,21 @@ use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Gallery\Forms\GalleryForm;
 use Botble\Gallery\Tables\GalleryTable;
 use Botble\Gallery\Http\Requests\GalleryRequest;
 use Botble\Gallery\Repositories\Interfaces\GalleryInterface;
 use Exception;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Events\UpdatedContentEvent;
 
 class GalleryController extends BaseController
 {
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var GalleryInterface
@@ -27,7 +29,6 @@ class GalleryController extends BaseController
 
     /**
      * @param GalleryInterface $galleryRepository
-     * @author Sang Nguyen
      */
     public function __construct(GalleryInterface $galleryRepository)
     {
@@ -38,12 +39,11 @@ class GalleryController extends BaseController
      * Display all galleries
      * @param GalleryTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      * @throws \Throwable
      */
-    public function getList(GalleryTable $dataTable)
+    public function index(GalleryTable $dataTable)
     {
-        page_title()->setTitle(trans('plugins/gallery::gallery.list'));
+        page_title()->setTitle(trans('plugins/gallery::gallery.galleries'));
 
         return $dataTable->renderTable();
     }
@@ -51,9 +51,8 @@ class GalleryController extends BaseController
     /**
      * Show create form
      * @return string
-     * @author Sang Nguyen
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/gallery::gallery.create'));
 
@@ -66,9 +65,8 @@ class GalleryController extends BaseController
      * @param GalleryRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(GalleryRequest $request, BaseHttpResponse $response)
+    public function store(GalleryRequest $request, BaseHttpResponse $response)
     {
         $gallery = $this->galleryRepository->getModel();
         $gallery->fill($request->input());
@@ -80,7 +78,7 @@ class GalleryController extends BaseController
         event(new CreatedContentEvent(GALLERY_MODULE_SCREEN_NAME, $request, $gallery));
 
         return $response
-            ->setPreviousUrl(route('galleries.list'))
+            ->setPreviousUrl(route('galleries.index'))
             ->setNextUrl(route('galleries.edit', $gallery->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -92,15 +90,14 @@ class GalleryController extends BaseController
      * @param Request $request
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
      */
-    public function getEdit($id, Request $request, FormBuilder $formBuilder)
+    public function edit($id, Request $request, FormBuilder $formBuilder)
     {
         $gallery = $this->galleryRepository->findOrFail($id);
 
         event(new BeforeEditContentEvent(GALLERY_MODULE_SCREEN_NAME, $request, $gallery));
 
-        page_title()->setTitle(trans('plugins/gallery::gallery.edit') . ' #' . $id);
+        page_title()->setTitle(trans('plugins/gallery::gallery.edit') . ' "' . $gallery->name . '"');
 
         return $formBuilder->create(GalleryForm::class, ['model' => $gallery])->renderForm();
     }
@@ -110,9 +107,8 @@ class GalleryController extends BaseController
      * @param GalleryRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEdit($id, GalleryRequest $request, BaseHttpResponse $response)
+    public function update($id, GalleryRequest $request, BaseHttpResponse $response)
     {
         $gallery = $this->galleryRepository->findOrFail($id);
         $gallery->fill($request->input());
@@ -123,7 +119,7 @@ class GalleryController extends BaseController
         event(new UpdatedContentEvent(GALLERY_MODULE_SCREEN_NAME, $request, $gallery));
 
         return $response
-            ->setPreviousUrl(route('galleries.list'))
+            ->setPreviousUrl(route('galleries.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -132,9 +128,8 @@ class GalleryController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $gallery = $this->galleryRepository->findOrFail($id);
@@ -153,23 +148,10 @@ class GalleryController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $gallery = $this->galleryRepository->findOrFail($id);
-            $this->galleryRepository->delete($gallery);
-            event(new DeletedContentEvent(GALLERY_MODULE_SCREEN_NAME, $request, $gallery));
-        }
-
-        return $response->setMessage(trans('core/base::notices.delete_success_message'));
+        return $this->executeDeleteItems($request, $response, $this->galleryRepository, GALLERY_MODULE_SCREEN_NAME);
     }
 }

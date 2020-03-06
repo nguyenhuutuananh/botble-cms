@@ -649,7 +649,7 @@ class Theme implements ThemeContract
      * @param  closure $callback
      * @param string $layout
      * @return void
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function composer($view, $callback, $layout = null)
@@ -960,20 +960,20 @@ class Theme implements ThemeContract
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
     public function header()
     {
-        return $this->view->make('packages.theme::partials.header')->render();
+        return $this->view->make('packages/theme::partials.header')->render();
     }
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
     public function footer()
     {
-        return $this->view->make('packages.theme::partials.footer')->render();
+        return $this->view->make('packages/theme::partials.footer')->render();
     }
 
     /**
@@ -999,7 +999,7 @@ class Theme implements ThemeContract
     }
 
     /**
-     * @author Sang Nguyen
+     *
      * @param $path
      */
     protected function handleViewNotFound($path)

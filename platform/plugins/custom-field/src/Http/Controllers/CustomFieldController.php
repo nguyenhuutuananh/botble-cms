@@ -37,7 +37,6 @@ class CustomFieldController extends BaseController
     /**
      * @param FieldGroupInterface $fieldGroupRepository
      * @param FieldItemInterface $fieldItemRepository
-     * @author Sang Nguyen
      */
     public function __construct(FieldGroupInterface $fieldGroupRepository, FieldItemInterface $fieldItemRepository)
     {
@@ -48,10 +47,10 @@ class CustomFieldController extends BaseController
     /**
      * @param CustomFieldTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(CustomFieldTable $dataTable)
+    public function index(CustomFieldTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/custom-field::base.page_title'));
 
@@ -64,10 +63,10 @@ class CustomFieldController extends BaseController
     /**
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/custom-field::base.form.create_field_group'));
 
@@ -86,9 +85,8 @@ class CustomFieldController extends BaseController
      * @param CreateCustomFieldAction $action
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(
+    public function store(
         CreateFieldGroupRequest $request,
         CreateCustomFieldAction $action,
         BaseHttpResponse $response
@@ -105,7 +103,7 @@ class CustomFieldController extends BaseController
 
         return $response
             ->setError($is_error)
-            ->setPreviousUrl(route('custom-fields.list'))
+            ->setPreviousUrl(route('custom-fields.index'))
             ->setNextUrl(route('custom-fields.edit', $result['data']['id']))
             ->setMessage($message);
     }
@@ -114,12 +112,10 @@ class CustomFieldController extends BaseController
      * @param $id
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen, Tedozi Manson
      * @throws \Throwable
      */
-    public function getEdit($id, FormBuilder $formBuilder)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        page_title()->setTitle(trans('plugins/custom-field::base.form.edit_field_group') . ' #' . $id);
 
         Assets::addStylesDirectly([
             'vendor/core/plugins/custom-field/css/custom-field.css',
@@ -129,6 +125,8 @@ class CustomFieldController extends BaseController
             ->addScripts(['jquery-ui']);
 
         $object = $this->fieldGroupRepository->findOrFail($id);
+
+        page_title()->setTitle(trans('plugins/custom-field::base.form.edit_field_group') . ' "' . $object->title . '"');
 
         $object->rules_template = CustomField::renderRules();
 
@@ -141,9 +139,8 @@ class CustomFieldController extends BaseController
      * @param UpdateCustomFieldAction $action
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen, Tedozi Manson
      */
-    public function postEdit(
+    public function update(
         $id,
         UpdateFieldGroupRequest $request,
         UpdateCustomFieldAction $action,
@@ -159,7 +156,7 @@ class CustomFieldController extends BaseController
         }
 
         return $response
-            ->setPreviousUrl(route('custom-fields.list'))
+            ->setPreviousUrl(route('custom-fields.index'))
             ->setMessage($message);
     }
 
@@ -169,9 +166,8 @@ class CustomFieldController extends BaseController
      * @param BaseHttpResponse $response
      * @param DeleteCustomFieldAction $action
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete($id, BaseHttpResponse $response, DeleteCustomFieldAction $action)
+    public function destroy($id, BaseHttpResponse $response, DeleteCustomFieldAction $action)
     {
         try {
             $action->run($id);
@@ -188,9 +184,9 @@ class CustomFieldController extends BaseController
      * @param BaseHttpResponse $response
      * @param DeleteCustomFieldAction $action
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response, DeleteCustomFieldAction $action)
+    public function deletes(Request $request, BaseHttpResponse $response, DeleteCustomFieldAction $action)
     {
         $ids = $request->input('ids');
         if (empty($ids)) {

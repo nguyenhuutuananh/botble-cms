@@ -17,7 +17,7 @@ add_shortcode('google-map', 'Google map', 'Custom map', 'add_google_map_shortcod
 /**
  * @param $shortcode
  * @return mixed
- * @author Sang Nguyen
+ *
  * @throws \Botble\Theme\Exceptions\UnknownPartialFileException
  * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
  */
@@ -33,7 +33,7 @@ add_shortcode('youtube-video', 'Youtube video', 'Add youtube video', 'add_youtub
 /**
  * @param $shortcode
  * @return mixed
- * @author Sang Nguyen
+ *
  * @throws \Botble\Theme\Exceptions\UnknownPartialFileException
  * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
  */
@@ -119,3 +119,14 @@ theme_option()
             ],
         ],
     ]);
+
+if (!function_exists('register_custom_image_size')) {
+    function register_custom_image_size()
+    {
+        config([
+            'media.sizes.featured' => '560x380',
+            'media.sizes.medium'   => '540x360',
+        ]);
+    }
+}
+add_action('init', 'register_custom_image_size', 179);

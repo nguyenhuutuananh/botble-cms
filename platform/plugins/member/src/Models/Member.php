@@ -2,9 +2,9 @@
 
 namespace Botble\Member\Models;
 
-use Botble\Member\Notifications\MemberResetPassword;
-use Botble\Member\Supports\Gravatar;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Botble\Media\Models\MediaFile;
+use Botble\Member\Notifications\ResetPasswordNotification;
+use Botble\Base\Supports\Gravatar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -29,10 +29,9 @@ class Member extends Authenticatable
         'last_name',
         'email',
         'password',
-        'avatar',
+        'avatar_id',
         'dob',
         'phone',
-        'confirmed_at',
         'description',
         'gender',
     ];
@@ -55,25 +54,29 @@ class Member extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new MemberResetPassword($token));
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /**
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getAvatarAttribute()
+    public function avatar()
     {
-        if (!$this->attributes['avatar']) {
-            return (new Gravatar())->image($this->attributes['email']);
-        }
-        return url($this->attributes['avatar']);
+        return $this->belongsTo(MediaFile::class)->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar->url ? url($this->avatar->url) : Gravatar::image($this->attributes['email']);
     }
 
     /**
      * Always capitalize the first name when we retrieve it
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function getFirstNameAttribute($value)
     {
@@ -84,7 +87,6 @@ class Member extends Authenticatable
      * Always capitalize the last name when we retrieve it
      * @param string $value
      * @return string
-     * @author Sang Nguyen
      */
     public function getLastNameAttribute($value)
     {
@@ -93,7 +95,6 @@ class Member extends Authenticatable
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getFullName()
     {
@@ -101,16 +102,7 @@ class Member extends Authenticatable
     }
 
     /**
-     * @return string
-     * @author Sang Nguyen
-     */
-    public function getProfileImage()
-    {
-        return $this->getAvatarAttribute();
-    }
-
-    /**
-     * @return MorphTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function posts()
     {

@@ -15,10 +15,10 @@
         <span class="input-group-text colorpicker-input-addon"><i></i></span>
       </span>
     </div>
-    @include('core.base::forms.partials.help_block')
+    @include('core/base::forms.partials.help_block')
 @endif
 
-@include('core.base::forms.partials.errors')
+@include('core/base::forms.partials.errors')
 
 @if ($showLabel && $showField)
     @if ($options['wrapper'] !== false)

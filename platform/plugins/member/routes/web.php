@@ -5,41 +5,15 @@ Route::group([
     'prefix'     => config('core.base.general.admin_dir'),
     'middleware' => ['web', 'auth'],
 ], function () {
+
+    Route::resource('members', 'MemberController', ['names' => 'member']);
+
     Route::group(['prefix' => 'members'], function () {
-        Route::get('', [
-            'as'   => 'member.list',
-            'uses' => 'MemberController@getList',
-        ]);
 
-        Route::get('create', [
-            'as'   => 'member.create',
-            'uses' => 'MemberController@getCreate',
-        ]);
-
-        Route::post('create', [
-            'as'   => 'member.create',
-            'uses' => 'MemberController@postCreate',
-        ]);
-
-        Route::get('edit/{id}', [
-            'as'   => 'member.edit',
-            'uses' => 'MemberController@getEdit',
-        ]);
-
-        Route::post('edit/{id}', [
-            'as'   => 'member.edit',
-            'uses' => 'MemberController@postEdit',
-        ]);
-
-        Route::get('delete/{id}', [
-            'as'   => 'member.delete',
-            'uses' => 'MemberController@getDelete',
-        ]);
-
-        Route::post('delete-many', [
-            'as'         => 'member.delete.many',
-            'uses'       => 'MemberController@postDeleteMany',
-            'permission' => 'member.delete',
+        Route::delete('items/destroy', [
+            'as'         => 'member.deletes',
+            'uses'       => 'MemberController@deletes',
+            'permission' => 'member.destroy',
         ]);
     });
 });

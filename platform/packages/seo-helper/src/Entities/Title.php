@@ -53,7 +53,6 @@ class Title implements TitleContract
      * Make the Title instance.
      *
      * @param  array $configs
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function __construct()
@@ -63,16 +62,15 @@ class Title implements TitleContract
 
     /**
      * Start the engine.
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     protected function init()
     {
         $this->set(null);
-        if (setting('show_site_name', false)) {
-            $this->setSiteName(setting('site_title', ''));
-            if (setting('seo_title')) {
-                $this->setSiteName(setting('seo_title'));
+        if (theme_option('show_site_name', false)) {
+            $this->setSiteName(theme_option('site_title'));
+            if (theme_option('seo_title')) {
+                $this->setSiteName(theme_option('seo_title'));
             }
         }
         $this->setSeparator(config('packages.seo-helper.general.title.separator', '-'));
@@ -84,7 +82,6 @@ class Title implements TitleContract
      * Get title only (without site name or separator).
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getTitleOnly()
     {
@@ -97,7 +94,6 @@ class Title implements TitleContract
      * @param  string $title
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     public function set($title)
     {
@@ -110,7 +106,6 @@ class Title implements TitleContract
      * Get site name.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getSiteName()
     {
@@ -123,7 +118,6 @@ class Title implements TitleContract
      * @param  string $siteName
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     public function setSiteName($siteName)
     {
@@ -136,7 +130,6 @@ class Title implements TitleContract
      * Get title separator.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getSeparator()
     {
@@ -149,7 +142,6 @@ class Title implements TitleContract
      * @param  string $separator
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     public function setSeparator($separator)
     {
@@ -162,7 +154,6 @@ class Title implements TitleContract
      * Set title first.
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     public function setFirst()
     {
@@ -173,7 +164,6 @@ class Title implements TitleContract
      * Set title last.
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     public function setLast()
     {
@@ -186,7 +176,6 @@ class Title implements TitleContract
      * @param  bool $first
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      */
     protected function switchPosition($first)
     {
@@ -199,7 +188,6 @@ class Title implements TitleContract
      * Check if title is first.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     public function isTitleFirst()
     {
@@ -210,7 +198,6 @@ class Title implements TitleContract
      * Get title max length.
      *
      * @return int
-     * @author ARCANEDEV
      */
     public function getMax()
     {
@@ -223,7 +210,6 @@ class Title implements TitleContract
      * @param  int $max
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function setMax($max)
@@ -243,7 +229,6 @@ class Title implements TitleContract
      * @param  string $separator
      *
      * @return \Botble\SeoHelper\Entities\Title
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public static function make($title, $siteName = '', $separator = '-')
@@ -255,7 +240,6 @@ class Title implements TitleContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -276,7 +260,6 @@ class Title implements TitleContract
      * Render the separator.
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderSeparator()
     {
@@ -287,7 +270,6 @@ class Title implements TitleContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -300,7 +282,6 @@ class Title implements TitleContract
      * @param  int $max
      *
      * @throws \Botble\SeoHelper\Exceptions\InvalidArgumentException
-     * @author ARCANEDEV
      */
     protected function checkMax($max)
     {
@@ -319,7 +300,6 @@ class Title implements TitleContract
      * @param  string $separator
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderTitleFirst($separator)
     {
@@ -340,7 +320,6 @@ class Title implements TitleContract
      * @param  string $separator
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderTitleLast($separator)
     {
@@ -360,7 +339,6 @@ class Title implements TitleContract
      * Check if site name exists.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function hasSiteName()
     {

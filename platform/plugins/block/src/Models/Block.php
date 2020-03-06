@@ -4,14 +4,9 @@ namespace Botble\Block\Models;
 
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Traits\EnumCastable;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Botble\Block\Models\Block
- *
- * @mixin \Eloquent
- */
-class Block extends Eloquent
+class Block extends BaseModel
 {
     use EnumCastable;
 

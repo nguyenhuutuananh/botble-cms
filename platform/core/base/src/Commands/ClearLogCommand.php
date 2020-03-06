@@ -32,7 +32,7 @@ class ClearLogCommand extends Command
      * Create a new key generator command.
      *
      * @param \Illuminate\Filesystem\Filesystem $files
-     * @author Sang Nguyen
+     *
      */
     public function __construct(Filesystem $files)
     {
@@ -43,7 +43,6 @@ class ClearLogCommand extends Command
 
     /**
      * Execute the console command.
-     * @author Sang Nguyen
      */
     public function handle()
     {

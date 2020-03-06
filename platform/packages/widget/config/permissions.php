@@ -3,7 +3,7 @@
 return [
     [
         'name'        => 'Widgets',
-        'flag'        => 'widgets.list',
+        'flag'        => 'widgets.index',
         'parent_flag' => 'core.appearance',
     ],
 ];

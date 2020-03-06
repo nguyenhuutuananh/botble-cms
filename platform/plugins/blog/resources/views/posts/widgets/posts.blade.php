@@ -21,9 +21,9 @@
     </div>
     @if ($posts->total() > $limit)
         <div class="widget_footer">
-            @include('core.dashboard::partials.paginate', ['data' => $posts, 'limit' => $limit])
+            @include('core/dashboard::partials.paginate', ['data' => $posts, 'limit' => $limit])
         </div>
     @endif
 @else
-    @include('core.dashboard::partials.no-data', ['message' => trans('plugins/blog::posts.no_new_post_now')])
+    @include('core/dashboard::partials.no-data', ['message' => trans('plugins/blog::posts.no_new_post_now')])
 @endif

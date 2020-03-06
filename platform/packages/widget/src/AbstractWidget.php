@@ -8,22 +8,6 @@ use Theme;
 abstract class AbstractWidget
 {
     /**
-     * The number of seconds before each reload.
-     * False means no reload at all.
-     *
-     * @var int|float|bool
-     */
-    public $reloadTimeout = false;
-
-    /**
-     * The number of minutes before cache expires.
-     * False means no caching at all.
-     *
-     * @var int|float|bool
-     */
-    public $cacheTime = false;
-
-    /**
      * The configuration array.
      *
      * @var array
@@ -77,46 +61,22 @@ abstract class AbstractWidget
     }
 
     /**
-     * Placeholder for async widget.
-     * You can customize it by overwriting this method.
-     *
-     * @return string
+     * @return null|string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function placeholder()
+    protected function getCurrentLocaleCode()
     {
-        return '';
-    }
+        $language_code = null;
+        if (is_plugin_active('language')) {
+            $current_locale = is_in_admin() ? \Language::getCurrentAdminLocaleCode() : \Language::getCurrentLocaleCode();
+            $language_code = $current_locale && $current_locale != \Language::getDefaultLocaleCode() ? '-' . $current_locale : null;
+        }
 
-    /**
-     * Async and reloadable widgets are wrapped in container.
-     * You can customize it by overriding this method.
-     *
-     * @return array
-     */
-    public function container()
-    {
-        return [
-            'element'    => 'div',
-            'attributes' => 'style="display:inline" class="botble-widget-container"',
-        ];
-    }
-
-    /**
-     * Cache key that is used if caching is enabled.
-     *
-     * @param $params
-     *
-     * @return string
-     * @author Sang Nguyen
-     */
-    public function cacheKey(array $params = [])
-    {
-        return 'botble.widgets.' . serialize($params);
+        return $language_code;
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getConfig()
     {
@@ -126,7 +86,7 @@ abstract class AbstractWidget
     /**
      * Treat this method as a controller action.
      * Return view() or other content to display.
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function run()
@@ -145,10 +105,11 @@ abstract class AbstractWidget
         }
 
         if (!$this->isCore) {
-            return Theme::loadPartial($this->frontendTemplate, Theme::getThemeNamespace('/../widgets/' . $this->widgetDirectory . '/templates'), [
-                'config'  => $this->config,
-                'sidebar' => $args[0],
-            ]);
+            return Theme::loadPartial($this->frontendTemplate,
+                Theme::getThemeNamespace('/../widgets/' . $this->widgetDirectory . '/templates'), [
+                    'config'  => $this->config,
+                    'sidebar' => $args[0],
+                ]);
         }
 
         return view($this->frontendTemplate, [
@@ -159,7 +120,6 @@ abstract class AbstractWidget
 
     /**
      * @return string
-     * @author Sang Nguyen
      */
     public function getId()
     {
@@ -170,7 +130,7 @@ abstract class AbstractWidget
      * @param null $sidebar_id
      * @param int $position
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function form($sidebar_id = null, $position = 0)
@@ -189,9 +149,10 @@ abstract class AbstractWidget
         }
 
         if (!$this->isCore) {
-            return Theme::loadPartial($this->backendTemplate, Theme::getThemeNamespace('/../widgets/' . $this->widgetDirectory . '/templates'), [
-                'config' => $this->config,
-            ]);
+            return Theme::loadPartial($this->backendTemplate,
+                Theme::getThemeNamespace('/../widgets/' . $this->widgetDirectory . '/templates'), [
+                    'config' => $this->config,
+                ]);
         }
 
         return view($this->backendTemplate, [
@@ -203,26 +164,9 @@ abstract class AbstractWidget
      * Add defaults to configuration array.
      *
      * @param array $defaults
-     * @author Sang Nguyen
      */
     protected function addConfigDefaults(array $defaults)
     {
         $this->config = array_merge($this->config, $defaults);
-    }
-
-    /**
-     * @return null|string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
-     */
-    protected function getCurrentLocaleCode()
-    {
-        $language_code = null;
-        if (is_plugin_active('language')) {
-            $current_locale = is_in_admin() ? \Language::getCurrentAdminLocaleCode() : \Language::getCurrentLocaleCode();
-            $language_code = $current_locale && $current_locale != \Language::getDefaultLocaleCode() ? '-' . $current_locale : null;
-        }
-
-        return $language_code;
     }
 }

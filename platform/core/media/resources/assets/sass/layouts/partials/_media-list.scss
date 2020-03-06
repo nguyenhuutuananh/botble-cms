@@ -74,6 +74,23 @@
                 left     : 0;
                 position : absolute;
             }
+            .media-item-selected {
+                display: none;
+                position: absolute;
+                top: 3px;
+                right: 3px;
+                border-radius: 50% !important;
+                background: $color-secondary;
+                height: 24px;
+                width: 24px;
+                z-index: 20;
+                text-align: center;
+                svg {
+                    fill: white;
+                    width: 18px;
+                    margin-top: 3px;
+                }
+            }
         }
         .rv-media-thumbnail {
             border-bottom : 0 none;
@@ -102,6 +119,9 @@
             }
         }
         input[type=checkbox]:checked + .rv-media-item {
+            .media-item-selected {
+                display: block;
+            }
             &:after {
                 box-shadow : -2px -2px 0px $color-secondary inset, 2px 2px 0px $color-secondary inset;
             }

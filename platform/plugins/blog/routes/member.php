@@ -13,35 +13,35 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             ], function () {
 
                 Route::get('', [
-                    'as'   => 'posts.list',
-                    'uses' => 'MemberPostController@getList',
+                    'as'   => 'posts.index',
+                    'uses' => 'MemberPostController@index',
                 ]);
 
                 Route::get('create', [
                     'as'   => 'posts.create',
-                    'uses' => 'MemberPostController@getCreate',
+                    'uses' => 'MemberPostController@create',
                 ]);
 
                 Route::post('create', [
                     'as'   => 'posts.create',
-                    'uses' => 'MemberPostController@postCreate',
+                    'uses' => 'MemberPostController@store',
                 ]);
 
                 Route::get('edit/{id}', [
                     'as'   => 'posts.edit',
-                    'uses' => 'MemberPostController@getEdit',
+                    'uses' => 'MemberPostController@edit',
                 ]);
 
                 Route::post('edit/{id}', [
                     'as'   => 'posts.edit',
-                    'uses' => 'MemberPostController@postEdit',
+                    'uses' => 'MemberPostController@update',
                 ]);
 
             });
 
             Route::group(['prefix' => 'ajax/members'], function () {
-                Route::get('delete/{id}', [
-                    'as'   => 'posts.delete',
+                Route::delete('delete/{id}', [
+                    'as'   => 'posts.destroy',
                     'uses' => 'MemberPostController@delete',
                 ]);
             });

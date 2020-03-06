@@ -42,18 +42,18 @@
                     <div class="pull-right">
                         @if (is_plugin_active('member'))
                             <ul class="pull-left">
-                                @if (Auth::guard('member')->check())
+                                @auth('member')
                                     <li><a href="{{ route('public.member.dashboard') }}" rel="nofollow"><i class="fa fa-user"></i> <span>{{ Auth::guard('member')->user()->getFullName() }}</span></a></li>
                                     <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" rel="nofollow"><i class="fa fa-sign-out"></i> {{ __('Logout') }}</a></li>
-                                @else
+                                @elseauth
                                     <li><a href="{{ route('public.member.login') }}" rel="nofollow"><i class="fa fa-sign-in"></i> {{ __('Login') }}</a></li>
-                                @endif
+                                @endauth
                             </ul>
-                            @if (Auth::guard('member')->check())
+                            @auth('member')
                                 <form id="logout-form" action="{{ route('public.member.logout') }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
-                            @endif
+                            @endauth
                         @endif
                         <div class="pull-left">
                             <div class="pull-right">
@@ -70,11 +70,11 @@
     <header data-sticky="false" data-sticky-checkpoint="200" data-responsive="991" class="page-header page-header--light">
         <div class="container">
             <!-- LOGO-->
-            <div class="page-header__left"><a href="{{ url('/') }}" class="page-logo">
+            <div class="page-header__left"><a href="{{ route('public.single') }}" class="page-logo">
                     @if (!theme_option('logo'))
                         <span>Bot</span>ble
                     @else
-                        <img src="{{ url(theme_option('logo')) }}" alt="{{ setting('site_title') }}" height="50">
+                        <img src="{{ url(theme_option('logo')) }}" alt="{{ theme_option('site_title') }}" height="50">
                     @endif
                 </a></div>
             <div class="page-header__right">
@@ -88,7 +88,7 @@
                         {!!
                             Menu::renderMenuLocation('main-menu', [
                                 'options' => ['class' => 'menu sub-menu--slideLeft'],
-                                'view' => 'main-menu',
+                                'view'    => 'main-menu',
                             ])
                         !!}
                     </nav>

@@ -2,30 +2,8 @@
 
 namespace Botble\SocialLogin;
 
-use Botble\Base\Interfaces\PluginInterface;
+use Botble\PluginManagement\Abstracts\PluginOperationAbstract;
 
-class Plugin implements PluginInterface
+class Plugin extends PluginOperationAbstract
 {
-
-    /**
-     * @author Sang Nguyen
-     */
-    public static function activate()
-    {
-
-    }
-
-    /**
-     * @author Sang Nguyen
-     */
-    public static function deactivate()
-    {
-    }
-
-    /**
-     * @author Sang Nguyen
-     */
-    public static function remove()
-    {
-    }
 }

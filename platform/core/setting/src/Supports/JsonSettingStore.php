@@ -58,6 +58,7 @@ class JsonSettingStore extends SettingStore
 
     /**
      * {@inheritdoc}
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function read()
     {

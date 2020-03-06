@@ -24,6 +24,7 @@ class MailConfigServiceProvider extends ServiceProvider
                 'address' => setting('email_from_address', config('mail.from.address')),
                 'name'    => setting('email_from_name', config('mail.from.name')),
             ],
+            'sendmail'   => setting('email_sendmail_path', config('mail.sendmail')),
         ];
 
         config(['mail' => $mail_config]);

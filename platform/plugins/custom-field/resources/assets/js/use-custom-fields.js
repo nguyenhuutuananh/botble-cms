@@ -347,9 +347,7 @@ class UseCustomFields {
                 case 'wysiwyg':
                     result = result.replace(/__value__/gi, box.value || '');
 
-                    let $result = $(result);
-
-                    $result.attr('data-toolbar', box.options.wysiwygToolbar || 'basic');
+                    $(result).attr('data-toolbar', box.options.wysiwygToolbar || 'basic');
                     break;
             }
 
@@ -443,6 +441,8 @@ class UseCustomFields {
             repeaterFieldAdded++;
 
             registerRepeaterItem(registeredData, [registeredData], $groupWrapper);
+
+            Botble.initMediaIntegrate();
         });
 
         /**

@@ -23,43 +23,55 @@ class SettingController extends BaseController
     protected $settingRepository;
 
     /**
+     * @var SettingStore
+     */
+    protected $settingStore;
+
+    /**
      * SettingController constructor.
      * @param SettingInterface $settingRepository
+     * @param SettingStore $settingStore
      */
-    public function __construct(SettingInterface $settingRepository)
+    public function __construct(SettingInterface $settingRepository, SettingStore $settingStore)
     {
         $this->settingRepository = $settingRepository;
+        $this->settingStore = $settingStore;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function getOptions()
     {
         page_title()->setTitle(trans('core/setting::setting.title'));
 
-        return view('core.setting::index');
+        return view('core/setting::index');
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param SettingStore $setting
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEdit(Request $request, BaseHttpResponse $response, SettingStore $setting)
+    public function postEdit(Request $request, BaseHttpResponse $response)
     {
-        foreach ($request->except(['_token']) as $setting_key => $setting_value) {
-            $setting->set($setting_key, $setting_value);
-        }
-
-        $setting->save();
+        $this->saveSettings($request->except(['_token']));
 
         return $response
             ->setPreviousUrl(route('settings.options'))
             ->setMessage(trans('core/base::notices.update_success_message'));
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function saveSettings(array $data)
+    {
+        foreach ($data as $settingKey => $settingValue) {
+            $this->settingStore->set($settingKey, $settingValue);
+        }
+
+        $this->settingStore->save();
     }
 
     /**
@@ -68,25 +80,19 @@ class SettingController extends BaseController
     public function getEmailConfig()
     {
         page_title()->setTitle(trans('core/base::layouts.setting_email'));
-        Assets::addAppModule(['setting']);
+        Assets::addScriptsDirectly('vendor/core/js/setting.js');
 
-        return view('core.setting::email');
+        return view('core/setting::email');
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param SettingStore $setting
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEditEmailConfig(Request $request, BaseHttpResponse $response, SettingStore $setting)
+    public function postEditEmailConfig(Request $request, BaseHttpResponse $response)
     {
-        foreach ($request->except(['_token']) as $setting_key => $setting_value) {
-            $setting->set($setting_key, $setting_value);
-        }
-
-        $setting->save();
+        $this->saveSettings($request->except(['_token']));
 
         return $response
             ->setPreviousUrl(route('settings.email'))
@@ -104,20 +110,21 @@ class SettingController extends BaseController
      */
     public function getEditEmailTemplate($type, $name, $template_file)
     {
-        page_title()->setTitle(trans(config($type . '.' . $name . '.email.templates.' . $template_file . '.title', '')));
+        $title = trans(config($type . '.' . $name . '.email.templates.' . $template_file . '.title', ''));
+        page_title()->setTitle($title);
 
-        Assets::addAppModule(['setting'])
-            ->addStylesDirectly([
-                'vendor/core/packages/codemirror/lib/codemirror.css',
-                'vendor/core/packages/codemirror/addon/hint/show-hint.css',
-                'vendor/core/css/setting.css',
-            ])
+        Assets::addStylesDirectly([
+            'vendor/core/libraries/codemirror/lib/codemirror.css',
+            'vendor/core/libraries/codemirror/addon/hint/show-hint.css',
+            'vendor/core/css/setting.css',
+        ])
             ->addScriptsDirectly([
-                'vendor/core/packages/codemirror/lib/codemirror.js',
-                'vendor/core/packages/codemirror/lib/css.js',
-                'vendor/core/packages/codemirror/addon/hint/show-hint.js',
-                'vendor/core/packages/codemirror/addon/hint/anyword-hint.js',
-                'vendor/core/packages/codemirror/addon/hint/css-hint.js',
+                'vendor/core/libraries/codemirror/lib/codemirror.js',
+                'vendor/core/libraries/codemirror/lib/css.js',
+                'vendor/core/libraries/codemirror/addon/hint/show-hint.js',
+                'vendor/core/libraries/codemirror/addon/hint/anyword-hint.js',
+                'vendor/core/libraries/codemirror/addon/hint/css-hint.js',
+                'vendor/core/js/setting.js',
             ]);
 
 
@@ -129,20 +136,20 @@ class SettingController extends BaseController
             'template_file' => $template_file,
         ];
 
-        return view('core.setting::email-template-edit', compact('email_subject', 'email_content', 'plugin_data'));
+        return view('core/setting::email-template-edit', compact('email_subject', 'email_content', 'plugin_data'));
     }
 
     /**
      * @param EmailTemplateRequest $request
      * @param BaseHttpResponse $response
-     * @param SettingStore $setting
      * @return BaseHttpResponse
      */
-    public function postStoreEmailTemplate(EmailTemplateRequest $request, BaseHttpResponse $response, SettingStore $setting)
+    public function postStoreEmailTemplate(EmailTemplateRequest $request, BaseHttpResponse $response)
     {
         if ($request->has('email_subject_key')) {
-            $setting->set($request->input('email_subject_key'), $request->input('email_subject'));
-            $setting->save();
+            $this->settingStore
+                ->set($request->input('email_subject_key'), $request->input('email_subject'))
+                ->save();
         }
 
         save_file_data($request->input('template_path'), $request->input('email_content'), false);
@@ -154,7 +161,6 @@ class SettingController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postResetToDefault(Request $request, BaseHttpResponse $response)
     {
@@ -167,12 +173,11 @@ class SettingController extends BaseController
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param SettingStore $setting
      * @return BaseHttpResponse
      */
-    public function postChangeEmailStatus(Request $request, BaseHttpResponse $response, SettingStore $setting)
+    public function postChangeEmailStatus(Request $request, BaseHttpResponse $response)
     {
-        $setting
+        $this->settingStore
             ->set($request->input('key'), $request->input('value'))
             ->save();
 
@@ -185,14 +190,12 @@ class SettingController extends BaseController
      * @param EmailHandler $emailHandler
      * @return BaseHttpResponse
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function postSendTestEmail(
         BaseHttpResponse $response,
         SendTestEmailRequest $request,
         EmailHandler $emailHandler
-    )
-    {
+    ) {
         try {
             $emailHandler->send(
                 file_get_contents(core_path('setting/resources/email-templates/test.tpl')),
@@ -201,6 +204,7 @@ class SettingController extends BaseController
                 [],
                 true
             );
+
             return $response->setMessage(__('Send email successfully!'));
         } catch (Exception $exception) {
             return $response->setError()
@@ -210,32 +214,22 @@ class SettingController extends BaseController
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function getMediaSetting()
     {
         page_title()->setTitle(trans('core/setting::setting.media.title'));
-        return view('core.setting::media');
+
+        return view('core/setting::media');
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param SettingStore $setting
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEditMediaSetting(
-        MediaSettingRequest $request,
-        BaseHttpResponse $response,
-        SettingStore $setting
-    )
+    public function postEditMediaSetting(MediaSettingRequest $request, BaseHttpResponse $response)
     {
-        foreach ($request->except(['_token']) as $setting_key => $setting_value) {
-            $setting->set($setting_key, $setting_value);
-        }
-
-        $setting->save();
+        $this->saveSettings($request->except(['_token']));
 
         return $response
             ->setPreviousUrl(route('settings.media'))

@@ -11,7 +11,6 @@ interface RequestContract
      * @param  bool $curled
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function send($url, $curled = true);
 }

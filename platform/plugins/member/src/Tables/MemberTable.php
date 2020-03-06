@@ -2,6 +2,7 @@
 
 namespace Botble\Member\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Member\Repositories\Interfaces\MemberInterface;
 use Botble\Table\Abstracts\TableAbstract;
 use Illuminate\Contracts\Routing\UrlGenerator;
@@ -21,7 +22,7 @@ class MemberTable extends TableAbstract
     protected $hasFilter = true;
 
     /**
-     * TagTable constructor.
+     * MemberTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param MemberInterface $memberRepository
@@ -31,13 +32,18 @@ class MemberTable extends TableAbstract
         $this->repository = $memberRepository;
         $this->setOption('id', 'table-members');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['member.edit', 'member.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -45,6 +51,10 @@ class MemberTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('first_name', function ($item) {
+                if (!Auth::user()->hasPermission('member.edit')) {
+                    return $item->getFullName();
+                }
+
                 return anchor_link(route('member.edit', $item->id), $item->getFullName());
             })
             ->editColumn('checkbox', function ($item) {
@@ -56,7 +66,7 @@ class MemberTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, MEMBER_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('member.edit', 'member.delete', $item);
+                return table_actions('member.edit', 'member.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -66,7 +76,7 @@ class MemberTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -85,7 +95,7 @@ class MemberTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -116,18 +126,14 @@ class MemberTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('member.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('member.create'), 'member.create');
+
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, MEMBER_MODULE_SCREEN_NAME);
     }
 
@@ -137,14 +143,7 @@ class MemberTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('member.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('member.deletes'), 'member.destroy', parent::bulkActions());
     }
 
     /**
@@ -157,48 +156,21 @@ class MemberTable extends TableAbstract
                 'title'    => __('First name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getFirstNames',
             ],
             'members.last_name' => [
                 'title'    => __('Last name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getLastNames',
             ],
             'members.email'      => [
                 'title'    => trans('core/base::tables.email'),
                 'type'     => 'text',
                 'validate' => 'required|max:120|email',
-                'callback' => 'getEmails',
             ],
             'members.created_at' => [
                 'title' => trans('core/base::tables.created_at'),
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getFirstNames()
-    {
-        return $this->repository->pluck('members.first_name', 'members.id');
-    }
-
-    /**
-     * @return array
-     */
-    public function getLastNames()
-    {
-        return $this->repository->pluck('members.last_name', 'members.id');
-    }
-
-    /**
-     * @return array
-     */
-    public function getEmails()
-    {
-        return $this->repository->pluck('members.email', 'members.id');
     }
 }

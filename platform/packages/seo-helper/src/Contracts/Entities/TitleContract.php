@@ -10,7 +10,6 @@ interface TitleContract extends RenderableContract
      * Get title only (without site name or separator).
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getTitleOnly();
 
@@ -20,7 +19,6 @@ interface TitleContract extends RenderableContract
      * @param  string $title
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function set($title);
 
@@ -28,7 +26,6 @@ interface TitleContract extends RenderableContract
      * Get site name.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getSiteName();
 
@@ -38,7 +35,6 @@ interface TitleContract extends RenderableContract
      * @param  string $siteName
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setSiteName($siteName);
 
@@ -46,7 +42,6 @@ interface TitleContract extends RenderableContract
      * Get title separator.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function getSeparator();
 
@@ -56,7 +51,6 @@ interface TitleContract extends RenderableContract
      * @param  string $separator
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setSeparator($separator);
 
@@ -64,7 +58,6 @@ interface TitleContract extends RenderableContract
      * Set title first.
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setFirst();
 
@@ -72,7 +65,6 @@ interface TitleContract extends RenderableContract
      * Set title last.
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setLast();
 
@@ -87,7 +79,6 @@ interface TitleContract extends RenderableContract
      * Get title max lenght.
      *
      * @return int
-     * @author ARCANEDEV
      */
     public function getMax();
 
@@ -97,7 +88,6 @@ interface TitleContract extends RenderableContract
      * @param  int $max
      *
      * @return self
-     * @author ARCANEDEV
      */
     public function setMax($max);
 
@@ -109,7 +99,6 @@ interface TitleContract extends RenderableContract
      * @param  string $separator
      *
      * @return self
-     * @author ARCANEDEV
      */
     public static function make($title, $siteName = '', $separator = '-');
 }

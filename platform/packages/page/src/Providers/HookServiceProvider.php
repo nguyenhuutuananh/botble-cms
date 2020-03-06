@@ -20,10 +20,6 @@ class HookServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         if (defined('MENU_ACTION_SIDEBAR_OPTIONS')) {
@@ -48,38 +44,36 @@ class HookServiceProvider extends ServiceProvider
                 'class' => 'list-item',
             ],
         ]);
-        echo view('packages.page::partials.menu-options', compact('pages'));
+        echo view('packages/page::partials.menu-options', compact('pages'));
     }
 
     /**
      * @param array $widgets
      * @param Collection $widget_settings
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function addPageStatsWidget($widgets, $widgetSettings)
     {
-        $pages = $this->app->make(PageInterface::class)->count(['status' => BaseStatusEnum::PUBLISH]);
+        $pages = $this->app->make(PageInterface::class)->count(['status' => BaseStatusEnum::PUBLISHED]);
 
-        $widget = new DashboardWidgetInstance();
-
-        $widget->type = 'stats';
-        $widget->permission = 'pages.list';
-        $widget->key = 'widget_total_pages';
-        $widget->title = trans('packages/page::pages.pages');
-        $widget->icon = 'far fa-file-alt';
-        $widget->color = '#32c5d2';
-        $widget->statsTotal = $pages;
-        $widget->route = route('pages.list');
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setType('stats')
+            ->setPermission('pages.index')
+            ->setTitle(trans('packages/page::pages.pages'))
+            ->setKey('widget_total_pages')
+            ->setIcon('far fa-file-alt')
+            ->setColor('#32c5d2')
+            ->setStatsTotal($pages)
+            ->setRoute(route('pages.index'))
+            ->init($widgets, $widgetSettings);
     }
 
     /**
      * @param Eloquent $slug
      * @return array|Eloquent
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handleSingleView($slug)
@@ -90,7 +84,7 @@ class HookServiceProvider extends ServiceProvider
                 $page = $this->app->make(PageInterface::class)
                     ->getFirstBy([
                         'id'     => $slug->reference_id,
-                        'status' => BaseStatusEnum::PUBLISH,
+                        'status' => BaseStatusEnum::PUBLISHED,
                     ]);
                 if (!empty($page)) {
                     SeoHelper::setTitle($page->name)->setDescription($page->description);
@@ -121,7 +115,7 @@ class HookServiceProvider extends ServiceProvider
 
                     $data = [
                         'view'         => 'page',
-                        'default_view' => 'packages.page::themes.page',
+                        'default_view' => 'packages/page::themes.page',
                         'data'         => compact('page'),
                         'slug'         => $page->slug,
                     ];
@@ -139,13 +133,12 @@ class HookServiceProvider extends ServiceProvider
      * @param null $data
      * @return string
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function addSetting($data = null)
     {
         $pages = $this->app->make(PageInterface::class)
-            ->allBy(['status' => BaseStatusEnum::PUBLISH], [], ['pages.id', 'pages.name']);
+            ->allBy(['pages.status' => BaseStatusEnum::PUBLISHED], [], ['pages.id', 'pages.name']);
 
-        return $data . view('packages.page::setting', compact('pages'))->render();
+        return $data . view('packages/page::setting', compact('pages'))->render();
     }
 }

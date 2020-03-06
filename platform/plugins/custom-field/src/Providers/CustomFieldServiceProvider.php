@@ -47,21 +47,21 @@ class CustomFieldServiceProvider extends ServiceProvider
         $loader = AliasLoader::getInstance();
         $loader->alias('CustomField', CustomFieldSupportFacade::class);
 
-        $this->app->singleton(CustomFieldInterface::class, function () {
+        $this->app->bind(CustomFieldInterface::class, function () {
             return new CustomFieldCacheDecorator(
                 new CustomFieldRepository(new CustomField),
                 CUSTOM_FIELD_CACHE_GROUP
             );
         });
 
-        $this->app->singleton(FieldGroupInterface::class, function () {
+        $this->app->bind(FieldGroupInterface::class, function () {
             return new FieldGroupCacheDecorator(
                 new FieldGroupRepository(new FieldGroup),
                 CUSTOM_FIELD_CACHE_GROUP
             );
         });
 
-        $this->app->singleton(FieldItemInterface::class, function () {
+        $this->app->bind(FieldItemInterface::class, function () {
             return new FieldItemCacheDecorator(
                 new FieldItemRepository(new FieldItem),
                 CUSTOM_FIELD_CACHE_GROUP
@@ -79,7 +79,7 @@ class CustomFieldServiceProvider extends ServiceProvider
         $this->setNamespace('plugins/custom-field')
             ->loadAndPublishConfigurations(['permissions'])
             ->loadAndPublishTranslations()
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadMigrations()
             ->publishAssetsFolder()
@@ -95,8 +95,8 @@ class CustomFieldServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'plugins/custom-field::base.admin_menu.title',
                 'icon'        => 'fas fa-cubes',
-                'url'         => route('custom-fields.list'),
-                'permissions' => ['custom-fields.list'],
+                'url'         => route('custom-fields.index'),
+                'permissions' => ['custom-fields.index'],
             ]);
         });
 
@@ -106,7 +106,7 @@ class CustomFieldServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return CustomFieldSupportFacade
+     * @return \Botble\CustomField\Support\CustomFieldSupport
      */
     protected function registerUsersFields()
     {
@@ -131,7 +131,7 @@ class CustomFieldServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return bool|CustomFieldSupportFacade
+     * @return \Botble\CustomField\Support\CustomFieldSupport|bool
      */
     protected function registerPagesFields()
     {
@@ -164,7 +164,7 @@ class CustomFieldServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return bool|CustomFieldSupportFacade
+     * @return bool|\Botble\CustomField\Support\CustomFieldSupport
      */
     protected function registerBlogFields()
     {

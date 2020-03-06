@@ -2,9 +2,10 @@
 
 namespace Botble\ACL\Http\Controllers\Auth;
 
-use AclManager;
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Botble\ACL\Repositories\Interfaces\ActivationInterface;
+use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -52,14 +53,13 @@ class LoginController extends BaseController
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function showLoginForm()
     {
         page_title()->setTitle(trans('core/acl::auth.login_title'));
 
         Assets::addScripts(['jquery-validation'])
-            ->addAppModule(['login'])
+            ->addScriptsDirectly('vendor/core/js/login.js')
             ->removeStyles([
                 'select2',
                 'fancybox',
@@ -74,7 +74,7 @@ class LoginController extends BaseController
                 'cookie',
             ]);
 
-        return view('core.acl::auth.login');
+        return view('core/acl::auth.login');
     }
 
     /**
@@ -84,7 +84,6 @@ class LoginController extends BaseController
      * @return BaseHttpResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Illuminate\Validation\ValidationException
-     * @author Sang Nguyen
      */
     public function login(Request $request)
     {
@@ -99,9 +98,9 @@ class LoginController extends BaseController
             $this->sendLockoutResponse($request);
         }
 
-        $user = AclManager::getUserRepository()->getFirstBy(['username' => $request->input($this->username())]);
+        $user = app(UserInterface::class)->getFirstBy(['username' => $request->input($this->username())]);
         if (!empty($user)) {
-            if (!AclManager::getActivationRepository()->completed($user)) {
+            if (!app(ActivationInterface::class)->completed($user)) {
                 return $this->response
                     ->setError()
                     ->setMessage(trans('core/acl::auth.login.not_active'));
@@ -109,7 +108,7 @@ class LoginController extends BaseController
         }
 
         if ($this->attemptLogin($request)) {
-            AclManager::getUserRepository()->update(['id' => $user->id], ['last_login' => now(config('app.timezone'))]);
+            app(UserInterface::class)->update(['id' => $user->id], ['last_login' => now(config('app.timezone'))]);
             if (!session()->has('url.intended')) {
                 session()->flash('url.intended', url()->current());
             }
@@ -126,7 +125,7 @@ class LoginController extends BaseController
 
     /**
      * @return string
-     * @author Sang Nguyen
+     *
      */
     public function username()
     {

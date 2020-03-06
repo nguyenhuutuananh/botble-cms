@@ -8,20 +8,15 @@ use Illuminate\Support\ServiceProvider;
 class FormServiceProvider extends ServiceProvider
 {
 
-    /**
-     * Boot the service provider.
-     * @return void
-     * @author Sang Nguyen
-     */
     public function boot()
     {
-        Form::component('mediaImage', 'core.base::elements.forms.image', [
+        Form::component('mediaImage', 'core/base::elements.forms.image', [
             'name',
             'value'      => null,
             'attributes' => [],
         ]);
 
-        Form::component('modalAction', 'core.base::elements.forms.modal', [
+        Form::component('modalAction', 'core/base::elements.forms.modal', [
             'name',
             'title',
             'type'        => null,
@@ -31,9 +26,9 @@ class FormServiceProvider extends ServiceProvider
             'modal_size'  => null,
         ]);
 
-        Form::component('helper', 'core.base::elements.forms.helper', ['content']);
+        Form::component('helper', 'core/base::elements.forms.helper', ['content']);
 
-        Form::component('onOff', 'core.base::elements.forms.on-off', [
+        Form::component('onOff', 'core/base::elements.forms.on-off', [
             'name',
             'value'      => false,
             'attributes' => [],
@@ -43,7 +38,7 @@ class FormServiceProvider extends ServiceProvider
          * Custom checkbox
          * Every checkbox will not have the same name
          */
-        Form::component('customCheckbox', 'core.base::elements.custom-checkbox', [
+        Form::component('customCheckbox', 'core/base::elements.custom-checkbox', [
             /**
              * @var array $values
              * @template: [
@@ -59,7 +54,7 @@ class FormServiceProvider extends ServiceProvider
          * Custom radio
          * Every radio in list must have the same name
          */
-        Form::component('customRadio', 'core.base::elements.custom-radio', [
+        Form::component('customRadio', 'core/base::elements.custom-radio', [
             /**
              * @var string $name
              */
@@ -79,18 +74,18 @@ class FormServiceProvider extends ServiceProvider
             'selected' => null,
         ]);
 
-        Form::component('error', 'core.base::elements.forms.error', [
+        Form::component('error', 'core/base::elements.forms.error', [
             'name',
             'errors' => null,
         ]);
 
-        Form::component('editor', 'core.base::elements.forms.editor-input', [
+        Form::component('editor', 'core/base::elements.forms.editor-input', [
             'name',
             'value'      => null,
             'attributes' => [],
         ]);
 
-        Form::component('customSelect', 'core.base::elements.forms.custom-select', [
+        Form::component('customSelect', 'core/base::elements.forms.custom-select', [
             'name',
             'list'                => [],
             'selected'            => null,
@@ -99,11 +94,11 @@ class FormServiceProvider extends ServiceProvider
             'optgroupsAttributes' => [],
         ]);
 
-        Form::component('googleFonts', 'core.base::elements.forms.google-fonts', [
+        Form::component('googleFonts', 'core/base::elements.forms.google-fonts', [
             'name',
-            'selected'            => null,
-            'selectAttributes'    => [],
-            'optionsAttributes'   => [],
+            'selected'          => null,
+            'selectAttributes'  => [],
+            'optionsAttributes' => [],
         ]);
     }
 }

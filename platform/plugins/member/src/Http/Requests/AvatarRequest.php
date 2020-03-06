@@ -14,7 +14,8 @@ class AvatarRequest extends Request
     public function rules()
     {
         return [
-            'avatar_file' => 'image',
+            'avatar_file' => 'required|image|mimes:jpg,jpeg,png',
+            'avatar_data' => 'required',
         ];
     }
 }

@@ -1,0 +1,23 @@
+<?php
+
+return [
+    [
+        'name' => '{Plugin}',
+        'flag' => '{plugin}.index',
+    ],
+    [
+        'name' => 'Create',
+        'flag' => '{plugin}.create',
+        'parent_flag' => '{plugin}.index',
+    ],
+    [
+        'name' => 'Edit',
+        'flag' => '{plugin}.edit',
+        'parent_flag' => '{plugin}.index',
+    ],
+    [
+        'name' => 'Delete',
+        'flag' => '{plugin}.destroy',
+        'parent_flag' => '{plugin}.index',
+    ],
+];

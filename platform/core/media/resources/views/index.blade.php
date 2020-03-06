@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 
 @section('head')
     {!! RvMedia::renderHeader() !!}

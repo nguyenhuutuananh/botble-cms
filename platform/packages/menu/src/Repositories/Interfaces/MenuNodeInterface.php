@@ -10,7 +10,7 @@ interface MenuNodeInterface extends RepositoryInterface
      * @param $parent_id
      * @param null array
      * @return array|\Illuminate\Database\Eloquent\Collection|static[]
-     * @author Sang Nguyen
+     *
      */
     public function getByMenuId($menu_id, $parent_id, $select = ['*']);
 }

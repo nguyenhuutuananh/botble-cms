@@ -2,6 +2,7 @@
 
 namespace Botble\Widget\Misc;
 
+use Botble\Widget\AbstractWidget;
 use Exception;
 
 class InvalidWidgetClassException extends Exception
@@ -11,5 +12,5 @@ class InvalidWidgetClassException extends Exception
      *
      * @var string
      */
-    protected $message = 'Widget class must extend Botble\Widget\AbstractWidget class';
+    protected $message = 'Widget class must extend class ' . AbstractWidget::class;
 }

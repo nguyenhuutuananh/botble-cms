@@ -16,12 +16,6 @@
     <div class="top-menu">
         <ul class="nav navbar-nav float-right collapse">
 
-            @if (Auth::check() && Auth::user()->isImpersonated())
-                <li class="dropdown">
-                    <a class="dropdown-toggle dropdown-header-name" style="padding-right: 10px" href="{{ route('users.leave_impersonation') }}"><i class="fas fa-user-ninja"></i> <span class="d-none d-sm-inline">{{ __('Leave impersonation') }}</span> </a>
-                </li>
-            @endif
-
             @if (config('core.base.general.admin_dir') != '')
                 <li class="dropdown">
                     <a class="dropdown-toggle dropdown-header-name" style="padding-right: 10px" href="{{ url('/') }}" target="_blank"><i class="fa fa-globe"></i> <span class="d-none d-sm-inline">{{ trans('core/base::layouts.view_website') }}</span> </a>
@@ -84,7 +78,7 @@
             @if (Auth::check())
                 <li class="dropdown dropdown-user">
                     <a href="javascript:;" class="dropdown-toggle dropdown-header-name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img alt="{{ Auth::user()->getFullName() }}" class="rounded-circle" src="{{ url(Auth::user()->getProfileImage()) }}" />
+                        <img alt="{{ Auth::user()->getFullName() }}" class="rounded-circle" src="{{ Auth::user()->avatar_url }}" />
                         <span class="username username-hide-on-mobile"> {{ Auth::user()->getFullName() }} </span>
                         <i class="fa fa-angle-down"></i>
                     </a>

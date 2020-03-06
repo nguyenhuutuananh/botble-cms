@@ -7,9 +7,9 @@ use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Traits\EnumCastable;
 use Botble\Revision\RevisionableTrait;
 use Botble\Slug\Traits\SlugTrait;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class Page extends Eloquent
+class Page extends BaseModel
 {
     use RevisionableTrait;
     use SlugTrait;
@@ -79,7 +79,6 @@ class Page extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
      */
     public function user()
     {

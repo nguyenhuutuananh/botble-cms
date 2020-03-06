@@ -19,29 +19,25 @@ class SlugServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(SlugInterface::class, function () {
+        $this->app->bind(SlugInterface::class, function () {
             return new SlugCacheDecorator(new SlugRepository(new Slug));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('packages/slug')
             ->loadAndPublishConfigurations(['general'])
             ->loadAndPublishViews()
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishTranslations()
-            ->loadMigrations();
+            ->loadMigrations()
+            ->publishAssetsFolder()
+            ->publishPublicFolder();
 
         $this->app->register(FormServiceProvider::class);
         $this->app->register(HookServiceProvider::class);

@@ -21,7 +21,7 @@ class CategoryRepository extends RepositoriesAbstract implements CategoryInterfa
     public function getDataSiteMap()
     {
         $data = $this->model
-            ->where('categories.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('categories.status', '=', BaseStatusEnum::PUBLISHED)
             ->select('categories.*')
             ->orderBy('categories.created_at', 'desc');
 
@@ -35,7 +35,7 @@ class CategoryRepository extends RepositoriesAbstract implements CategoryInterfa
     {
         $data = $this->model
             ->where([
-                'categories.status'      => BaseStatusEnum::PUBLISH,
+                'categories.status'      => BaseStatusEnum::PUBLISHED,
                 'categories.is_featured' => 1,
             ])
             ->select([
@@ -72,7 +72,7 @@ class CategoryRepository extends RepositoriesAbstract implements CategoryInterfa
     {
         $data = $this->model->where([
             'categories.id'     => $id,
-            'categories.status' => BaseStatusEnum::PUBLISH,
+            'categories.status' => BaseStatusEnum::PUBLISHED,
         ]);
 
         return $this->applyBeforeExecuteQuery($data, $this->screen, true)->first();

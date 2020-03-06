@@ -435,7 +435,7 @@ class ManageCustomFields {
                 };
                 object.items = [];
 
-                getAllFields($current.find('> .item-details > .options > .line[data-option=repeater] > .col-xs-9 > .add-new-field > .sortable-wrapper > .ui-sortable-handle'), object.items);
+                getAllFields($current.find('> .item-details > .options > .line[data-option=repeater] > .col-9 > .add-new-field > .sortable-wrapper > .ui-sortable-handle'), object.items);
 
                 $pushTo.push(object);
             });

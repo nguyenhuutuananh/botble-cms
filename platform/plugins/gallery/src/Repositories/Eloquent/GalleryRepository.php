@@ -20,7 +20,7 @@ class GalleryRepository extends RepositoriesAbstract implements GalleryInterface
     public function getAll()
     {
         $data = $this->model
-            ->where('galleries.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('galleries.status', '=', BaseStatusEnum::PUBLISHED)
             ->orderBy('galleries.order', 'asc')
             ->orderBy('galleries.created_at', 'desc');
 
@@ -33,7 +33,7 @@ class GalleryRepository extends RepositoriesAbstract implements GalleryInterface
     public function getDataSiteMap()
     {
         $data = $this->model
-            ->where('galleries.status', '=', BaseStatusEnum::PUBLISH)
+            ->where('galleries.status', '=', BaseStatusEnum::PUBLISHED)
             ->select('galleries.*')
             ->orderBy('galleries.created_at', 'desc');
 
@@ -48,7 +48,7 @@ class GalleryRepository extends RepositoriesAbstract implements GalleryInterface
         $data = $this->model
             ->with(['user'])
             ->where([
-                'galleries.status'   => BaseStatusEnum::PUBLISH,
+                'galleries.status'   => BaseStatusEnum::PUBLISHED,
                 'galleries.is_featured' => 1,
             ])
             ->select([

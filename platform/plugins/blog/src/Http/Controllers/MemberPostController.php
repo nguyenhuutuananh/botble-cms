@@ -68,13 +68,13 @@ class MemberPostController extends Controller
      * @param MemberPostTable $postTable
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View|\Response
      * @throws \Throwable
-     * @author Sang Nguyen
+     *
      */
-    public function getList(MemberPostTable $postTable)
+    public function index(MemberPostTable $postTable)
     {
         SeoHelper::setTitle(__('Posts'));
 
-        return $postTable->render('plugins.member::table.base');
+        return $postTable->render('plugins/member::table.base');
     }
 
     /**
@@ -82,7 +82,7 @@ class MemberPostController extends Controller
      * @return string
      * @throws \Throwable
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         SeoHelper::setTitle(__('Write a post'));
 
@@ -95,10 +95,10 @@ class MemberPostController extends Controller
      * @param StoreCategoryService $categoryService
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function postCreate(
+    public function store(
         MemberPostRequest $request,
         StoreTagService $tagService,
         StoreCategoryService $categoryService,
@@ -116,7 +116,7 @@ class MemberPostController extends Controller
         /**
          * @var Post $post
          */
-        $post = $this->postRepository->createOrUpdate(array_merge($request->except('input'), [
+        $post = $this->postRepository->createOrUpdate(array_merge($request->except('status'), [
             'author_id'   => auth()->guard('member')->user()->getKey(),
             'author_type' => Member::class,
             'status'      => BaseStatusEnum::PENDING,
@@ -135,7 +135,7 @@ class MemberPostController extends Controller
         $categoryService->execute($request, $post);
 
         return $response
-            ->setPreviousUrl(route('public.member.posts.list'))
+            ->setPreviousUrl(route('public.member.posts.index'))
             ->setNextUrl(route('public.member.posts.edit', $post->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -145,10 +145,10 @@ class MemberPostController extends Controller
      * @param FormBuilder $formBuilder
      * @param Request $request
      * @return string
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getEdit($id, FormBuilder $formBuilder, Request $request)
+    public function edit($id, FormBuilder $formBuilder, Request $request)
     {
         $post = $this->postRepository->getFirstBy([
             'id'          => $id,
@@ -176,10 +176,10 @@ class MemberPostController extends Controller
      * @param StoreCategoryService $categoryService
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function postEdit(
+    public function update(
         $id,
         MemberPostRequest $request,
         StoreTagService $tagService,
@@ -204,7 +204,7 @@ class MemberPostController extends Controller
             }
         }
 
-        $post->fill($request->except('input'));
+        $post->fill($request->except('status'));
 
         $this->postRepository->createOrUpdate($post);
 
@@ -221,7 +221,7 @@ class MemberPostController extends Controller
         $categoryService->execute($request, $post);
 
         return $response
-            ->setPreviousUrl(route('public.member.posts.list'))
+            ->setPreviousUrl(route('public.member.posts.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 

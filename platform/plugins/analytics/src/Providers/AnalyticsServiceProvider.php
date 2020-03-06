@@ -6,7 +6,6 @@ use Botble\Analytics\Analytics;
 use Botble\Analytics\AnalyticsClient;
 use Botble\Analytics\AnalyticsClientFactory;
 use Botble\Analytics\Facades\AnalyticsFacade;
-use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
@@ -23,13 +22,9 @@ class AnalyticsServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     * @author Freek Van der Herten
-     * @modified Sang Nguyen
      */
     public function register()
     {
-        Helper::autoload(__DIR__ . '/../../helpers');
-
         $this->app->bind(AnalyticsClient::class, function () {
             return AnalyticsClientFactory::createForConfig(config('plugins.analytics.general'));
         });
@@ -52,15 +47,11 @@ class AnalyticsServiceProvider extends ServiceProvider
         AliasLoader::getInstance()->alias('Analytics', AnalyticsFacade::class);
     }
 
-    /**
-     * Bootstrap the application events.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/analytics')
             ->loadAndPublishConfigurations(['general', 'permissions'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->publishPublicFolder()

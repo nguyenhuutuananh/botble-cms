@@ -6,6 +6,7 @@ use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Base\Supports\EmailHandler;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Contact\Enums\ContactStatusEnum;
 use Botble\Contact\Forms\ContactForm;
 use Botble\Contact\Http\Requests\ContactReplyRequest;
@@ -21,6 +22,7 @@ use Botble\Base\Events\UpdatedContentEvent;
 
 class ContactController extends BaseController
 {
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var ContactInterface
@@ -29,7 +31,6 @@ class ContactController extends BaseController
 
     /**
      * @param ContactInterface $contactRepository
-     * @author Sang Nguyen
      */
     public function __construct(ContactInterface $contactRepository)
     {
@@ -39,10 +40,9 @@ class ContactController extends BaseController
     /**
      * @param ContactTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      * @throws \Throwable
      */
-    public function getList(ContactTable $dataTable)
+    public function index(ContactTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/contact::contact.menu'));
 
@@ -53,9 +53,9 @@ class ContactController extends BaseController
      * @param $id
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getEdit($id, FormBuilder $formBuilder)
+    public function edit($id, FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/contact::contact.edit'));
 
@@ -69,9 +69,8 @@ class ContactController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEdit($id, EditContactRequest $request, BaseHttpResponse $response)
+    public function update($id, EditContactRequest $request, BaseHttpResponse $response)
     {
         $contact = $this->contactRepository->findOrFail($id);
 
@@ -82,7 +81,7 @@ class ContactController extends BaseController
         event(new UpdatedContentEvent(CONTACT_MODULE_SCREEN_NAME, $request, $contact));
 
         return $response
-            ->setPreviousUrl(route('contacts.list'))
+            ->setPreviousUrl(route('contacts.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -91,9 +90,8 @@ class ContactController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete($id, Request $request, BaseHttpResponse $response)
+    public function destroy($id, Request $request, BaseHttpResponse $response)
     {
         try {
             $contact = $this->contactRepository->findById($id);
@@ -112,26 +110,11 @@ class ContactController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $contact = $this->contactRepository->findOrFail($id);
-            $this->contactRepository->delete($contact);
-            event(new DeletedContentEvent(CONTACT_MODULE_SCREEN_NAME, $request, $contact));
-        }
-
-        return $response
-            ->setMessage(trans('core/base::notices.delete_success_message'));
+        return $this->executeDeleteItems($request, $response, $this->contactRepository, CONTACT_MODULE_SCREEN_NAME);
     }
 
     /**
@@ -142,8 +125,8 @@ class ContactController extends BaseController
      * @throws \Throwable
      */
     public function postReply(
-        ContactReplyRequest $request,
         $id,
+        ContactReplyRequest $request,
         EmailHandler $emailHandler,
         BaseHttpResponse $response,
         ContactReplyInterface $contactReplyRepository

@@ -45,6 +45,6 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->view('core.acl::emails.reminder', ['link' => route('access.password.reset', ['token' => $this->token])]);
+            ->view('core/acl::emails.reminder', ['link' => route('access.password.reset', ['token' => $this->token])]);
     }
 }

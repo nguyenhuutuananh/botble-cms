@@ -28,7 +28,7 @@ class PublicController extends Controller
      * PublicController constructor.
      * @param GalleryInterface $galleryRepository
      * @param SlugInterface $slugRepository
-     * @author Sang Nguyen
+     * 
      */
     public function __construct(GalleryInterface $galleryRepository, SlugInterface $slugRepository)
     {
@@ -37,7 +37,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @author Sang Nguyen
+     * 
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getGalleries()
@@ -51,14 +51,14 @@ class PublicController extends Controller
             ->add(__('Home'), url('/'))
             ->add(__('Galleries'), route('public.galleries'));
 
-        return Theme::scope('galleries', compact('galleries'), 'plugins.gallery::themes.galleries')->render();
+        return Theme::scope('galleries', compact('galleries'), 'plugins/gallery::themes.galleries')->render();
     }
 
     /**
      * @param $slug
      * @return \Illuminate\Http\Response|\Response
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     * @author Sang Nguyen
+     * 
      */
     public function getGallery($slug)
     {
@@ -69,7 +69,7 @@ class PublicController extends Controller
         $gallery = $this->galleryRepository
             ->getFirstBy([
                 'id'     => $slug->reference_id,
-                'status' => BaseStatusEnum::PUBLISH,
+                'status' => BaseStatusEnum::PUBLISHED,
             ]);
 
         if (!$gallery) {
@@ -90,6 +90,6 @@ class PublicController extends Controller
 
         do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, GALLERY_MODULE_SCREEN_NAME, $gallery);
 
-        return Theme::scope('gallery', compact('gallery'), 'plugins.gallery::themes.gallery')->render();
+        return Theme::scope('gallery', compact('gallery'), 'plugins/gallery::themes.gallery')->render();
     }
 }

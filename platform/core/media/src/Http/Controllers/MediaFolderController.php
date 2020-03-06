@@ -2,7 +2,7 @@
 
 namespace Botble\Media\Http\Controllers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Media\Http\Requests\MediaFolderRequest;
 use Botble\Media\Repositories\Interfaces\MediaFileInterface;
 use Botble\Media\Repositories\Interfaces\MediaFolderInterface;
@@ -12,9 +12,6 @@ use Illuminate\Routing\Controller;
 use RvMedia;
 
 /**
- * Class FolderController
- * @package Botble\Media\Http\Controllers
- * @author Sang Nguyen
  * @since 19/08/2015 07:55 AM
  */
 class MediaFolderController extends Controller
@@ -33,7 +30,6 @@ class MediaFolderController extends Controller
      * FolderController constructor.
      * @param MediaFolderInterface $folderRepository
      * @param MediaFileInterface $fileRepository
-     * @author Sang Nguyen
      */
     public function __construct(MediaFolderInterface $folderRepository, MediaFileInterface $fileRepository)
     {
@@ -44,9 +40,8 @@ class MediaFolderController extends Controller
     /**
      * @param MediaFolderRequest $request
      * @return JsonResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(MediaFolderRequest $request)
+    public function store(MediaFolderRequest $request)
     {
         $name = $request->input('name');
 

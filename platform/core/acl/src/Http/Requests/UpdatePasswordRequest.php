@@ -2,7 +2,7 @@
 
 namespace Botble\ACL\Http\Requests;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Support\Http\Requests\Request;
 
 class UpdatePasswordRequest extends Request
@@ -12,7 +12,6 @@ class UpdatePasswordRequest extends Request
      * Get the validation rules that apply to the request.
      *
      * @return array
-     * @author Sang Nguyen
      */
     public function rules()
     {

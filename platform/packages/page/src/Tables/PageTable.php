@@ -2,6 +2,7 @@
 
 namespace Botble\Page\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Page\Repositories\Interfaces\PageInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -34,13 +35,18 @@ class PageTable extends TableAbstract
         $this->repository = $pageRepository;
         $this->setOption('id', 'table-pages');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['pages.edit', 'pages.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -48,10 +54,15 @@ class PageTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
-                $name = anchor_link(route('pages.edit', $item->id), $item->name);
+                if (!Auth::user()->hasPermission('posts.edit')) {
+                    $name = $item->name;
+                } else {
+                    $name = anchor_link(route('pages.edit', $item->id), $item->name);
+                }
+
 
                 if (setting('show_on_front') == $item->id) {
-                    $name .= Html::tag('span', '— ' . trans('packages/page::pages.front_page'), [
+                    $name .=  Html::tag('span', ' — ' . trans('packages/page::pages.front_page'), [
                         'class' => 'additional-page-name',
                     ])->toHtml();
                 }
@@ -73,7 +84,7 @@ class PageTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, PAGE_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('pages.edit', 'pages.delete', $item);
+                return table_actions('pages.edit', 'pages.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -83,7 +94,7 @@ class PageTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -104,7 +115,7 @@ class PageTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -139,18 +150,12 @@ class PageTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
-     * @since 2.1
      * @throws \Throwable
+     * @since 2.1
      */
     public function buttons()
     {
-        $buttons = [
-            'create' => [
-                'link' => route('pages.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-        ];
+        $buttons = $this->addCreateButton(route('pages.create'), 'pages.create');
 
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, PAGE_MODULE_SCREEN_NAME);
     }
@@ -161,18 +166,11 @@ class PageTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('pages.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('pages.deletes'), 'pages.destroy', parent::bulkActions());
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getBulkChanges(): array
     {
@@ -181,7 +179,6 @@ class PageTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getPages',
             ],
             'pages.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -200,13 +197,5 @@ class PageTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getPages(): array
-    {
-        return $this->repository->pluck('pages.name', 'pages.id');
     }
 }

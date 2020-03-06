@@ -14,10 +14,10 @@
                 @if ($model->revisionHistory !== null && count($model->revisionHistory)>0)
                     @foreach($model->revisionHistory as $history)
                         <tr>
-                            <td style="min-width: 145px;">{{ $history->userResponsible()->getFullName() }}</td>
+                            <td style="min-width: 145px;">{{ $history->userResponsible() ? $history->userResponsible()->getFullName() : 'N/A' }}</td>
                             <td style="min-width: 145px;">{{ $history->fieldName() }}</td>
                             <td>{{ $history->oldValue() }}</td>
-                            <td>{{ $history->newValue() }}</td>
+                            <td><span class="html-diff-content" data-original="{{ $history->oldValue() }}">{{ $history->newValue() }}</span></td>
                             <td style="min-width: 145px;">{{ date_from_database($history->created_at, config('core.base.general.date_format.date_time')) }}</td>
                         </tr>
                     @endforeach

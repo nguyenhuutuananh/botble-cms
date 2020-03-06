@@ -2,21 +2,15 @@
 
 namespace Botble\Base\Interfaces;
 
+/**
+ * @deprecated since v3.6
+ * Using Botble\PluginManagement\Abstracts\PluginOperationAbstract instead this interface
+ */
 interface PluginInterface
 {
-
-    /**
-     * @author Sang Nguyen
-     */
     public static function activate();
 
-    /**
-     * @author Sang Nguyen
-     */
     public static function deactivate();
 
-    /**
-     * @author Sang Nguyen
-     */
     public static function remove();
 }

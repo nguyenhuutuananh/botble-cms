@@ -3,20 +3,20 @@
 return [
     'max_quota'               => env('RV_MEDIA_MAX_QUOTA', 1024 * 1024 * 1024),
     'sizes'                   => [
-        'thumb'    => '150x150',
-        'featured' => '560x380',
-        'medium'   => '540x360',
+        'thumb' => '150x150',
     ],
     'driver'                  => [
-        'local' => [
-            'root' => storage_path('app/public/uploads'),
-            'path' => env('RV_MEDIA_UPLOAD_PATH', 'storage/uploads'),
-
-            // If you can't symlink folder storage/app/public to /public/storage, you can use bellow option
-            // 'root' => public_path('uploads'),
-            // 'path' => env('RV_MEDIA_UPLOAD_PATH', '/uploads'),
+        'public' => [
+            'root'       => public_path('storage/uploads'),
+            'driver'     => 'local',
+            'path'       => env('RV_MEDIA_UPLOAD_PATH', '/storage/uploads'),
+            'visibility' => 'public',
         ],
-        's3'    => [
+        'local'  => [
+            'root' => env('RV_MEDIA_PUBLIC_PATH', storage_path('app/public/uploads')),
+            'path' => env('RV_MEDIA_UPLOAD_PATH', 'storage/uploads'),
+        ],
+        's3'     => [
             'path' => env('AWS_URL'),
         ],
     ],
@@ -34,11 +34,11 @@ return [
         'folders.create',
         'folders.edit',
         'folders.trash',
-        'folders.delete',
+        'folders.destroy',
         'files.create',
         'files.edit',
         'files.trash',
-        'files.delete',
+        'files.destroy',
         'files.favorite',
         'folders.favorite',
     ],
@@ -57,15 +57,15 @@ return [
     ],
     'libraries'               => [
         'stylesheets' => [
-            'vendor/core/media/packages/jquery-context-menu/jquery.contextMenu.min.css',
+            'vendor/core/media/libraries/jquery-context-menu/jquery.contextMenu.min.css',
             'vendor/core/media/css/media.css?v=' . time(),
         ],
         'javascript'  => [
-            'vendor/core/media/packages/lodash/lodash.min.js',
-            'vendor/core/media/packages/clipboard/clipboard.min.js',
-            'vendor/core/media/packages/dropzone/dropzone.js',
-            'vendor/core/media/packages/jquery-context-menu/jquery.ui.position.min.js',
-            'vendor/core/media/packages/jquery-context-menu/jquery.contextMenu.min.js',
+            'vendor/core/media/libraries/lodash/lodash.min.js',
+            'vendor/core/media/libraries/clipboard/clipboard.min.js',
+            'vendor/core/media/libraries/dropzone/dropzone.js',
+            'vendor/core/media/libraries/jquery-context-menu/jquery.ui.position.min.js',
+            'vendor/core/media/libraries/jquery-context-menu/jquery.contextMenu.min.js',
             'vendor/core/media/js/media.js?v=' . time(),
         ],
     ],
@@ -83,6 +83,7 @@ return [
         ],
         'document' => [
             'application/pdf',
+            'application/vnd.ms-excel',
             'application/excel',
             'application/x-excel',
             'application/x-msexcel',

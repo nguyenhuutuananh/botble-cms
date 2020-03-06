@@ -1,5 +1,5 @@
 @if (function_exists('get_galleries'))
-    @php $galleries = get_galleries($limit); @endphp
+    @php $galleries = get_galleries(); @endphp
     @if (!$galleries->isEmpty())
         <section class="section pt-50 pb-50">
             <div class="container">

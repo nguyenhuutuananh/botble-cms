@@ -44,7 +44,6 @@ class Meta implements MetaContract
      * @param  string $content
      * @param  string $prefix
      * @param  string $propertyName
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function __construct($name, $content, $propertyName = 'name', $prefix = '')
@@ -59,7 +58,6 @@ class Meta implements MetaContract
      * Get the meta name.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function key()
     {
@@ -72,7 +70,6 @@ class Meta implements MetaContract
      * @param  string $prefix
      *
      * @return \Botble\SeoHelper\Helpers\Meta
-     * @author ARCANEDEV
      */
     public function setPrefix($prefix)
     {
@@ -87,7 +84,6 @@ class Meta implements MetaContract
      * @param  string $nameProperty
      *
      * @return \Botble\SeoHelper\Helpers\Meta
-     * @author ARCANEDEV
      * @throws InvalidArgumentException
      */
     public function setNameProperty($nameProperty)
@@ -104,7 +100,6 @@ class Meta implements MetaContract
      * @param  bool $prefixed
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function getName($prefixed = true)
     {
@@ -123,7 +118,6 @@ class Meta implements MetaContract
      * @param  string $name
      *
      * @return \Botble\SeoHelper\Helpers\Meta
-     * @author ARCANEDEV
      */
     protected function setName($name)
     {
@@ -137,7 +131,6 @@ class Meta implements MetaContract
      * Get the meta content.
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function getContent()
     {
@@ -150,7 +143,6 @@ class Meta implements MetaContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Helpers\Meta
-     * @author ARCANEDEV
      */
     protected function setContent($content)
     {
@@ -170,7 +162,6 @@ class Meta implements MetaContract
      * @param  string $prefix
      *
      * @return \Botble\SeoHelper\Helpers\Meta
-     * @author ARCANEDEV
      */
     public static function make($name, $content, $propertyName = 'name', $prefix = '')
     {
@@ -181,7 +172,6 @@ class Meta implements MetaContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -196,7 +186,6 @@ class Meta implements MetaContract
      * Render the link tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderLink()
     {
@@ -207,7 +196,6 @@ class Meta implements MetaContract
      * Render the meta tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     protected function renderMeta()
     {
@@ -222,7 +210,6 @@ class Meta implements MetaContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -233,7 +220,6 @@ class Meta implements MetaContract
      * Check if meta is a link tag.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function isLink()
     {
@@ -262,7 +248,6 @@ class Meta implements MetaContract
      * Check if meta is valid.
      *
      * @return bool
-     * @author ARCANEDEV
      */
     public function isValid()
     {
@@ -275,7 +260,6 @@ class Meta implements MetaContract
      * @param  string $nameProperty
      *
      * @throws InvalidArgumentException
-     * @author ARCANEDEV
      */
     protected function checkNameProperty(&$nameProperty)
     {
@@ -304,7 +288,6 @@ class Meta implements MetaContract
      * @param  string $value
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function clean($value)
     {

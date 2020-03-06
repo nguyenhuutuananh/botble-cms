@@ -6,7 +6,6 @@ return [
     'appearance'         => 'Appearance',
     'menu'               => 'Menu',
     'widgets'            => 'Widgets',
-    'theme_options'      => 'Theme options',
     'plugins'            => 'Plugins',
     'settings'           => 'Settings',
     'setting_general'    => 'General',

@@ -2,9 +2,9 @@
 
 namespace Botble\ACL\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-class Activation extends Model
+class Activation extends BaseModel
 {
     /**
      * {@inheritDoc}
@@ -21,32 +21,9 @@ class Activation extends Model
     ];
 
     /**
-     * Get mutator for the "completed" attribute.
-     *
-     * @param  mixed $completed
-     * @return bool
+     * @var array
      */
-    public function getCompletedAttribute($completed)
-    {
-        return (bool)$completed;
-    }
-
-    /**
-     * Set mutator for the "completed" attribute.
-     *
-     * @param  mixed $completed
-     * @return void
-     */
-    public function setCompletedAttribute($completed)
-    {
-        $this->attributes['completed'] = (bool)$completed;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCode()
-    {
-        return $this->attributes['code'];
-    }
+    protected $casts = [
+        'completed' => 'bool',
+    ];
 }

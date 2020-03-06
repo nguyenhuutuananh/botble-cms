@@ -15,24 +15,19 @@ class RevisionServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function register()
     {
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('packages/revision')
             ->loadAndPublishViews()
             ->loadAndPublishConfigurations(['general'])
-            ->loadMigrations();
+            ->loadMigrations()
+            ->publishAssetsFolder()
+            ->publishPublicFolder();
 
         $this->app->register(HookServiceProvider::class);
     }

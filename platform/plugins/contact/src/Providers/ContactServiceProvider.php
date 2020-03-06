@@ -26,34 +26,24 @@ class ContactServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     * @author Sang Nguyen
-     */
     public function register()
     {
-        $this->app->singleton(ContactInterface::class, function () {
+        $this->app->bind(ContactInterface::class, function () {
             return new ContactCacheDecorator(new ContactRepository(new Contact));
         });
 
-        $this->app->singleton(ContactReplyInterface::class, function () {
+        $this->app->bind(ContactReplyInterface::class, function () {
             return new ContactReplyCacheDecorator(new ContactReplyRepository(new ContactReply));
         });
 
         Helper::autoload(__DIR__ . '/../../helpers');
     }
 
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('plugins/contact')
             ->loadAndPublishConfigurations(['permissions', 'email'])
-            ->loadRoutes()
+            ->loadRoutes(['web'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadMigrations()
@@ -69,8 +59,8 @@ class ContactServiceProvider extends ServiceProvider
                 'parent_id'   => null,
                 'name'        => 'plugins/contact::contact.menu',
                 'icon'        => 'far fa-envelope',
-                'url'         => route('contacts.list'),
-                'permissions' => ['contacts.list'],
+                'url'         => route('contacts.index'),
+                'permissions' => ['contacts.index'],
             ]);
         });
 

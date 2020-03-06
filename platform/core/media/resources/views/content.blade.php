@@ -50,7 +50,7 @@
                                 <i class="fa fa-globe"></i> {{ trans('media::media.all_media') }}
                             </a>
                         </li>
-                        @if (RvMedia::hasAnyPermission(['folders.delete', 'files.delete']))
+                        @if (RvMedia::hasAnyPermission(['folders.destroy', 'files.destroy']))
                             <li>
                                 <a href="#" class="js-rv-media-change-filter" data-type="view_in" data-value="trash">
                                     <i class="fa fa-trash"></i> {{ trans('media::media.trash') }}
@@ -192,7 +192,7 @@
                             </div>
                         @endif
 
-                        @if (RvMedia::hasAnyPermission(['folders.delete', 'files.delete']))
+                        @if (RvMedia::hasAnyPermission(['folders.destroy', 'files.destroy']))
                             <button class="btn btn-danger js-files-action hidden" data-action="empty_trash">
                                 <i class="fa fa-trash"></i> {{ trans('media::media.empty_trash') }}
                             </button>
@@ -605,6 +605,11 @@
     <li class="rv-media-list-title js-media-list-title js-context-menu" data-context="__type__" data-id="__id__">
         <input type="checkbox" class="hidden">
         <div class="rv-media-item" title="__name__">
+            <span class="media-item-selected">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M186.301 339.893L96 249.461l-32 30.507L186.301 402 448 140.506 416 110z"></path>
+                </svg>
+            </span>
             <div class="rv-media-thumbnail">
                 __thumb__
             </div>

@@ -10,7 +10,6 @@ use Botble\Base\Forms\Fields\EditorField;
 use Botble\Base\Forms\Fields\MediaImageField;
 use Botble\Base\Forms\Fields\OnOffField;
 use Botble\Base\Forms\Fields\TimeField;
-use Botble\Slug\Forms\Fields\PermalinkField;
 use Illuminate\Support\Arr;
 use JsValidator;
 use Kris\LaravelFormBuilder\Fields\FormField;
@@ -66,11 +65,10 @@ abstract class FormAbstract extends Form
     /**
      * @var string
      */
-    protected $template = 'core.base::forms.form';
+    protected $template = 'core/base::forms.form';
 
     /**
      * FormAbstract constructor.
-     * @author Sang Nguyen
      */
     public function __construct()
     {
@@ -81,7 +79,6 @@ abstract class FormAbstract extends Form
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function getOptions(): array
     {
@@ -91,7 +88,6 @@ abstract class FormAbstract extends Form
     /**
      * @param array $options
      * @return $this
-     * @author Sang Nguyen
      */
     public function setOptions(array $options): self
     {
@@ -167,7 +163,7 @@ abstract class FormAbstract extends Form
 
         $meta_box = $this->metaBoxes[$name];
 
-        return view('core.base::forms.partials.meta-box', compact('meta_box'))->render();
+        return view('core/base::forms.partials.meta-box', compact('meta_box'))->render();
     }
 
     /**
@@ -201,7 +197,7 @@ abstract class FormAbstract extends Form
     public function getActionButtons(): string
     {
         if ($this->actionButtons === '') {
-            return view('core.base::elements.form-actions')->render();
+            return view('core/base::elements.form-actions')->render();
         }
 
         return $this->actionButtons;
@@ -311,7 +307,7 @@ abstract class FormAbstract extends Form
     }
 
     /**
-     * @author Sang Nguyen
+     *
      * @return $this
      */
     public function withCustomFields(): self
@@ -338,10 +334,8 @@ abstract class FormAbstract extends Form
         if (!$this->formHelper->hasCustomField('time')) {
             $this->addCustomField('time', TimeField::class);
         }
-        if (!$this->formHelper->hasCustomField('permalink') && config('packages.slug.general.supported')) {
-            $this->addCustomField('permalink', PermalinkField::class);
-        }
-        return $this;
+
+        return apply_filters('form_custom_fields', $this, $this->formHelper);
     }
 
     /**
@@ -349,13 +343,12 @@ abstract class FormAbstract extends Form
      */
     public function hasTabs(): self
     {
-        $this->setFormOption('template', 'core.base::forms.form-tabs');
+        $this->setFormOption('template', 'core/base::forms.form-tabs');
         return $this;
     }
 
     /**
      * @return int
-     * @author Sang Nguyen
      */
     public function hasMainFields()
     {
@@ -394,12 +387,10 @@ abstract class FormAbstract extends Form
      * @param bool $showFields
      * @param bool $showEnd
      * @return string
-     * @author Sang Nguyen
      */
     public function renderForm(array $options = [], $showStart = true, $showFields = true, $showEnd = true): string
     {
-        Assets::addAppModule(['form-validation'])
-            ->addScripts(['are-you-sure']);
+        Assets::addScripts(['form-validation', 'are-you-sure']);
 
         apply_filters(BASE_FILTER_BEFORE_RENDER_FORM, $this, $this->moduleName, $this->getModel());
 
@@ -409,7 +400,6 @@ abstract class FormAbstract extends Form
     /**
      * @return string
      * @throws \Exception
-     * @author Sang Nguyen
      */
     public function renderValidatorJs(): string
     {

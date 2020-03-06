@@ -1,4 +1,4 @@
-@extends('core.base::errors.master')
+@extends('core/base::errors.master')
 
 @section('content')
 

@@ -2,8 +2,7 @@
 
 namespace Botble\ACL\Http\Middleware;
 
-use Auth;
-use Botble\ACL\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Closure;
 
 class RedirectIfAuthenticated
@@ -20,15 +19,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            /**
-             * @var User $user
-             */
-            $user = Auth::user();
-            if ($user->hasPermission('dashboard.index')) {
-                return redirect(route('dashboard.index'));
-            }
-
-            return redirect()->to('/');
+            return redirect(route('dashboard.index'));
         }
 
         return $next($request);

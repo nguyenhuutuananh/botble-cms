@@ -8,15 +8,10 @@ use Illuminate\Support\ServiceProvider;
 class FormServiceProvider extends ServiceProvider
 {
 
-    /**
-     * Boot the service provider.
-     * @return void
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->app->booted(function () {
-            Form::component('permalink', 'packages.slug::permalink', [
+            Form::component('permalink', 'packages/slug::permalink', [
                 'name',
                 'value'      => null,
                 'id'         => null,

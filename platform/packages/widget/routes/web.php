@@ -6,20 +6,20 @@ Route::group(['namespace' => 'Botble\Widget\Http\Controllers', 'middleware' => '
             Route::get('load-widget', 'WidgetController@showWidget');
 
             Route::get('', [
-                'as'   => 'widgets.list',
-                'uses' => 'WidgetController@getList',
+                'as'   => 'widgets.index',
+                'uses' => 'WidgetController@index',
             ]);
 
             Route::post('save-widgets-to-sidebar', [
                 'as'         => 'widgets.save_widgets_sidebar',
                 'uses'       => 'WidgetController@postSaveWidgetToSidebar',
-                'permission' => 'widgets.list',
+                'permission' => 'widgets.index',
             ]);
 
-            Route::post('delete', [
-                'as'         => 'widgets.delete',
+            Route::delete('delete', [
+                'as'         => 'widgets.destroy',
                 'uses'       => 'WidgetController@postDelete',
-                'permission' => 'widgets.list',
+                'permission' => 'widgets.index',
             ]);
         });
     });

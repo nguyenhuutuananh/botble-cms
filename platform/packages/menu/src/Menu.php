@@ -63,7 +63,7 @@ class Menu
      * @param MenuLocationInterface $menuLocationRepository
      * @param CacheManager $cache
      * @param Repository $config
-     * @author Sang Nguyen
+     * 
      */
     public function __construct(
         MenuInterface $menu,
@@ -85,12 +85,13 @@ class Menu
     /**
      * @param $name
      * @param $value
-     * @author Sang Nguyen
+     * 
      * @return $this
      */
     public function addRelatedRouteName($name, $value): self
     {
         $this->relatedRouteNames[$name] = $value;
+
         return $this;
     }
 
@@ -105,7 +106,6 @@ class Menu
     /**
      * @param $args
      * @return mixed|null|string
-     * @author Sang Nguyen, Tedozi Manson
      * @throws \Throwable
      */
     public function generateMenu($args = [])
@@ -170,13 +170,12 @@ class Menu
             return view($view, $data)->render();
         }
 
-        return view('packages.menu::partials.default', $data)->render();
+        return view('packages/menu::partials.default', $data)->render();
     }
 
     /**
      * @param array $args
      * @return mixed|null|string
-     * @author Sang Nguyen, Tedozi Manson
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Throwable
      */
@@ -206,7 +205,7 @@ class Menu
                 $object = $model->orderBy('name', 'asc');
             }
             if ($active) {
-                $object = $object->where('status', BaseStatusEnum::PUBLISH);
+                $object = $object->where('status', BaseStatusEnum::PUBLISHED);
             }
             $object = apply_filters(BASE_FILTER_BEFORE_GET_ADMIN_LIST_ITEM, $object, $model, $screen)->get();
 
@@ -233,29 +232,24 @@ class Menu
             return view($view, $data)->render();
         }
 
-        return view('packages.menu::partials.select', $data)->render();
+        return view('packages/menu::partials.select', $data)->render();
     }
 
     /**
      * @param $slug
      * @param $active
      * @return bool
-     * @author Sang Nguyen
+     * 
      */
     public function hasMenu($slug, $active)
     {
-        $menu = $this->menuRepository->findBySlug($slug, $active);
-        if (!$menu) {
-            return false;
-        }
-        return true;
+        return $this->menuRepository->findBySlug($slug, $active);
     }
 
     /**
      * @param $menu_nodes
      * @param $menu_id
      * @param $parent_id
-     * @author Sang Nguyen, Tedozi Manson
      */
     public function recursiveSaveMenu($menu_nodes, $menu_id, $parent_id)
     {
@@ -282,7 +276,6 @@ class Menu
      * @param $parent_id
      * @param int $has_child
      * @return int
-     * @author Sang Nguyen, Tedozi Manson
      */
     protected function saveMenuNode($menu_item, $menu_id, $parent_id, $has_child = 0)
     {

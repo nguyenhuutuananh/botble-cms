@@ -2,7 +2,6 @@
 
 namespace Botble\Captcha\Providers;
 
-use Botble\Base\Supports\Helper;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Botble\Captcha\Facades\CaptchaFacade;
 use Botble\Captcha\Captcha;
@@ -20,12 +19,9 @@ class CaptchaServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     * @author ARCANEDEV
      */
     public function register()
     {
-        Helper::autoload(__DIR__ . '/../../helpers');
-
         $this->app->bind(Captcha::class, function () {
             return new Captcha(
                 setting('captcha_secret', config('plugins.captcha.general.secret')),
@@ -39,7 +35,6 @@ class CaptchaServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     * @author ARCANEDEV
      */
     public function boot()
     {

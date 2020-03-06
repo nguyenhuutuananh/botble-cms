@@ -28,7 +28,7 @@
 </div>
 <div id="waypoint"></div>
 <div class="form-actions form-actions-fixed-top hidden">
-    {!! AdminBreadcrumb::render() !!}
+    {!! Breadcrumbs::render('main', page_title()->getTitle(false)) !!}
     <div class="btn-set">
         @if (isset($object))
             <a href="{{ route('custom-fields.export', ['id' => $object->id]) }}"

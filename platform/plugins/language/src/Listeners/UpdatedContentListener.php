@@ -14,7 +14,6 @@ class UpdatedContentListener
      *
      * @param UpdatedContentEvent $event
      * @return void
-     * @author Sang Nguyen
      */
     public function handle(UpdatedContentEvent $event)
     {

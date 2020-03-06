@@ -2,14 +2,7 @@
 
 namespace Botble\Base\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Class MetaBox
- * @package Botble\Base\Models
- * @mixin \Eloquent
- */
-class MetaBox extends Model
+class MetaBox extends BaseModel
 {
 
     /**
@@ -21,7 +14,6 @@ class MetaBox extends Model
 
     /**
      * @param $value
-     * @author Sang Nguyen
      */
     public function setMetaValueAttribute($value)
     {
@@ -30,8 +22,7 @@ class MetaBox extends Model
 
     /**
      * @param $value
-     * @return mixed
-     * @author Sang Nguyen
+     * @return array
      */
     public function getMetaValueAttribute($value)
     {

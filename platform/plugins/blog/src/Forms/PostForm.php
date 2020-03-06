@@ -15,7 +15,7 @@ class PostForm extends FormAbstract
     /**
      * @var string
      */
-    protected $template = 'core.base::forms.form-tabs';
+    protected $template = 'core/base::forms.form-tabs';
 
     /**
      * @return mixed|void
@@ -25,7 +25,7 @@ class PostForm extends FormAbstract
     {
         Assets::addScripts(['bootstrap-tagsinput', 'typeahead'])
             ->addStyles(['bootstrap-tagsinput'])
-            ->addAppModule(['tags']);
+            ->addScriptsDirectly('vendor/core/js/tags.js');
 
         $selected_categories = [];
         if ($this->getModel()) {

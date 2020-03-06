@@ -4,8 +4,8 @@ Route::group(['namespace' => 'Botble\Language\Http\Controllers', 'middleware' =>
     Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
         Route::group(['prefix' => 'settings/languages'], function () {
             Route::get('', [
-                'as'   => 'languages.list',
-                'uses' => 'LanguageController@getList',
+                'as'   => 'languages.index',
+                'uses' => 'LanguageController@index',
             ]);
 
             Route::post('store', [
@@ -16,7 +16,7 @@ Route::group(['namespace' => 'Botble\Language\Http\Controllers', 'middleware' =>
 
             Route::post('edit', [
                 'as'   => 'languages.edit',
-                'uses' => 'LanguageController@postEdit',
+                'uses' => 'LanguageController@update',
             ]);
 
             Route::post('change-item-language', [
@@ -25,9 +25,9 @@ Route::group(['namespace' => 'Botble\Language\Http\Controllers', 'middleware' =>
                 'permission' => false,
             ]);
 
-            Route::get('delete/{id}', [
-                'as'   => 'languages.delete',
-                'uses' => 'LanguageController@getDelete',
+            Route::delete('delete/{id}', [
+                'as'   => 'languages.destroy',
+                'uses' => 'LanguageController@destroy',
             ]);
 
             Route::get('set-default', [

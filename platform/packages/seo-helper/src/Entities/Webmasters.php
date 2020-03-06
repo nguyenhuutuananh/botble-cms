@@ -26,7 +26,6 @@ class Webmasters implements WebmastersContract
 
     /**
      * Create Webmasters instance.
-     * @author ARCANEDEV
      */
     public function __construct()
     {
@@ -36,10 +35,8 @@ class Webmasters implements WebmastersContract
     /**
      * Get the webmaster meta name.
      *
-     * @param  string $webmaster
-     *
-     * @return string
-     * @author ARCANEDEV
+     * @param $webmaster
+     * @return mixed|null
      */
     protected function getWebmasterName($webmaster)
     {
@@ -56,7 +53,6 @@ class Webmasters implements WebmastersContract
      * @param  array $webmasters
      *
      * @return \Botble\SeoHelper\Entities\Webmasters
-     * @author ARCANEDEV
      */
     public static function make(array $webmasters = [])
     {
@@ -70,7 +66,6 @@ class Webmasters implements WebmastersContract
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Entities\Webmasters
-     * @author ARCANEDEV
      */
     public function add($webmaster, $content)
     {
@@ -85,7 +80,6 @@ class Webmasters implements WebmastersContract
      * Reset the webmaster collection.
      *
      * @return \Botble\SeoHelper\Entities\Webmasters
-     * @author ARCANEDEV
      */
     public function reset()
     {
@@ -98,7 +92,6 @@ class Webmasters implements WebmastersContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -109,7 +102,6 @@ class Webmasters implements WebmastersContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -122,7 +114,6 @@ class Webmasters implements WebmastersContract
      * @param  string $webmaster
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function isSupported($webmaster)
     {

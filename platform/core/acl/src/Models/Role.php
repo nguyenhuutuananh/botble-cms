@@ -3,14 +3,9 @@
 namespace Botble\ACL\Models;
 
 use Botble\ACL\Traits\PermissionTrait;
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Class Role
- * @package Botble\ACL\Models
- * @mixin \Eloquent
- */
-class Role extends Model
+class Role extends BaseModel
 {
     use PermissionTrait;
 
@@ -44,6 +39,10 @@ class Role extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'permissions' => 'json',
+    ];
+
     /**
      * {@inheritDoc}
      */
@@ -57,30 +56,7 @@ class Role extends Model
     }
 
     /**
-     * Get mutator for the "permissions" attribute.
-     *
-     * @param  mixed $permissions
-     * @return array
-     */
-    public function getPermissionsAttribute($permissions)
-    {
-        return $permissions ? json_decode($permissions, true) : [];
-    }
-
-    /**
-     * Set mutator for the "permissions" attribute.
-     *
-     * @param  mixed $permissions
-     * @return void
-     */
-    public function setPermissionsAttribute(array $permissions)
-    {
-        $this->attributes['permissions'] = $permissions ? json_encode($permissions) : '';
-    }
-
-    /**
-     * @return mixed
-     * @author Sang Nguyen
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users()
     {
@@ -89,7 +65,6 @@ class Role extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
      */
     public function userCreated()
     {

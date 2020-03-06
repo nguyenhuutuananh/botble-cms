@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     @php do_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, WIDGET_MANAGER_MODULE_SCREEN_NAME, request(), null) @endphp
     <div class="widget-main" id="wrap-widgets">
@@ -49,7 +49,7 @@
                                 </div>
                                 @php $index++; $widget_areas = $group->getWidgets() @endphp
                                 <ul id="wrap-widget-{{ $index }}">
-                                    @include('packages.widget::item', compact('widget_areas'))
+                                    @include('packages/widget::item', compact('widget_areas'))
                                     <div class="clearfix"></div>
                                 </ul>
                             </div>
@@ -68,7 +68,7 @@
     <script>
         var BWidget = BWidget || {};
         BWidget.routes = {
-            'delete': '{{ route('widgets.delete', ['ref_lang' => request()->input('ref_lang')]) }}',
+            'delete': '{{ route('widgets.destroy', ['ref_lang' => request()->input('ref_lang')]) }}',
             'save_widgets_sidebar': '{{ route('widgets.save_widgets_sidebar', ['ref_lang' => request()->input('ref_lang')]) }}'
         };
     </script>

@@ -2,7 +2,7 @@
 
 namespace Botble\Revision;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use DateTime;
 use DB;
 use Exception;
@@ -156,18 +156,18 @@ trait RevisionableTrait
     public function postSave()
     {
         if (isset($this->historyLimit) && $this->revisionHistory()->count() >= $this->historyLimit) {
-            $LimitReached = true;
+            $limitReached = true;
         } else {
-            $LimitReached = false;
+            $limitReached = false;
         }
         if (isset($this->revisionCleanup)) {
-            $RevisionCleanup = $this->revisionCleanup;
+            $revisionCleanup = $this->revisionCleanup;
         } else {
-            $RevisionCleanup = false;
+            $revisionCleanup = false;
         }
 
         // check if the model already exists
-        if (((!isset($this->revisionEnabled) || $this->revisionEnabled) && $this->updating) && (!$LimitReached || $RevisionCleanup)) {
+        if (((!isset($this->revisionEnabled) || $this->revisionEnabled) && $this->updating) && (!$limitReached || $revisionCleanup)) {
             // if it does, it means we're updating
 
             $changes_to_record = $this->changedRevisionableFields();
@@ -188,7 +188,7 @@ trait RevisionableTrait
             }
 
             if (count($revisions) > 0) {
-                if ($LimitReached && $RevisionCleanup) {
+                if ($limitReached && $revisionCleanup) {
                     $toDelete = $this->revisionHistory()->orderBy('id', 'asc')->limit(count($revisions))->get();
                     foreach ($toDelete as $delete) {
                         $delete->delete();
@@ -207,7 +207,6 @@ trait RevisionableTrait
      */
     public function postCreate()
     {
-
         // Check if we should store creations in our revision history
         // Set this value to true in your model if you want to
         if (empty($this->revisionCreationsEnabled)) {

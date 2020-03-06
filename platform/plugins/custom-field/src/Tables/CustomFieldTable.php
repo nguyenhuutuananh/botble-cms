@@ -2,6 +2,7 @@
 
 namespace Botble\CustomField\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\CustomField\Repositories\Interfaces\FieldGroupInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -26,10 +27,10 @@ class CustomFieldTable extends TableAbstract
     /**
      * @var string
      */
-    protected $view = 'plugins.custom-field::list';
+    protected $view = 'plugins/custom-field::list';
 
     /**
-     * TagTable constructor.
+     * CustomFieldTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param FieldGroupInterface $fieldGroupRepository
@@ -43,13 +44,18 @@ class CustomFieldTable extends TableAbstract
         $this->repository = $fieldGroupRepository;
         $this->setOption('id', 'table-custom-fields');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['custom-fields.edit', 'custom-fields.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -57,6 +63,10 @@ class CustomFieldTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('title', function ($item) {
+                if (!Auth::user()->hasPermission('custom-fields.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('custom-fields.edit', $item->id), $item->title);
             })
             ->editColumn('checkbox', function ($item) {
@@ -71,7 +81,7 @@ class CustomFieldTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, CUSTOM_FIELD_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('custom-fields.edit', 'custom-fields.delete', $item,
+                return table_actions('custom-fields.edit', 'custom-fields.destroy', $item,
                     Html::link(
                         route('custom-fields.export', ['id' => $item->id]),
                         Html::tag('i', '', ['class' => 'fa fa-download'])->toHtml(),
@@ -91,7 +101,7 @@ class CustomFieldTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -105,13 +115,13 @@ class CustomFieldTable extends TableAbstract
                 'field_groups.order',
                 'field_groups.created_at',
             ]);
-        
+
         return $this->applyScopes(apply_filters(BASE_FILTER_TABLE_QUERY, $query, $model, CUSTOM_FIELD_MODULE_SCREEN_NAME));
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -142,21 +152,17 @@ class CustomFieldTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      * @throws \Throwable
      */
     public function buttons()
     {
-        $buttons = [
-            'create'             => [
-                'link' => route('custom-fields.create'),
-                'text' => view('core.base::elements.tables.actions.create')->render(),
-            ],
-            'import-field-group' => [
-                'link' => '#',
-                'text' => view('plugins.custom-field::_partials.import')->render(),
-            ],
+        $buttons = $this->addCreateButton(route('custom-fields.create'), 'custom-fields.create');
+
+        $buttons['import-field-group'] = [
+            'link' => '#',
+            'text' => view('plugins/custom-field::_partials.import')->render(),
         ];
         return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, CUSTOM_FIELD_MODULE_SCREEN_NAME);
     }
@@ -164,23 +170,16 @@ class CustomFieldTable extends TableAbstract
     /**
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
+     *
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('custom-fields.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('custom-fields.deletes'), 'custom-fields.destroy', parent::bulkActions());
     }
 
     /**
      * @return mixed
-     * @author Sang Nguyen
+     *
      */
     public function getBulkChanges(): array
     {
@@ -189,7 +188,6 @@ class CustomFieldTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getFieldGroups',
             ],
             'field_groups.status'     => [
                 'title'    => trans('core/base::tables.status'),
@@ -202,13 +200,5 @@ class CustomFieldTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getFieldGroups()
-    {
-        return $this->repository->pluck('field_groups.title', 'field_groups.id');
     }
 }

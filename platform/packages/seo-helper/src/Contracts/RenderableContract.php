@@ -8,7 +8,6 @@ interface RenderableContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render();
 
@@ -16,7 +15,6 @@ interface RenderableContract
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString();
 }

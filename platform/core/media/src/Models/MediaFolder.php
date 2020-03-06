@@ -3,23 +3,21 @@
 namespace Botble\Media\Models;
 
 use Botble\Media\Services\UploadsManager;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MediaFolder extends Eloquent
+class MediaFolder extends BaseModel
 {
     use SoftDeletes;
 
     /**
      * The database table used by the model.
-     *
      * @var string
      */
     protected $table = 'media_folders';
 
     /**
      * The date fields for the model.clear
-     *
      * @var array
      */
     protected $dates = [
@@ -40,7 +38,6 @@ class MediaFolder extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     * @author Sang Nguyen
      */
     public function files()
     {
@@ -49,22 +46,16 @@ class MediaFolder extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     * @author Sang Nguyen
      */
     public function parentFolder()
     {
         return $this->hasOne(MediaFolder::class, 'id', 'parent');
     }
 
-    /**
-     * @author Sang Nguyen
-     */
     protected static function boot()
     {
         parent::boot();
         static::deleting(function ($folder) {
-            // called BEFORE delete()
-
             /**
              * @var MediaFolder $folder
              */

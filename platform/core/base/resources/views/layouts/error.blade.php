@@ -1,4 +1,4 @@
-@extends('core.base::layouts.base')
+@extends('core/base::layouts.base')
 
 @section ('page')
     <!-- Navbar -->

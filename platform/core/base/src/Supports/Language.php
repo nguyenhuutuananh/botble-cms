@@ -273,7 +273,6 @@ class Language
      * [3] => text direction
      * [4] => flag code
      */
-
     protected static $languages = [
         'af'             => ['af', 'af', 'Afrikaans', 'ltr', 'za'],
         'ar'             => ['ar', 'ar', 'العربية', 'rtl', 'arab'],
@@ -385,7 +384,6 @@ class Language
 
     /**
      * @return array
-     * @modified Sang Nguyen
      */
     public static function getListLanguages()
     {
@@ -394,7 +392,6 @@ class Language
 
     /**
      * @return array
-     * @modified Sang Nguyen
      */
     public static function getListLanguageFlags()
     {

@@ -7,7 +7,7 @@ if (!function_exists('get_slug_key_item')) {
      * @param $screen
      * @param $reference_id
      * @return null
-     * @author Sang Nguyen
+     *
      */
     function get_slug_key_item($screen, $reference_id)
     {

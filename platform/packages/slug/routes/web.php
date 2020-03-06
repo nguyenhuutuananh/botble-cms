@@ -5,7 +5,7 @@ Route::group(['namespace' => 'Botble\Slug\Http\Controllers', 'middleware' => 'we
         Route::group(['prefix' => 'slug'], function () {
             Route::post('create', [
                 'as'         => 'slug.create',
-                'uses'       => 'SlugController@postCreate',
+                'uses'       => 'SlugController@store',
             ]);
         });
     });

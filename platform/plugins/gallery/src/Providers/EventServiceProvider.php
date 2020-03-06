@@ -4,7 +4,7 @@ namespace Botble\Gallery\Providers;
 
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
-use Botble\Base\Events\RenderingSiteMapEvent;
+use Botble\Theme\Events\RenderingSiteMapEvent;
 use Botble\Base\Events\UpdatedContentEvent;
 use Botble\Gallery\Listeners\CreatedContentListener;
 use Botble\Gallery\Listeners\DeletedContentListener;
@@ -18,7 +18,6 @@ class EventServiceProvider extends ServiceProvider
      * The event listener mappings for the application.
      *
      * @var array
-     * @author Sang Nguyen
      */
     protected $listen = [
         RenderingSiteMapEvent::class => [

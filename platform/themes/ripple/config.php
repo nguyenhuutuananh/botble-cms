@@ -1,6 +1,5 @@
 <?php
 
-use Botble\Shortcode\View\View;
 use Botble\Theme\Theme;
 
 return [
@@ -62,9 +61,11 @@ return [
                 ->usePath()->add('ionicons', 'plugins/ionicons/css/ionicons.min.css')
                 ->usePath()->add('style', 'css/style.css');
 
-            $theme->composer(['page', 'post', 'index'], function (View $view) {
-                $view->withShortcodes();
-            });
+            if (function_exists('shortcode')) {
+                $theme->composer(['page', 'post', 'index'], function (\Botble\Shortcode\View\View $view) {
+                    $view->withShortcodes();
+                });
+            }
         },
 
         // Listen on event before render a layout,

@@ -6,6 +6,7 @@ use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Traits\HasDeleteManyItemsTrait;
 use Botble\Blog\Forms\PostForm;
 use Botble\Blog\Http\Requests\PostRequest;
 use Botble\Blog\Models\Post;
@@ -17,13 +18,15 @@ use Botble\Blog\Services\StoreCategoryService;
 use Botble\Blog\Services\StoreTagService;
 use Exception;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Events\UpdatedContentEvent;
 
 class PostController extends BaseController
 {
+
+    use HasDeleteManyItemsTrait;
 
     /**
      * @var PostInterface
@@ -44,7 +47,6 @@ class PostController extends BaseController
      * @param PostInterface $postRepository
      * @param TagInterface $tagRepository
      * @param CategoryInterface $categoryRepository
-     * @author Sang Nguyen
      */
     public function __construct(
         PostInterface $postRepository,
@@ -59,10 +61,9 @@ class PostController extends BaseController
     /**
      * @param PostTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      * @throws \Throwable
      */
-    public function getList(PostTable $dataTable)
+    public function index(PostTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/blog::posts.menu_name'));
 
@@ -72,9 +73,8 @@ class PostController extends BaseController
     /**
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/blog::posts.create'));
 
@@ -87,9 +87,8 @@ class PostController extends BaseController
      * @param StoreCategoryService $categoryService
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(
+    public function store(
         PostRequest $request,
         StoreTagService $tagService,
         StoreCategoryService $categoryService,
@@ -110,7 +109,7 @@ class PostController extends BaseController
         $categoryService->execute($request, $post);
 
         return $response
-            ->setPreviousUrl(route('posts.list'))
+            ->setPreviousUrl(route('posts.index'))
             ->setNextUrl(route('posts.edit', $post->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -120,15 +119,14 @@ class PostController extends BaseController
      * @param FormBuilder $formBuilder
      * @param Request $request
      * @return string
-     * @author Sang Nguyen
      */
-    public function getEdit($id, FormBuilder $formBuilder, Request $request)
+    public function edit($id, FormBuilder $formBuilder, Request $request)
     {
         $post = $this->postRepository->findOrFail($id);
 
         event(new BeforeEditContentEvent(POST_MODULE_SCREEN_NAME, $request, $post));
 
-        page_title()->setTitle(trans('plugins/blog::posts.edit') . ' #' . $id);
+        page_title()->setTitle(trans('plugins/blog::posts.edit') . ' "' . $post->name . '"');
 
         return $formBuilder->create(PostForm::class, ['model' => $post])->renderForm();
     }
@@ -140,9 +138,8 @@ class PostController extends BaseController
      * @param StoreCategoryService $categoryService
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postEdit(
+    public function update(
         $id,
         PostRequest $request,
         StoreTagService $tagService,
@@ -163,7 +160,7 @@ class PostController extends BaseController
         $categoryService->execute($request, $post);
 
         return $response
-            ->setPreviousUrl(route('posts.list'))
+            ->setPreviousUrl(route('posts.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -171,9 +168,8 @@ class PostController extends BaseController
      * @param int $id
      * @param Request $request
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $post = $this->postRepository->findOrFail($id);
@@ -194,26 +190,11 @@ class PostController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
-        $ids = $request->input('ids');
-        if (empty($ids)) {
-            return $response
-                ->setError()
-                ->setMessage(trans('core/base::notices.no_select'));
-        }
-
-        foreach ($ids as $id) {
-            $post = $this->postRepository->findOrFail($id);
-            $this->postRepository->delete($post);
-            event(new DeletedContentEvent(POST_MODULE_SCREEN_NAME, $request, $post));
-        }
-
-        return $response
-            ->setMessage(trans('core/base::notices.delete_success_message'));
+        return $this->executeDeleteItems($request, $response, $this->postRepository, POST_MODULE_SCREEN_NAME);
     }
 
     /**
@@ -221,7 +202,6 @@ class PostController extends BaseController
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function getWidgetRecentPosts(Request $request, BaseHttpResponse $response)
     {
@@ -231,6 +211,6 @@ class PostController extends BaseController
             ->paginate($limit);
 
         return $response
-            ->setData(view('plugins.blog::posts.widgets.posts', compact('posts', 'limit'))->render());
+            ->setData(view('plugins/blog::posts.widgets.posts', compact('posts', 'limit'))->render());
     }
 }

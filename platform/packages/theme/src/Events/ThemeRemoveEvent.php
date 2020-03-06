@@ -22,15 +22,4 @@ class ThemeRemoveEvent extends Event
     {
         $this->theme = $theme;
     }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     * @author Sang Nguyen
-     */
-    public function broadcastOn()
-    {
-        return [];
-    }
 }

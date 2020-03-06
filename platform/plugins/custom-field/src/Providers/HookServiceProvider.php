@@ -3,7 +3,7 @@
 namespace Botble\CustomField\Providers;
 
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Repositories\Interfaces\RoleInterface;
 use Botble\Blog\Repositories\Interfaces\PostInterface;
 use Botble\CustomField\Facades\CustomFieldSupportFacade;

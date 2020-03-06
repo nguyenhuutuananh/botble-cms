@@ -2,6 +2,7 @@
 
 namespace Botble\Contact\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\Contact\Enums\ContactStatusEnum;
 use Botble\Contact\Repositories\Interfaces\ContactInterface;
 use Botble\Table\Abstracts\TableAbstract;
@@ -23,7 +24,7 @@ class ContactTable extends TableAbstract
     protected $hasFilter = true;
 
     /**
-     * TagTable constructor.
+     * ContactTable constructor.
      * @param DataTables $table
      * @param UrlGenerator $urlGenerator
      * @param ContactInterface $contactRepository
@@ -33,13 +34,18 @@ class ContactTable extends TableAbstract
         $this->repository = $contactRepository;
         $this->setOption('id', 'table-contacts');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasAnyPermission(['contacts.edit', 'contacts.destroy'])) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function ajax()
@@ -47,6 +53,10 @@ class ContactTable extends TableAbstract
         $data = $this->table
             ->eloquent($this->query())
             ->editColumn('name', function ($item) {
+                if (!Auth::user()->hasPermission('contacts.edit')) {
+                    return $item->name;
+                }
+
                 return anchor_link(route('contacts.edit', $item->id), $item->name);
             })
             ->editColumn('checkbox', function ($item) {
@@ -61,7 +71,7 @@ class ContactTable extends TableAbstract
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, CONTACT_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions('contacts.edit', 'contacts.delete', $item);
+                return table_actions('contacts.edit', 'contacts.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -71,7 +81,7 @@ class ContactTable extends TableAbstract
      * Get the query object to be processed by the table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -92,7 +102,7 @@ class ContactTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function columns()
@@ -108,13 +118,14 @@ class ContactTable extends TableAbstract
                 'title' => trans('core/base::tables.name'),
                 'class' => 'text-left',
             ],
-            'phone'      => [
-                'name'  => 'contacts.phone',
-                'title' => trans('plugins/contact::contact.tables.phone'),
-            ],
             'email'      => [
                 'name'  => 'contacts.email',
                 'title' => trans('plugins/contact::contact.tables.email'),
+                'class' => 'text-left',
+            ],
+            'phone'      => [
+                'name'  => 'contacts.phone',
+                'title' => trans('plugins/contact::contact.tables.phone'),
             ],
             'created_at' => [
                 'name'  => 'contacts.created_at',
@@ -131,7 +142,7 @@ class ContactTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function buttons()
@@ -145,14 +156,7 @@ class ContactTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = parent::bulkActions();
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('contacts.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('contacts.deletes'), 'contacts.destroy', parent::bulkActions());
     }
 
     /**
@@ -165,19 +169,16 @@ class ContactTable extends TableAbstract
                 'title'    => trans('core/base::tables.name'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getNames',
             ],
             'contacts.email'      => [
                 'title'    => trans('core/base::tables.email'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getEmails',
             ],
             'contacts.phone'      => [
                 'title'    => trans('plugins/contact::contact.sender_phone'),
                 'type'     => 'text',
                 'validate' => 'required|max:120',
-                'callback' => 'getPhones',
             ],
             'contacts.status'    => [
                 'title'    => trans('core/base::tables.status'),
@@ -190,30 +191,6 @@ class ContactTable extends TableAbstract
                 'type'  => 'date',
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getNames()
-    {
-        return $this->repository->pluck('contacts.name', 'contacts.id');
-    }
-
-    /**
-     * @return array
-     */
-    public function getEmails()
-    {
-        return $this->repository->pluck('contacts.email', 'contacts.id');
-    }
-
-    /**
-     * @return array
-     */
-    public function getPhones()
-    {
-        return $this->repository->pluck('contacts.phone', 'contacts.id');
     }
 
     /**

@@ -28,12 +28,13 @@ class VideoPostsWidget extends AbstractWidget
 
     /**
      * VideoPostsWidget constructor.
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __construct()
     {
         parent::__construct([
-            'name' => 'Video Posts',
-            'description' => 'Video posts widget',
+            'name'           => 'Video Posts',
+            'description'    => 'Video posts widget',
             'number_display' => 5,
         ]);
     }

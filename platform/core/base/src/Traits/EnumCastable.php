@@ -4,11 +4,6 @@ namespace Botble\Base\Traits;
 
 use Botble\Base\Supports\Enum;
 
-/**
- * Trait EnumCastable
- * @package Botble\Base\Traits
- * @mixin \Illuminate\Database\Eloquent\Concerns\HasAttributes
- */
 trait EnumCastable
 {
     /**

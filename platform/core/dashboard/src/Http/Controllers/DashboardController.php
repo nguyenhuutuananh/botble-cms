@@ -3,14 +3,13 @@
 namespace Botble\Dashboard\Http\Controllers;
 
 use Assets;
-use Auth;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Dashboard\Repositories\Interfaces\DashboardWidgetInterface;
 use Botble\Dashboard\Repositories\Interfaces\DashboardWidgetSettingInterface;
 use Exception;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -49,15 +48,15 @@ class DashboardController extends BaseController
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
-    public function getDashboard()
+    public function getDashboard(Request $request)
     {
         page_title()->setTitle(trans('core/dashboard::dashboard.title'));
 
         Assets::addScripts(['blockui', 'sortable', 'equal-height', 'counterup'])
-            ->addScriptsDirectly(['vendor/core/js/app_modules/dashboard.js']);
+            ->addScriptsDirectly(['vendor/core/js/dashboard.js']);
 
         do_action(DASHBOARD_ACTION_REGISTER_SCRIPTS);
 
@@ -66,11 +65,8 @@ class DashboardController extends BaseController
          */
         $widgets = $this->widgetRepository->getModel()
             ->with([
-                'settings' => function ($query) {
-                    /**
-                     * @var Builder $query
-                     */
-                    $query->where('user_id', '=', Auth::user()->getKey())
+                'settings' => function (HasMany $query) use ($request) {
+                    $query->where('user_id', '=', $request->user()->getKey())
                         ->select(['status', 'order', 'settings', 'widget_id'])
                         ->orderBy('order', 'asc');
                 },
@@ -89,14 +85,13 @@ class DashboardController extends BaseController
 
         $user_widgets = collect($widget_data)->pluck('view')->all();
 
-        return view('core.dashboard::list', compact('widgets', 'user_widgets'));
+        return view('core/dashboard::list', compact('widgets', 'user_widgets'));
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postEditWidgetSettingItem(Request $request, BaseHttpResponse $response)
     {
@@ -112,7 +107,7 @@ class DashboardController extends BaseController
             }
             $widget_setting = $this->widgetSettingRepository->firstOrCreate([
                 'widget_id' => $widget->id,
-                'user_id'   => Auth::user()->getKey(),
+                'user_id'   => $request->user()->getKey(),
             ]);
             $widget_setting->settings = array_merge((array)$widget_setting->settings, [
                 $request->input('setting_name') => $request->input('setting_value'),
@@ -131,7 +126,6 @@ class DashboardController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postUpdateWidgetOrder(Request $request, BaseHttpResponse $response)
     {
@@ -141,7 +135,7 @@ class DashboardController extends BaseController
             ]);
             $widget_setting = $this->widgetSettingRepository->firstOrCreate([
                 'widget_id' => $widget->id,
-                'user_id'   => Auth::user()->getKey(),
+                'user_id'   => $request->user()->getKey(),
             ]);
             $widget_setting->order = $key;
             $this->widgetSettingRepository->createOrUpdate($widget_setting);
@@ -154,7 +148,6 @@ class DashboardController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function getHideWidget(Request $request, BaseHttpResponse $response)
     {
@@ -164,7 +157,7 @@ class DashboardController extends BaseController
         if (!empty($widget)) {
             $widget_setting = $this->widgetSettingRepository->firstOrCreate([
                 'widget_id' => $widget->id,
-                'user_id'   => Auth::user()->getKey(),
+                'user_id'   => $request->user()->getKey(),
             ]);
             $widget_setting->status = 0;
             $widget_setting->order = 99 + $widget_setting->id;
@@ -178,7 +171,6 @@ class DashboardController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postHideWidgets(Request $request, BaseHttpResponse $response)
     {
@@ -186,7 +178,7 @@ class DashboardController extends BaseController
         foreach ($widgets as $widget) {
             $widget_setting = $this->widgetSettingRepository->firstOrCreate([
                 'widget_id' => $widget->id,
-                'user_id'   => Auth::user()->getKey(),
+                'user_id'   => $request->user()->getKey(),
             ]);
             if (array_key_exists($widget->name, $request->input('widgets', []))) {
                 $widget_setting->status = 1;

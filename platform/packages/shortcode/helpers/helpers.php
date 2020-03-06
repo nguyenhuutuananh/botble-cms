@@ -5,7 +5,7 @@ use Illuminate\Support\Str;
 if (!function_exists('shortcode')) {
     /**
      * @return \Illuminate\Foundation\Application|mixed
-     * @author Sang Nguyen
+     *
      */
     function shortcode()
     {
@@ -20,7 +20,7 @@ if (!function_exists('add_shortcode')) {
      * @param null $description
      * @param $callback
      * @return \Illuminate\Support\ServiceProvider
-     * @author Sang Nguyen
+     *
      */
     function add_shortcode($key, $name, $description = null, $callback)
     {

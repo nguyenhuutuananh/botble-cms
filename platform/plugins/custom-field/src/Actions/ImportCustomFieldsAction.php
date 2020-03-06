@@ -2,7 +2,7 @@
 
 namespace Botble\CustomField\Actions;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\CustomField\Repositories\Interfaces\FieldGroupInterface;
 use Botble\CustomField\Repositories\Interfaces\FieldItemInterface;
 use DB;

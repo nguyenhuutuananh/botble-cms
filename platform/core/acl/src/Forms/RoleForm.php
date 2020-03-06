@@ -2,6 +2,7 @@
 
 namespace Botble\ACL\Forms;
 
+use Assets;
 use Botble\ACL\Http\Requests\RoleCreateRequest;
 use Botble\Base\Forms\FormAbstract;
 use Illuminate\Support\Arr;
@@ -15,6 +16,10 @@ class RoleForm extends FormAbstract
      */
     public function buildForm()
     {
+        Assets::addStyles(['jquery-ui', 'jqueryTree'])
+            ->addScripts(['jquery-ui', 'jqueryTree'])
+            ->addScriptsDirectly('vendor/core/js/role.js');
+
         $flags = $this->getAvailablePermissions();
         $children = $this->getPermissionTree($flags);
         $active = [];
@@ -55,32 +60,14 @@ class RoleForm extends FormAbstract
             ->addMetaBoxes([
                 'permissions' => [
                     'title'   => trans('core/acl::permissions.permission_flags'),
-                    'content' => view('core.acl::roles.permissions', compact('active', 'flags', 'children'))->render(),
+                    'content' => view('core/acl::roles.permissions', compact('active', 'flags', 'children'))->render(),
                 ],
             ])
-            ->setActionButtons(view('core.acl::roles.actions', ['role' => $this->getModel()])->render());
-    }
-
-    /**
-     * @param int $parentId
-     * @param array $allFlags
-     * @return mixed
-     * @author Sang Nguyen
-     */
-    protected function getChildren($parentId, $allFlags)
-    {
-        $newFlagArray = [];
-        foreach ($allFlags as $flagDetails) {
-            if (Arr::get($flagDetails, 'parent_flag', 'root') == $parentId) {
-                $newFlagArray[] = $flagDetails['flag'];
-            }
-        }
-        return $newFlagArray;
+            ->setActionButtons(view('core/acl::roles.actions', ['role' => $this->getModel()])->render());
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     protected function getAvailablePermissions(): array
     {
@@ -125,7 +112,6 @@ class RoleForm extends FormAbstract
     /**
      * @param array $permissions
      * @return array
-     * @author Sang Nguyen
      */
     protected function getPermissionTree($permissions): array
     {
@@ -141,5 +127,21 @@ class RoleForm extends FormAbstract
         }
 
         return $children;
+    }
+
+    /**
+     * @param int $parentId
+     * @param array $allFlags
+     * @return mixed
+     */
+    protected function getChildren($parentId, $allFlags)
+    {
+        $newFlagArray = [];
+        foreach ($allFlags as $flagDetails) {
+            if (Arr::get($flagDetails, 'parent_flag', 'root') == $parentId) {
+                $newFlagArray[] = $flagDetails['flag'];
+            }
+        }
+        return $newFlagArray;
     }
 }

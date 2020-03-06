@@ -2,8 +2,10 @@
 
 namespace Botble\AuditLog\Tables;
 
+use Illuminate\Support\Facades\Auth;
 use Botble\AuditLog\Repositories\Interfaces\AuditLogInterface;
 use Botble\Table\Abstracts\TableAbstract;
+use Html;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Yajra\DataTables\DataTables;
 
@@ -30,13 +32,17 @@ class AuditLogTable extends TableAbstract
         $this->repository = $auditLogRepository;
         $this->setOption('id', 'table-audit-logs');
         parent::__construct($table, $urlGenerator);
+
+        if (!Auth::user()->hasPermission('audit-log.destroy')) {
+            $this->hasOperations = false;
+            $this->hasActions = false;
+        }
     }
 
     /**
      * Display ajax response.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @author Sang Nguyen
      */
     public function ajax()
     {
@@ -46,12 +52,12 @@ class AuditLogTable extends TableAbstract
                 return table_checkbox($item->id);
             })
             ->editColumn('action', function ($history) {
-                return view('plugins.audit-log::activity-line', compact('history'))->render();
+                return view('plugins/audit-log::activity-line', compact('history'))->render();
             });
 
         return apply_filters(BASE_FILTER_GET_LIST_DATA, $data, AUDIT_LOG_MODULE_SCREEN_NAME)
             ->addColumn('operations', function ($item) {
-                return table_actions(null, 'audit-log.delete', $item);
+                return table_actions(null, 'audit-log.destroy', $item);
             })
             ->escapeColumns([])
             ->make(true);
@@ -61,7 +67,7 @@ class AuditLogTable extends TableAbstract
      * Get the query object to be processed by table.
      *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     * @author Sang Nguyen
+     *
      * @since 2.1
      */
     public function query()
@@ -69,30 +75,29 @@ class AuditLogTable extends TableAbstract
         $model = $this->repository->getModel();
         $query = $model
             ->with(['user'])
-            ->select('audit_history.*');
+            ->select('audit_histories.*');
 
         return $this->applyScopes(apply_filters(BASE_FILTER_TABLE_QUERY, $query, $model, AUDIT_LOG_MODULE_SCREEN_NAME));
     }
 
     /**
      * @return array
-     * @author Sang Nguyen
      */
     public function columns()
     {
         return [
             'id'         => [
-                'name'  => 'audit_history.id',
+                'name'  => 'audit_histories.id',
                 'title' => trans('core/base::tables.id'),
                 'width' => '20px',
             ],
             'action'     => [
-                'name'  => 'audit_history.action',
+                'name'  => 'audit_histories.action',
                 'title' => trans('plugins/audit-log::history.action'),
                 'class' => 'text-left',
             ],
             'user_agent' => [
-                'name'  => 'audit_history.user_agent',
+                'name'  => 'audit_histories.user_agent',
                 'title' => trans('plugins/audit-log::history.user_agent'),
                 'class' => 'text-left',
             ],
@@ -101,12 +106,19 @@ class AuditLogTable extends TableAbstract
 
     /**
      * @return array
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
     public function buttons()
     {
-        return apply_filters(BASE_FILTER_TABLE_BUTTONS, [], AUDIT_LOG_MODULE_SCREEN_NAME);
+        $buttons = [
+            'empty' => [
+                'link' => route('audit-log.empty'),
+                'text' => Html::tag('i', '', ['class' => 'fa fa-trash'])->toHtml() . ' ' . __('Delete all records'),
+            ],
+        ];
+
+        return apply_filters(BASE_FILTER_TABLE_BUTTONS, $buttons, AUDIT_LOG_MODULE_SCREEN_NAME);
     }
 
     /**
@@ -115,13 +127,6 @@ class AuditLogTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        $actions = [];
-
-        $actions['delete-many'] = view('core.table::partials.delete', [
-            'href'       => route('audit-log.delete.many'),
-            'data_class' => get_class($this),
-        ]);
-
-        return $actions;
+        return $this->addDeleteAction(route('audit-log.deletes'), 'audit-log.destroy', parent::bulkActions());
     }
 }

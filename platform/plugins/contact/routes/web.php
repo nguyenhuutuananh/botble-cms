@@ -7,31 +7,14 @@ Route::group(['namespace' => 'Botble\Contact\Http\Controllers', 'middleware' => 
     ]);
 
     Route::group(['prefix' => config('core.base.general.admin_dir'), 'middleware' => 'auth'], function () {
+
+        Route::resource('contacts', 'ContactController')->except(['create', 'store']);
+
         Route::group(['prefix' => 'contacts'], function () {
-            Route::get('', [
-                'as'   => 'contacts.list',
-                'uses' => 'ContactController@getList',
-            ]);
-
-            Route::get('edit/{id}', [
-                'as'   => 'contacts.edit',
-                'uses' => 'ContactController@getEdit',
-            ]);
-
-            Route::post('edit/{id}', [
-                'as'   => 'contacts.edit',
-                'uses' => 'ContactController@postEdit',
-            ]);
-
-            Route::get('delete/{id}', [
-                'as'   => 'contacts.delete',
-                'uses' => 'ContactController@getDelete',
-            ]);
-
-            Route::post('delete-many', [
-                'as'         => 'contacts.delete.many',
-                'uses'       => 'ContactController@postDeleteMany',
-                'permission' => 'contacts.delete',
+            Route::delete('items/destroy', [
+                'as'         => 'contacts.deletes',
+                'uses'       => 'ContactController@deletes',
+                'permission' => 'contacts.destroy',
             ]);
 
             Route::post('reply/{id}', [

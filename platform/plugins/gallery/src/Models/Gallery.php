@@ -6,9 +6,9 @@ use Botble\ACL\Models\User;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Traits\EnumCastable;
 use Botble\Slug\Traits\SlugTrait;
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-class Gallery extends Eloquent
+class Gallery extends BaseModel
 {
     use SlugTrait;
     use EnumCastable;
@@ -59,7 +59,7 @@ class Gallery extends Eloquent
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * @author Sang Nguyen
+     *
      */
     public function user()
     {

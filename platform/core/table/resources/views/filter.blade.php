@@ -18,6 +18,7 @@
             </div>
             <div class="ui-select-wrapper">
                 <select name="filter_operators[]" class="ui-select filter-operator filter-column-operator">
+                    <option value="like">{{ trans('core/table::general.contains') }}</option>
                     <option value="=">{{ trans('core/table::general.is_equal_to') }}</option>
                     <option value=">">{{ trans('core/table::general.greater_than') }}</option>
                     <option value="<">{{ trans('core/table::general.less_than') }}</option>
@@ -55,6 +56,8 @@
                     </div>
                     <div class="ui-select-wrapper">
                         <select name="filter_operators[]" class="ui-select filter-column-operator">
+                            <option value="like"
+                                    @if ($filter_item['operator'] == 'like') selected @endif>{{ trans('core/table::general.contains') }}</option>
                             <option value="="
                                     @if ($filter_item['operator'] == '=') selected @endif>{{ trans('core/table::general.is_equal_to') }}</option>
                             <option value=">"

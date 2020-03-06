@@ -3,7 +3,7 @@
 namespace Botble\RequestLog\Providers;
 
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Dashboard\Supports\DashboardWidgetInstance;
 use Botble\RequestLog\Events\RequestHandlerEvent;
 use Illuminate\Support\Collection;
@@ -11,15 +11,6 @@ use Illuminate\Support\ServiceProvider;
 
 class HookServiceProvider extends ServiceProvider
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         add_action(BASE_ACTION_SITE_ERROR, [$this, 'handleSiteError'], 125, 1);
@@ -30,7 +21,6 @@ class HookServiceProvider extends ServiceProvider
      * Fire event log
      *
      * @param $code
-     * @author Sang Nguyen
      */
     public function handleSiteError($code)
     {
@@ -42,27 +32,24 @@ class HookServiceProvider extends ServiceProvider
      * @param Collection $widgetSettings
      * @return array
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function registerDashboardWidgets($widgets, $widgetSettings)
     {
-        if (!Auth::user()->hasPermission('request-log.list')) {
+        if (!Auth::user()->hasPermission('request-log.index')) {
             return $widgets;
         }
 
         Assets::addScriptsDirectly(['vendor/core/plugins/request-log/js/request-log.js']);
 
-        $widget = new DashboardWidgetInstance();
-
-        $widget->permission = 'request-log.list';
-        $widget->key = 'widget_request_errors';
-        $widget->title = trans('plugins/request-log::request-log.widget_request_errors');
-        $widget->icon = 'fas fa-unlink';
-        $widget->color = '#e7505a';
-        $widget->route = route('request-log.widget.request-errors');
-        $widget->bodyClass = 'scroll-table';
-        $widget->column = 'col-md-6 col-sm-6';
-
-        return $widget->init($widgets, $widgetSettings);
+        return (new DashboardWidgetInstance)
+            ->setPermission('request-log.index')
+            ->setKey('widget_request_errors')
+            ->setTitle(trans('plugins/request-log::request-log.widget_request_errors'))
+            ->setIcon('fas fa-unlink')
+            ->setColor('#e7505a')
+            ->setRoute(route('request-log.widget.request-errors'))
+            ->setBodyClass('scroll-table')
+            ->setColumn('col-md-6 col-sm-6')
+            ->init($widgets, $widgetSettings);
     }
 }

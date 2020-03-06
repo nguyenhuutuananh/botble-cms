@@ -2,14 +2,9 @@
 
 namespace Botble\Language\Models;
 
-use Eloquent;
+use Botble\Base\Models\BaseModel;
 
-/**
- * Botble\Language\Models\LanguageMeta
- *
- * @mixin \Eloquent
- */
-class LanguageMeta extends Eloquent
+class LanguageMeta extends BaseModel
 {
 
     /**

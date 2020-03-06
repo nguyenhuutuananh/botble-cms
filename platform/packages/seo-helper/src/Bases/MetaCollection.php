@@ -2,11 +2,11 @@
 
 namespace Botble\SeoHelper\Bases;
 
-use Botble\Base\Supports\Collection;
 use Botble\SeoHelper\Contracts\Entities\MetaCollectionContract;
 use Botble\SeoHelper\Contracts\Helpers\MetaContract;
 use Botble\SeoHelper\Contracts\RenderableContract;
 use Botble\SeoHelper\Helpers\Meta;
+use Illuminate\Support\Collection;
 
 abstract class MetaCollection extends Collection implements MetaCollectionContract
 {
@@ -45,7 +45,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  string $prefix
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     public function setPrefix($prefix)
     {
@@ -60,7 +59,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  array $meta
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     public function addMany(array $meta)
     {
@@ -78,7 +76,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     public function add($item)
     {
@@ -100,7 +97,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  string $content
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     protected function addMeta(array $meta)
     {
@@ -117,7 +113,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  array|string $names
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     public function remove($names)
     {
@@ -130,7 +125,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function render()
     {
@@ -145,7 +139,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * Render the tag.
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function __toString()
     {
@@ -158,7 +151,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  string $name
      *
      * @return bool
-     * @author ARCANEDEV
      */
     protected function isIgnored($name)
     {
@@ -171,7 +163,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  string|array $keys
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     public function forget($keys)
     {
@@ -186,7 +177,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * Refresh meta collection items.
      *
      * @return \Botble\SeoHelper\Bases\MetaCollection
-     * @author ARCANEDEV
      */
     protected function refresh()
     {
@@ -201,7 +191,6 @@ abstract class MetaCollection extends Collection implements MetaCollectionContra
      * @param  array|string $names
      *
      * @return array
-     * @author ARCANEDEV
      */
     protected function prepareName($names)
     {

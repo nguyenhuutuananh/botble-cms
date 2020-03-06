@@ -62,7 +62,6 @@ class SendMailJob implements ShouldQueue
      * Handle the job.
      *
      * @return void
-     * @author Sang Nguyen
      * @throws Exception
      */
     public function handle()

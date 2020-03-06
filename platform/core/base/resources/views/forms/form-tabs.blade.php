@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     @if ($showStart)
         {!! Form::open(Arr::except($formOptions, ['template'])) !!}
@@ -80,7 +80,7 @@
 @if ($form->getValidatorClass())
     @if ($form->isUseInlineJs())
         {!! Assets::scriptToHtml('jquery') !!}
-        {!! Assets::getAppModuleItemToHtml('form-validation') !!}
+        {!! Assets::scriptToHtml('form-validation') !!}
         {!! $form->renderValidatorJs() !!}
     @else
         @push('footer')

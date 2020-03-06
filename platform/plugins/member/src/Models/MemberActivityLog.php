@@ -3,12 +3,9 @@
 namespace Botble\Member\Models;
 
 use Html;
-use Illuminate\Database\Eloquent\Model;
+use Botble\Base\Models\BaseModel;
 
-/**
- * @mixin \Eloquent
- */
-class MemberActivityLog extends Model
+class MemberActivityLog extends BaseModel
 {
     /**
      * @var string
@@ -29,9 +26,6 @@ class MemberActivityLog extends Model
         'member_id',
     ];
 
-    /**
-     *  Setup model event hooks
-     */
     public static function boot()
     {
         parent::boot();

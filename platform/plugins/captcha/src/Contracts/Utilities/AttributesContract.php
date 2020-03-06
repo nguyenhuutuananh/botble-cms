@@ -12,7 +12,6 @@ interface AttributesContract
      * Get image type attribute.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function getImageAttribute();
 
@@ -20,7 +19,6 @@ interface AttributesContract
      * Get audio type attribute.
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function getAudioAttribute();
 
@@ -31,7 +29,6 @@ interface AttributesContract
      * @param  array $items
      *
      * @return string
-     * @author ARCANEDEV
      */
     public function build($siteKey, array $items = []);
 
@@ -41,7 +38,6 @@ interface AttributesContract
      * @param  string|null $name
      *
      * @return array
-     * @author ARCANEDEV
      */
     public function prepareNameAttribute($name);
 }

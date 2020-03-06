@@ -18,12 +18,13 @@ class TagsWidget extends AbstractWidget
 
     /**
      * TagsWidget constructor.
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __construct()
     {
         parent::__construct([
-            'name' => __('Tags'),
-            'description' => __('Popular tags'),
+            'name'           => __('Tags'),
+            'description'    => __('Popular tags'),
             'number_display' => 5,
         ]);
     }

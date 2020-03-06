@@ -3,29 +3,32 @@
 namespace Botble\ACL\Http\Controllers;
 
 use Assets;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\ACL\Forms\PasswordForm;
 use Botble\ACL\Forms\ProfileForm;
 use Botble\ACL\Forms\UserForm;
 use Botble\ACL\Tables\UserTable;
-use Botble\ACL\Http\Requests\ChangeProfileImageRequest;
 use Botble\ACL\Http\Requests\CreateUserRequest;
 use Botble\ACL\Http\Requests\UpdatePasswordRequest;
 use Botble\ACL\Http\Requests\UpdateProfileRequest;
-use Botble\ACL\Models\User;
 use Botble\ACL\Models\UserMeta;
 use Botble\ACL\Repositories\Interfaces\RoleInterface;
 use Botble\ACL\Repositories\Interfaces\UserInterface;
 use Botble\ACL\Services\ChangePasswordService;
 use Botble\ACL\Services\CreateUserService;
-use Botble\ACL\Services\UpdateProfileImageService;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Forms\FormBuilder;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Media\Repositories\Interfaces\MediaFileInterface;
+use Botble\Media\Services\ThumbnailService;
+use Botble\Media\Services\UploadsManager;
+use Botble\ACL\Http\Requests\AvatarRequest;
 use Exception;
+use File;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class UserController extends BaseController
 {
@@ -41,33 +44,40 @@ class UserController extends BaseController
     protected $roleRepository;
 
     /**
+     * @var MediaFileInterface
+     */
+    protected $fileRepository;
+
+    /**
      * UserController constructor.
      * @param UserInterface $userRepository
      * @param RoleInterface $roleRepository
+     * @param MediaFileInterface $fileRepository
      */
     public function __construct(
         UserInterface $userRepository,
-        RoleInterface $roleRepository
+        RoleInterface $roleRepository,
+        MediaFileInterface $fileRepository
     )
     {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
      * Display all users
      * @param UserTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(UserTable $dataTable)
+    public function index(UserTable $dataTable)
     {
-        page_title()->setTitle(trans('core/acl::permissions.user_management'));
+        page_title()->setTitle(trans('core/acl::users.users'));
 
         Assets::addScripts(['bootstrap-editable'])
-            ->addStyles(['bootstrap-editable'])
-            ->addAppModule(['user']);
+            ->addStyles(['bootstrap-editable']);
 
         return $dataTable->renderTable();
     }
@@ -75,9 +85,8 @@ class UserController extends BaseController
     /**
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(__('Create new user'));
 
@@ -87,17 +96,17 @@ class UserController extends BaseController
     /**
      * @param CreateUserRequest $request
      * @param CreateUserService $service
+     * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postCreate(CreateUserRequest $request, CreateUserService $service, BaseHttpResponse $response)
+    public function store(CreateUserRequest $request, CreateUserService $service, BaseHttpResponse $response)
     {
         $user = $service->execute($request);
 
         event(new CreatedContentEvent(USER_MODULE_SCREEN_NAME, $request, $user));
 
         return $response
-            ->setPreviousUrl(route('users.list'))
+            ->setPreviousUrl(route('users.index'))
             ->setNextUrl(route('user.profile.view', $user->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -107,11 +116,10 @@ class UserController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function getDelete($id, Request $request, BaseHttpResponse $response)
+    public function destroy($id, Request $request, BaseHttpResponse $response)
     {
-        if (Auth::user()->getKey() == $id) {
+        if ($request->user()->getKey() == $id) {
             return $response
                 ->setError()
                 ->setMessage(trans('core/acl::users.delete_user_logged_in'));
@@ -134,9 +142,8 @@ class UserController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
         $ids = $request->input('ids');
         if (empty($ids)) {
@@ -146,7 +153,7 @@ class UserController extends BaseController
         }
 
         foreach ($ids as $id) {
-            if (Auth::user()->getKey() == $id) {
+            if ($request->user()->getKey() == $id) {
                 return $response
                     ->setError()
                     ->setMessage(trans('core/acl::users.delete_user_logged_in'));
@@ -167,17 +174,19 @@ class UserController extends BaseController
 
     /**
      * @param int $id
+     * @param Request $request
+     * @param FormBuilder $formBuilder
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View| \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
      */
-    public function getUserProfile($id, FormBuilder $formBuilder)
+    public function getUserProfile($id, Request $request, FormBuilder $formBuilder)
     {
-        page_title()->setTitle(__('User profile # ') . $id);
 
         Assets::addScripts(['bootstrap-pwstrength', 'cropper'])
-            ->addAppModule(['profile']);
+            ->addScriptsDirectly('vendor/core/js/profile.js');
 
         $user = $this->userRepository->findOrFail($id);
+
+        page_title()->setTitle(__('User profile ":name"', ['name' => $user->getFullName()]));
 
         $form = $formBuilder
             ->create(ProfileForm::class, ['model' => $user])
@@ -186,7 +195,7 @@ class UserController extends BaseController
             ->create(PasswordForm::class)
             ->setUrl(route('users.change-password', $user->id));
 
-        $can_change_profile = Auth::user()->getKey() == $id || Auth::user()->isSuperUser();
+        $can_change_profile = $request->user()->getKey() == $id || $request->user()->isSuperUser();
 
         if (!$can_change_profile) {
             $form->disableFields();
@@ -195,13 +204,13 @@ class UserController extends BaseController
             $password_form->removeActionButtons();
         }
 
-        if (Auth::user()->isSuperUser()) {
+        if ($request->user()->isSuperUser()) {
             $password_form->remove('old_password');
         }
         $form = $form->renderForm();
         $password_form = $password_form->renderForm();
 
-        return view('core.acl::users.profile.base', compact('user', 'form', 'password_form', 'can_change_profile'));
+        return view('core/acl::users.profile.base', compact('user', 'form', 'password_form', 'can_change_profile'));
     }
 
     /**
@@ -209,16 +218,12 @@ class UserController extends BaseController
      * @param UpdateProfileRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postUpdateProfile($id, UpdateProfileRequest $request, BaseHttpResponse $response)
     {
         $user = $this->userRepository->findById($id);
 
-        /**
-         * @var User $currentUser
-         */
-        $currentUser = Auth::user();
+        $currentUser = $request->user();
         if (($currentUser->hasPermission('users.update-profile') && $currentUser->getKey() === $user->id) ||
             $currentUser->isSuperUser()
         ) {
@@ -263,7 +268,6 @@ class UserController extends BaseController
      * @param ChangePasswordService $service
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
     public function postChangePassword(
         $id,
@@ -285,34 +289,71 @@ class UserController extends BaseController
     }
 
     /**
-     * @param ChangeProfileImageRequest $request
-     * @param UpdateProfileImageService $service
+     * @param AvatarRequest $request
+     * @param UploadsManager $uploadManager
+     * @param ImageManager $imageManager
+     * @param ThumbnailService $thumbnailService
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
      */
-    public function postModifyProfileImage(
-        ChangeProfileImageRequest $request,
-        UpdateProfileImageService $service,
+    public function postAvatar(
+        AvatarRequest $request,
+        UploadsManager $uploadManager,
+        ImageManager $imageManager,
+        ThumbnailService $thumbnailService,
         BaseHttpResponse $response
     )
     {
         try {
-            $result = $service->execute($request);
+            $fileUpload = $request->file('avatar_file');
 
-            if ($result instanceof Exception) {
-                return $response->setMessage($result->getMessage());
-            }
+            $file_ext = $fileUpload->getClientOriginalExtension();
 
-            if (!empty($result)) {
-                return $response
-                    ->setData($result)
-                    ->setMessage(trans('core/acl::users.update_avatar_success'));
-            }
+            $folder_path = '/users';
+
+            $fileName = $this->fileRepository->createName(File::name($fileUpload->getClientOriginalName()), 0);
+
+            $fileName = $this->fileRepository->createSlug($fileName, $file_ext, $uploadManager->uploadPath($folder_path));
+
+            $user = $this->userRepository->findById($request->user()->getKey());
+
+            $image = $imageManager->make($request->file('avatar_file')->getRealPath());
+            $avatarData = json_decode($request->input('avatar_data'));
+            $image->crop((int)$avatarData->height, (int)$avatarData->width, (int) $avatarData->x, (int) $avatarData->y);
+            $path = $folder_path . '/' . $fileName;
+
+            $uploadManager->saveFile($path, $image->stream()->__toString());
+
+            $readable_size = explode('x', config('media.sizes.thumb'));
+
+            $thumbnailService
+                ->setImage($fileUpload->getRealPath())
+                ->setSize($readable_size[0], $readable_size[1])
+                ->setDestinationPath($folder_path)
+                ->setFileName(File::name($fileName) . '-' . config('media.sizes.thumb') . '.' . $file_ext)
+                ->save();
+
+            $data = $uploadManager->fileDetails($path);
+
+            $file = $this->fileRepository->getModel();
+            $file->name = $fileName;
+            $file->url = $data['url'];
+            $file->size = $data['size'];
+            $file->mime_type = $data['mime_type'];
+            $file->folder_id = 0;
+            $file->user_id = 0;
+            $file->options = [];
+            $file = $this->fileRepository->createOrUpdate($file);
+
+            $this->fileRepository->forceDelete(['id' => $user->avatar_id]);
+
+            $user->avatar_id = $file->id;
+
+            $this->userRepository->createOrUpdate($user);
 
             return $response
-                ->setError()
-                ->setMessage(__('Error when changing profile image, please try again later.'));
+                ->setMessage(trans('core/acl::users.update_avatar_success'))
+                ->setData(['url' => url($data['url'])]);
         } catch (Exception $ex) {
             return $response
                 ->setError()
@@ -322,16 +363,16 @@ class UserController extends BaseController
 
     /**
      * @param string $lang
+     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
      * @throws Exception
      */
-    public function getLanguage($lang)
+    public function getLanguage($lang, Request $request)
     {
         if ($lang != false && array_key_exists($lang, Assets::getAdminLocales())) {
             if (Auth::check()) {
                 UserMeta::setMeta('admin-locale', $lang);
-                cache()->forget(md5('cache-dashboard-menu-' . Auth::user()->getKey()));
+                cache()->forget(md5('cache-dashboard-menu-' . $request->user()->getKey()));
             }
             session()->put('admin-locale', $lang);
         }
@@ -342,7 +383,6 @@ class UserController extends BaseController
     /**
      * @param string $theme
      * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
      */
     public function getTheme($theme)
     {
@@ -360,25 +400,56 @@ class UserController extends BaseController
     }
 
     /**
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
+     * @param $id
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
      */
-    public function getImpersonate($id)
+    public function makeSuper($id, BaseHttpResponse $response)
     {
-        $user = $this->userRepository->findOrFail($id);
-        Auth::user()->impersonate($user);
+        try {
+            $user = $this->userRepository->findOrFail($id);
 
-        return redirect()->route('dashboard.index');
+            $user->updatePermission(ACL_ROLE_SUPER_USER, true);
+            $user->updatePermission(ACL_ROLE_MANAGE_SUPERS, true);
+            $user->super_user = 1;
+            $user->manage_supers = 1;
+            $this->userRepository->createOrUpdate($user);
+
+            return $response
+                ->setNextUrl(route('users.index'))
+                ->setMessage(trans('core/base::system.supper_granted'));
+        } catch (Exception $exception) {
+            return $response
+                ->setError()
+                ->setNextUrl(route('users.index'))
+                ->setMessage($exception->getMessage());
+        }
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
-     * @author Sang Nguyen
+     * @param $id
+     * @param Request $request
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
      */
-    public function leaveImpersonation()
+    public function removeSuper($id, Request $request, BaseHttpResponse $response)
     {
-        Auth::user()->leaveImpersonation();
-        return redirect()->route('dashboard.index');
+        if ($request->user()->getKey() == $id) {
+            return $response
+                ->setError()
+                ->setMessage(trans('core/base::system.cannot_revoke_yourself'));
+        }
+
+        $user = $this->userRepository->findOrFail($id);
+
+        $user->updatePermission(ACL_ROLE_SUPER_USER, false);
+        $user->updatePermission(ACL_ROLE_MANAGE_SUPERS, false);
+        $user->super_user = 0;
+        $user->manage_supers = 0;
+        $this->userRepository->createOrUpdate($user);
+
+        return $response
+            ->setNextUrl(route('users.index'))
+            ->setMessage(trans('core/base::system.supper_revoked'));
     }
 }

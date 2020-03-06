@@ -9,7 +9,7 @@ if (!function_exists('setting')) {
      * @param $key
      * @param $default
      * @return array|\Botble\Setting\Supports\SettingStore|string|null
-     * @author Sang Nguyen
+     *
      */
     function setting($key = null, $default = null)
     {

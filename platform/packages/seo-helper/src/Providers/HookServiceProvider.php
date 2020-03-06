@@ -8,15 +8,6 @@ use SeoHelper;
 
 class HookServiceProvider extends ServiceProvider
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * Boot the service provider.
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         add_action(BASE_ACTION_META_BOXES, [$this, 'addMetaBox'], 12, 3);
@@ -25,12 +16,11 @@ class HookServiceProvider extends ServiceProvider
 
     /**
      * @param $screen
-     * @author Sang Nguyen
      */
     public function addMetaBox($screen)
     {
         if (in_array($screen, config('packages.seo-helper.general.supported'))) {
-            Assets::addAppModule(['seo-helper']);
+            Assets::addScriptsDirectly('vendor/core/packages/seo-helper/js/seo-helper.js');
             add_meta_box('seo_wrap', trans('packages/seo-helper::seo-helper.meta_box_header'), [$this, 'seoMetaBox'],
                 $screen, 'advanced', 'low');
         }
@@ -38,7 +28,6 @@ class HookServiceProvider extends ServiceProvider
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
      */
     public function seoMetaBox()
     {
@@ -49,22 +38,21 @@ class HookServiceProvider extends ServiceProvider
 
         $args = func_get_args();
         if (!empty($args[0])) {
-            $meta_data = get_meta_data($args[0]->id, 'seo_meta', $args[1], true);
+            $metadata = get_meta_data($args[0]->id, 'seo_meta', $args[1], true);
         }
 
-        if (!empty($meta_data) && is_array($meta_data)) {
-            $meta = array_merge($meta, $meta_data);
+        if (!empty($metadata) && is_array($metadata)) {
+            $meta = array_merge($meta, $metadata);
         }
 
         $object = $args[0];
 
-        return view('packages.seo-helper::meta_box', compact('meta', 'object'));
+        return view('packages/seo-helper::meta_box', compact('meta', 'object'));
     }
 
     /**
      * @param $screen
      * @param $object
-     * @author Sang Nguyen
      */
     public function setSeoMeta($screen, $object)
     {

@@ -2,7 +2,7 @@
 
 namespace Botble\Dashboard\Repositories\Eloquent;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Dashboard\Repositories\Interfaces\DashboardWidgetSettingInterface;
 use Botble\Support\Repositories\Eloquent\RepositoriesAbstract;
 

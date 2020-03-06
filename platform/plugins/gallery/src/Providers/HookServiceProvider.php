@@ -8,24 +8,21 @@ use Illuminate\Support\ServiceProvider;
 class HookServiceProvider extends ServiceProvider
 {
     /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * @author Sang Nguyen
      * @throws \Throwable
      */
     public function boot()
     {
         add_action(BASE_ACTION_META_BOXES, [$this, 'addGalleryBox'], 13, 3);
-        add_shortcode('gallery', trans('plugins/gallery::gallery.gallery_images'), trans('plugins/gallery::gallery.add_gallery_short_code'), [$this, 'render']);
-        shortcode()->setAdminConfig('gallery', view('plugins.gallery::partials.short-code-admin-config')->render());
+
+        if (function_exists('shortcode')) {
+            add_shortcode('gallery', trans('plugins/gallery::gallery.gallery_images'),
+                trans('plugins/gallery::gallery.add_gallery_short_code'), [$this, 'render']);
+            shortcode()->setAdminConfig('gallery', view('plugins/gallery::partials.short-code-admin-config')->render());
+        }
     }
 
     /**
      * @param string $screen
-     * @author Sang Nguyen
      */
     public function addGalleryBox(string $screen)
     {
@@ -36,7 +33,6 @@ class HookServiceProvider extends ServiceProvider
     }
 
     /**
-     * @author Sang Nguyen
      * @throws \Throwable
      * @return string
      */
@@ -48,13 +44,12 @@ class HookServiceProvider extends ServiceProvider
             $value = gallery_meta_data($args[0]->id, $args[1]);
         }
 
-        return view('plugins.gallery::gallery-box', compact('value'))->render();
+        return view('plugins/gallery::gallery-box', compact('value'))->render();
     }
 
     /**
      * @param $shortcode
      * @return string
-     * @author Sang Nguyen
      */
     public function render($shortcode)
     {

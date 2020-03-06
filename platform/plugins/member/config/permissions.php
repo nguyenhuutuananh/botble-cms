@@ -3,21 +3,21 @@
 return [
     [
         'name' => 'Members',
-        'flag' => 'member.list',
+        'flag' => 'member.index',
     ],
     [
         'name'        => 'Create',
         'flag'        => 'member.create',
-        'parent_flag' => 'member.list',
+        'parent_flag' => 'member.index',
     ],
     [
         'name'        => 'Edit',
         'flag'        => 'member.edit',
-        'parent_flag' => 'member.list',
+        'parent_flag' => 'member.index',
     ],
     [
         'name'        => 'Delete',
-        'flag'        => 'member.delete',
-        'parent_flag' => 'member.list',
+        'flag'        => 'member.destroy',
+        'parent_flag' => 'member.index',
     ],
 ];

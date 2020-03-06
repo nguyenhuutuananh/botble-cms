@@ -4,7 +4,7 @@ namespace Botble\RequestLog\Listeners;
 
 use Botble\RequestLog\Events\RequestHandlerEvent;
 use Botble\RequestLog\Models\RequestLog;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -24,7 +24,7 @@ class RequestHandlerListener
      * RequestHandlerListener constructor.
      * @param RequestLog $requestLog
      * @param Request $request
-     * @author Sang Nguyen
+     *
      */
     public function __construct(RequestLog $requestLog, Request $request)
     {
@@ -37,14 +37,10 @@ class RequestHandlerListener
      *
      * @param  RequestHandlerEvent $event
      * @return boolean
-     * @author Sang Nguyen
+     *
      */
     public function handle(RequestHandlerEvent $event)
     {
-        if ($event->code == 404) {
-            return false;
-        }
-
         $this->requestLog = RequestLog::firstOrNew([
             'url'         => Str::limit($this->request->fullUrl(), 120),
             'status_code' => $event->code,

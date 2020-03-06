@@ -20,7 +20,7 @@ class PageRepository extends RepositoriesAbstract implements PageInterface
     public function getDataSiteMap()
     {
         $data = $this->model
-            ->where('pages.status', BaseStatusEnum::PUBLISH)
+            ->where('pages.status', BaseStatusEnum::PUBLISHED)
             ->select('pages.*')
             ->orderBy('pages.created_at', 'desc');
 
@@ -33,7 +33,7 @@ class PageRepository extends RepositoriesAbstract implements PageInterface
     public function getFeaturedPages($limit)
     {
         $data = $this->model
-            ->where(['pages.status' => BaseStatusEnum::PUBLISH, 'pages.is_featured' => 1])
+            ->where(['pages.status' => BaseStatusEnum::PUBLISHED, 'pages.is_featured' => 1])
             ->orderBy('pages.created_at', 'asc')
             ->select('pages.*')
             ->limit($limit)
@@ -49,7 +49,7 @@ class PageRepository extends RepositoriesAbstract implements PageInterface
     {
         $pages = $this->model
             ->whereIn('pages.id', $array)
-            ->where('pages.status', BaseStatusEnum::PUBLISH);
+            ->where('pages.status', BaseStatusEnum::PUBLISHED);
 
         if (empty($select)) {
             $select = 'pages.*';
@@ -66,7 +66,7 @@ class PageRepository extends RepositoriesAbstract implements PageInterface
      */
     public function getSearch($query, $limit = 10)
     {
-        $pages = $this->model->where('pages.status', BaseStatusEnum::PUBLISH);
+        $pages = $this->model->where('pages.status', BaseStatusEnum::PUBLISHED);
         foreach (explode(' ', $query) as $term) {
             $pages = $pages->where('pages.name', 'LIKE', '%' . $term . '%');
         }
@@ -86,7 +86,7 @@ class PageRepository extends RepositoriesAbstract implements PageInterface
     {
         $data = $this->model->select('pages.*');
         if ($active) {
-            $data = $data->where(['pages.status' => BaseStatusEnum::PUBLISH]);
+            $data = $data->where(['pages.status' => BaseStatusEnum::PUBLISHED]);
         }
 
         return $this->applyBeforeExecuteQuery($data, $this->screen)->get();

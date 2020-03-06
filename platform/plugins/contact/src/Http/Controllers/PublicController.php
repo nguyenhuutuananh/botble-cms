@@ -20,7 +20,6 @@ class PublicController extends Controller
 
     /**
      * @param ContactInterface $contactRepository
-     * @author Sang Nguyen
      */
     public function __construct(ContactInterface $contactRepository)
     {
@@ -34,7 +33,6 @@ class PublicController extends Controller
      * @param EmailHandler $emailHandler
      * @return BaseHttpResponse
      * @throws \Throwable
-     * @author Sang Nguyen
      */
     public function postSendContact(
         ContactRequest $request,

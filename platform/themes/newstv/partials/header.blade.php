@@ -35,18 +35,18 @@
                             <div class="pull-right">
                                 @if (is_plugin_active('member'))
                                     <ul class="pull-left">
-                                        @if (Auth::guard('member')->check())
+                                        @auth('member')
                                             <li><a href="{{ route('public.member.dashboard') }}" rel="nofollow"><i class="fa fa-user"></i> <span>{{ Auth::guard('member')->user()->getFullName() }}</span></a></li>
                                             <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" rel="nofollow"><i class="fa fa-sign-out"></i> {{ __('Logout') }}</a></li>
-                                        @else
+                                        @elseauth
                                             <li><a href="{{ route('public.member.login') }}" rel="nofollow"><i class="fa fa-sign-in"></i> {{ __('Login') }}</a></li>
-                                        @endif
+                                        @endauth
                                     </ul>
-                                    @if (Auth::guard('member')->check())
+                                    @auth('member')
                                         <form id="logout-form" action="{{ route('public.member.logout') }}" method="POST" style="display: none;">
                                             @csrf
                                         </form>
-                                    @endif
+                                    @endauth
                                 @endif
                                 <div class="pull-left">
                                     <div class="pull-right">
@@ -61,8 +61,8 @@
                     <div class="header-content">
                         <div class="container">
                             <h1 class="logo">
-                                <a href="{{ url('/') }}" title="{{ setting('site_title') }}">
-                                    <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ setting('site_title') }}">
+                                <a href="{{ route('public.single') }}" title="{{ theme_option('site_title') }}">
+                                    <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ theme_option('site_title') }}">
                                 </a>
                             </h1>
                             <div class="header-content-right">
@@ -101,8 +101,8 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a class="navbar-brand"  href="{{ url('/') }}" title="{{ setting('site_title') }}">
-                                <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ setting('site_title') }}">
+                            <a class="navbar-brand"  href="{{ route('public.single') }}" title="{{ theme_option('site_title') }}">
+                                <img src="{{ url(theme_option('logo', Theme::asset()->url('images/logo.png'))) }}" alt="{{ theme_option('site_title') }}">
                             </a>
                         </div>
 

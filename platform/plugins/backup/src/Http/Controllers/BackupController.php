@@ -2,11 +2,11 @@
 
 namespace Botble\Backup\Http\Controllers;
 
-use App\Console\Kernel;
 use Assets;
 use Botble\Backup\Supports\Backup;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
+use Botble\Base\Supports\Helper;
 use Exception;
 use File;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class BackupController extends BaseController
     /**
      * BackupController constructor.
      * @param Backup $backup
-     * @author Sang Nguyen
+     *
      */
     public function __construct(Backup $backup)
     {
@@ -32,7 +32,7 @@ class BackupController extends BaseController
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getIndex()
@@ -44,26 +44,26 @@ class BackupController extends BaseController
 
         $backups = $this->backup->getBackupList();
 
-        return view('plugins.backup::index', compact('backups'));
+        return view('plugins/backup::index', compact('backups'));
     }
 
     /**
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function postCreate(Request $request, BaseHttpResponse $response)
+    public function store(Request $request, BaseHttpResponse $response)
     {
         try {
             $data = $this->backup->createBackupFolder($request);
             $this->backup->backupDb();
-            $this->backup->backupFolder(public_path('uploads'));
+            $this->backup->backupFolder(public_path('storage/uploads'));
             do_action(BACKUP_ACTION_AFTER_BACKUP, BACKUP_MODULE_SCREEN_NAME, $request);
 
             return $response
-                ->setData(view('plugins.backup::partials.backup-item', $data)->render())
+                ->setData(view('plugins/backup::partials.backup-item', $data)->render())
                 ->setMessage(trans('plugins/backup::backup.create_backup_success'));
         } catch (Exception $ex) {
             return $response
@@ -76,9 +76,9 @@ class BackupController extends BaseController
      * @param string $folder
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete($folder, BaseHttpResponse $response)
+    public function destroy($folder, BaseHttpResponse $response)
     {
         try {
             $this->backup->deleteFolderBackup(storage_path('app/backup/') . $folder);
@@ -94,11 +94,10 @@ class BackupController extends BaseController
      * @param string $folder
      * @param Request $request
      * @param BaseHttpResponse $response
-     * @param Kernel $kernel
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getRestore($folder, Request $request, BaseHttpResponse $response, Kernel $kernel)
+    public function getRestore($folder, Request $request, BaseHttpResponse $response)
     {
         try {
             info('Starting restore backup...');
@@ -109,7 +108,7 @@ class BackupController extends BaseController
                 }
 
                 if (Str::contains(basename($file), 'uploads')) {
-                    $pathTo = public_path('uploads');
+                    $pathTo = public_path('storage/uploads');
                     foreach (File::glob(rtrim($pathTo, '/') . '/*') as $item) {
                         if (File::isDirectory($item)) {
                             File::deleteDirectory($item);
@@ -122,10 +121,10 @@ class BackupController extends BaseController
                 }
             }
 
-            $kernel->call('cache:clear');
+            Helper::executeCommand('cache:clear');
 
             try {
-                $kernel->call('key:generate');
+                Helper::executeCommand('key:generate');
             } catch (Exception $exception) {
                 info($exception->getMessage());
             }
@@ -144,7 +143,7 @@ class BackupController extends BaseController
     /**
      * @param string $folder
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|boolean
-     * @author Sang Nguyen
+     *
      */
     public function getDownloadDatabase($folder)
     {
@@ -161,7 +160,7 @@ class BackupController extends BaseController
     /**
      * @param string $folder
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|boolean
-     * @author Sang Nguyen
+     *
      */
     public function getDownloadUploadFolder($folder)
     {

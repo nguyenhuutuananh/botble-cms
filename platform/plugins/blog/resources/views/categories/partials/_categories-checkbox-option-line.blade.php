@@ -15,7 +15,7 @@ $value = isset($value) ? (array)$value : [];
                             $name, $category->id, $category->name, in_array($category->id, $value),
                         ]
                     ]) !!}
-                    @include('plugins.blog::categories.partials._categories-checkbox-option-line', [
+                    @include('plugins/blog::categories.partials._categories-checkbox-option-line', [
                         'categories' => $category->child_cats,
                         'value' => $value,
                         'currentId' => $currentId,

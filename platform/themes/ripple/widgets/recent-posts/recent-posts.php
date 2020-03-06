@@ -18,12 +18,13 @@ class RecentPostsWidget extends AbstractWidget
 
     /**
      * RecentPostsWidget constructor.
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __construct()
     {
         parent::__construct([
-            'name' => __('Recent posts'),
-            'description' => __('Recent posts widget.'),
+            'name'           => __('Recent posts'),
+            'description'    => __('Recent posts widget.'),
             'number_display' => 5,
         ]);
     }

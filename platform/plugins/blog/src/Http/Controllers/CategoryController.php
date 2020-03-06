@@ -12,7 +12,7 @@ use Botble\Blog\Http\Requests\CategoryRequest;
 use Botble\Blog\Repositories\Interfaces\CategoryInterface;
 use Exception;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Botble\Base\Events\CreatedContentEvent;
 use Botble\Base\Events\DeletedContentEvent;
 use Botble\Base\Events\UpdatedContentEvent;
@@ -27,7 +27,7 @@ class CategoryController extends BaseController
 
     /**
      * @param CategoryInterface $categoryRepository
-     * @author Sang Nguyen
+     *
      */
     public function __construct(CategoryInterface $categoryRepository)
     {
@@ -38,10 +38,10 @@ class CategoryController extends BaseController
      * Display all categories
      * @param CategoryTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @author Sang Nguyen
+     *
      * @throws \Throwable
      */
-    public function getList(CategoryTable $dataTable)
+    public function index(CategoryTable $dataTable)
     {
         page_title()->setTitle(trans('plugins/blog::categories.menu'));
 
@@ -52,9 +52,9 @@ class CategoryController extends BaseController
      * Show create form
      * @param FormBuilder $formBuilder
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getCreate(FormBuilder $formBuilder)
+    public function create(FormBuilder $formBuilder)
     {
         page_title()->setTitle(trans('plugins/blog::categories.create'));
 
@@ -67,9 +67,9 @@ class CategoryController extends BaseController
      * @param CategoryRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postCreate(CategoryRequest $request, BaseHttpResponse $response)
+    public function store(CategoryRequest $request, BaseHttpResponse $response)
     {
         $category = $this->categoryRepository->createOrUpdate(array_merge($request->input(), [
             'author_id'   => Auth::user()->getKey(),
@@ -80,7 +80,7 @@ class CategoryController extends BaseController
         event(new CreatedContentEvent(CATEGORY_MODULE_SCREEN_NAME, $request, $category));
 
         return $response
-            ->setPreviousUrl(route('categories.list'))
+            ->setPreviousUrl(route('categories.index'))
             ->setNextUrl(route('categories.edit', $category->id))
             ->setMessage(trans('core/base::notices.create_success_message'));
     }
@@ -90,15 +90,15 @@ class CategoryController extends BaseController
      *
      * @param int $id
      * @return string
-     * @author Sang Nguyen
+     *
      */
-    public function getEdit($id, FormBuilder $formBuilder)
+    public function edit($id, FormBuilder $formBuilder)
     {
         $category = $this->categoryRepository->findOrFail($id);
 
         event(new BeforeEditContentEvent(CATEGORY_MODULE_SCREEN_NAME, request(), $category));
 
-        page_title()->setTitle(trans('plugins/blog::categories.edit') . ' #' . $id);
+        page_title()->setTitle(trans('plugins/blog::categories.edit') . ' "' . $category->name . '"');
 
         return $formBuilder->create(CategoryForm::class, ['model' => $category])->renderForm();
     }
@@ -108,9 +108,9 @@ class CategoryController extends BaseController
      * @param CategoryRequest $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function postEdit($id, CategoryRequest $request, BaseHttpResponse $response)
+    public function update($id, CategoryRequest $request, BaseHttpResponse $response)
     {
         $category = $this->categoryRepository->findOrFail($id);
 
@@ -123,7 +123,7 @@ class CategoryController extends BaseController
         event(new UpdatedContentEvent(CATEGORY_MODULE_SCREEN_NAME, $request, $category));
 
         return $response
-            ->setPreviousUrl(route('categories.list'))
+            ->setPreviousUrl(route('categories.index'))
             ->setMessage(trans('core/base::notices.update_success_message'));
     }
 
@@ -132,9 +132,9 @@ class CategoryController extends BaseController
      * @param int $id
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      */
-    public function getDelete(Request $request, $id, BaseHttpResponse $response)
+    public function destroy(Request $request, $id, BaseHttpResponse $response)
     {
         try {
             $category = $this->categoryRepository->findOrFail($id);
@@ -156,10 +156,10 @@ class CategoryController extends BaseController
      * @param Request $request
      * @param BaseHttpResponse $response
      * @return BaseHttpResponse
-     * @author Sang Nguyen
+     *
      * @throws Exception
      */
-    public function postDeleteMany(Request $request, BaseHttpResponse $response)
+    public function deletes(Request $request, BaseHttpResponse $response)
     {
         $ids = $request->input('ids');
         if (empty($ids)) {

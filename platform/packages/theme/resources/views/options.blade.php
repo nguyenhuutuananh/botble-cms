@@ -1,4 +1,4 @@
-@extends('core.base::layouts.master')
+@extends('core/base::layouts.master')
 @section('content')
     @php do_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, THEME_OPTIONS_MODULE_SCREEN_NAME, request(), null) @endphp
     <div id="theme-option-header">

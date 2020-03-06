@@ -16,12 +16,12 @@ class Text extends AbstractWidget
     /**
      * @var string
      */
-    protected $frontendTemplate = 'packages.widget::widgets.text.frontend';
+    protected $frontendTemplate = 'packages/widget::widgets.text.frontend';
 
     /**
      * @var string
      */
-    protected $backendTemplate = 'packages.widget::widgets.text.backend';
+    protected $backendTemplate = 'packages/widget::widgets.text.backend';
 
     /**
      * @var bool
@@ -30,7 +30,7 @@ class Text extends AbstractWidget
 
     /**
      * Text constructor.
-     * @author Sang Nguyen
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function __construct()

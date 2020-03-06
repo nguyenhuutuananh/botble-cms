@@ -18,10 +18,10 @@ class MemberPostForm extends PostForm
     {
         parent::buildForm();
 
-        Assets::addScriptsDirectly('vendor/core/packages/tinymce/tinymce.min.js')
+        Assets::addScriptsDirectly('vendor/core/libraries/tinymce/tinymce.min.js')
             ->addScripts(['bootstrap-tagsinput', 'typeahead'])
             ->addStyles(['bootstrap-tagsinput'])
-            ->addAppModule(['tags']);
+            ->addScriptsDirectly('vendor/core/js/tags.js');
 
         if (!$this->formHelper->hasCustomField('customEditor')) {
             $this->formHelper->addCustomField('customEditor', CustomEditorField::class);
@@ -32,10 +32,10 @@ class MemberPostForm extends PostForm
         }
 
         $this->setModuleName(MEMBER_POST_MODULE_SCREEN_NAME)
-            ->setFormOption('template', 'plugins.member::forms.base')
+            ->setFormOption('template', 'plugins/member::forms.base')
             ->setFormOption('enctype', 'multipart/form-data')
             ->setValidatorClass(MemberPostRequest::class)
-            ->setActionButtons(view('plugins.member::forms.actions')->render())
+            ->setActionButtons(view('plugins/member::forms.actions')->render())
             ->remove('status')
             ->remove('is_featured')
             ->remove('content')

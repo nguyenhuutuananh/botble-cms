@@ -35,3 +35,15 @@ if (!defined('ACL_FILTER_PROFILE_FORM_TABS')) {
 if (!defined('ACL_FILTER_PROFILE_FORM_TAB_CONTENTS')) {
     define('ACL_FILTER_PROFILE_FORM_TAB_CONTENTS', 'acl_filter_profile_tab_contents');
 }
+
+if (!defined('ACL_ROLE_SUPER_USER')) {
+    define('ACL_ROLE_SUPER_USER', 'superuser');
+}
+
+if (!defined('ACL_ROLE_MANAGE_SUPERS')) {
+    define('ACL_ROLE_MANAGE_SUPERS', 'manage_supers');
+}
+
+if (!defined('ACL_FILTER_USER_TABLE_ACTIONS')) {
+    define('ACL_FILTER_USER_TABLE_ACTIONS', 'user_table_actions');
+}

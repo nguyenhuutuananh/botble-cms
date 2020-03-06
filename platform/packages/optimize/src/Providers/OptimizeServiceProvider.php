@@ -20,9 +20,6 @@ class OptimizeServiceProvider extends ServiceProvider
      */
     protected $app;
 
-    /**
-     * @author Sang Nguyen
-     */
     public function boot()
     {
         $this->setNamespace('packages/optimize')
@@ -44,7 +41,5 @@ class OptimizeServiceProvider extends ServiceProvider
         }
         $router->pushMiddlewareToGroup('web', RemoveComments::class);
         $router->pushMiddlewareToGroup('web', InlineCss::class);
-        //$router->pushMiddlewareToGroup('web', RemoveQuotes::class);
-        //$router->pushMiddlewareToGroup('web', TrimUrls::class);
     }
 }

@@ -3,7 +3,6 @@
 namespace Botble\Widget\Misc;
 
 use Botble\Widget\Contracts\ApplicationWrapperContract;
-use Closure;
 use Illuminate\Container\Container;
 
 class LaravelApplicationWrapper implements ApplicationWrapperContract
@@ -15,26 +14,11 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
     protected $app;
 
     /**
-     * Constructor.
-     * @author Sang Nguyen
+     * LaravelApplicationWrapper constructor.
      */
     public function __construct()
     {
         $this->app = Container::getInstance();
-    }
-
-    /**
-     * Wrapper around Cache::remember().
-     *
-     * @param $key
-     * @param $minutes
-     * @param Closure $callback
-     * @return mixed
-     * @author Sang Nguyen
-     */
-    public function cache($key, $minutes, Closure $callback)
-    {
-        return $this->app->make('cache')->remember($key, $minutes, $callback);
     }
 
     /**
@@ -43,7 +27,6 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
      * @param $method
      * @param array $params
      * @return mixed
-     * @author Sang Nguyen
      */
     public function call($method, $params = [])
     {
@@ -56,7 +39,7 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
      * @param string $key
      * @param mixed $default
      * @return mixed
-     * @author Sang Nguyen
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function config($key, $default = null)
     {
@@ -64,9 +47,7 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
     }
 
     /**
-     *
      * @return string
-     * @author Sang Nguyen
      */
     public function getNamespace()
     {
@@ -79,7 +60,7 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
      * @param string $abstract
      * @param array $parameters
      * @return mixed
-     * @author Sang Nguyen
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function make($abstract, array $parameters = [])
     {
